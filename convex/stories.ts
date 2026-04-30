@@ -166,7 +166,7 @@ export const createStory = mutation({
     });
     if (args.createType === "full-scripted") {
       const segments = splitStory(args.story);
-      segments.forEach((s) => {
+      segments.forEach((s: string) => {
         if (s.length > 750) {
           throw new ConvexError("Each segment can not exceed 750 characters.");
         }
@@ -310,7 +310,7 @@ export const onDoneRefine = mutation({
     const segments = splitStory(content);
 
     // Validate segments length
-    segments.forEach((segment, index) => {
+    segments.forEach((segment: string, index: number) => {
       if (segment.length > 750) {
         throw new ConvexError(`Segment ${index + 1} exceeds 750 characters.`);
       }
@@ -381,7 +381,7 @@ export const generateStoryAssetsJob = internalAction({
 
       // Create segments and schedule image prompt generation for each
       await Promise.all(
-        segments.map(async (segment, index) => {
+        segments.map(async (segment: string, index: number) => {
           const segmentId = await ctx.runMutation(
             internal.storySegments.internalInsert,
             {
@@ -522,7 +522,7 @@ export const fullScriptedStoryJob = internalAction({
     });
     const segments = splitStory(story);
     await Promise.all(
-      segments.map(async (segment, i) => {
+      segments.map(async (segment: string, i: number) => {
         try {
           const time = Date.now();
           const imagePrompt = await ctx.runAction(
