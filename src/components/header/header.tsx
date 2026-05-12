@@ -112,7 +112,9 @@ function HeaderActions() {
   return (
     <>
       {user?.credits && (
-        <div className={"font-special"}>{user.credits + " Credits"}</div>
+        <div className={"font-special text-purple-300"}>
+          {user.credits + " Credits"}
+        </div>
       )}
       <ProfileDropdown />
       <div className="md:hidden">
@@ -138,13 +140,18 @@ function ProfileDropdown() {
         </Suspense>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="space-y-2">
-        <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild className="cursor-pointer">
+      <DropdownMenuContent className="space-y-2 bg-gray-900 text-purple-300">
+        <DropdownMenuLabel className="text-purple-300">
+          {user?.name}
+        </DropdownMenuLabel>
+
+        <DropdownMenuItem
+          asChild
+          className="cursor-pointer text-purple-300 focus:bg-purple-700 focus:text-white"
+        >
           <div className="flex w-full items-center" onClick={() => signOut()}>
             <LogOut className="mr-2 h-4 w-4" />
-            Đăng xuất
+            Sign out
           </div>
         </DropdownMenuItem>
       </DropdownMenuContent>

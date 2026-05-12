@@ -8,7 +8,7 @@ function XIcon() {
 
 export const Footer = () => {
   return (
-    <footer className="border-t border-purple-700 bg-gray-900 text-purple-200">
+    <footer className="border-t border-purple-700 text-purple-200">
       <div className="mx-auto max-w-7xl px-6 pb-0 pt-16">
         <div className="flex flex-col items-center justify-between gap-4 py-6 sm:flex-row">
           <div className="flex items-center gap-2">
@@ -22,7 +22,7 @@ export const Footer = () => {
               Privacy
             </span>
             <a
-              href="https://x.com/openstory_so"
+              href="https://x.com/hhwjsw711"
               target="_blank"
               rel="noopener noreferrer"
               className="text-purple-300 transition-colors hover:text-white"

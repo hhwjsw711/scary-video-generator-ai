@@ -7,7 +7,7 @@
 **项目路径**: `E:\Workspace\scary-video-generator-ai`  
 **项目名称**: Hivio  
 **创建时间**: 基于 create-t3-app (v7.37.0)  
-**最后更新**: 2026-05-12
+**最后更新**: 2026-05-12 (UI 样式统一化更新)
 
 ## 技术架构
 
@@ -224,6 +224,36 @@ convex/
 
 ## 设计系统
 
+### 2026-05-12 UI 样式统一化更新
+
+#### Header 和 Footer 统一
+
+- **Header** (`src/components/header/header.tsx`): 保持无背景色，有底部边框线
+- **Footer** (`src/components/shared/footer.tsx`): 无背景色，有顶部边框线
+- 边框颜色: `border-purple-700`
+- 文字颜色: `text-purple-300`
+- 移除了 Footer 的版权区域上方的分隔线
+
+#### User 下拉菜单样式
+
+- 下拉菜单背景: `bg-gray-900`
+- 文字颜色: `text-purple-300`
+- 用户名字体: `DropdownMenuLabel` 加 `className="text-purple-300"`
+- 退出按钮: `focus:bg-purple-700 focus:text-white`
+- 移除了用户名和退出按钮之间的分隔线
+
+#### Credits 显示
+
+- 文字颜色: `text-purple-300`
+
+#### Feature 卡片布局
+
+- 布局: 水平排列（左图标 + 标题），下方描述
+- 图标容器: `h-12 w-12 rounded-full bg-white/10`
+- 图标大小: `h-5 w-5`
+- 标题与描述间距: `mt-3`
+- 网格: `md:grid-cols-3 lg:grid-cols-4`
+
 ### 颜色规范
 
 ```css
@@ -261,13 +291,19 @@ convex/
 </button>
 ```
 
-#### 卡片
+#### Feature 卡片
 
 ```tsx
-<Card className="bg-primary p-6 text-white hover:bg-primary/90">
-  <Icon className="h-10 w-10" />
-  <h3 className="font-special text-xl font-bold text-white">Title</h3>
-  <p className="font-special text-gray-300">Description</p>
+<Card className="mb-8 bg-primary p-6 transition-all duration-300 hover:scale-105 hover:bg-primary/90">
+  <div className="flex items-center gap-3">
+    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
+      <Icon className="h-5 w-5" />
+    </div>
+    <h3 className="font-special text-xl font-bold text-white">Feature Title</h3>
+  </div>
+  <p className="mt-3 font-special text-gray-300">
+    Feature description text goes here.
+  </p>
 </Card>
 ```
 
@@ -286,7 +322,7 @@ convex/
 #### Footer
 
 ```tsx
-<footer className="border-t border-purple-700 bg-gray-900 text-purple-200">
+<footer className="border-t border-purple-700 text-purple-200">
   <span className="font-nosifer text-xl text-purple-300">Hivio</span>
   <span className="font-special text-sm text-purple-300">Docs</span>
   <span className="font-special text-sm text-purple-300">Terms</span>

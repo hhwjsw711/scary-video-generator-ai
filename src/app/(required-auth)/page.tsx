@@ -138,149 +138,149 @@ export default async function HomePage() {
         </h2>
         <div className="grid gap-x-8 md:grid-cols-3 lg:grid-cols-4">
           <Card className="mb-8 bg-primary p-6 transition-all duration-300 hover:scale-105 hover:bg-primary/90">
-            <div className="flex items-center gap-2">
-              <div className="mx-auto mb-6 flex h-14 w-14 !shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
-                <Brain className="h-6 w-6" />
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
+                <Brain className="h-5 w-5" />
               </div>
               <h3 className="font-special text-xl font-bold text-white">
                 AI Story Generation
               </h3>
             </div>
-            <p className="font-special text-gray-300">
+            <p className="mt-3 font-special text-gray-300">
               Let our advanced AI craft compelling narratives tailored to your
               preferences.
             </p>
           </Card>
           <Card className="mb-8 bg-primary p-6 transition-all duration-300 hover:scale-105 hover:bg-primary/90">
-            <div className="flex items-center gap-2">
-              <div className="mx-auto mb-6 flex h-14 w-14 !shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
-                <ImageIcon className="h-6 w-6" />
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
+                <ImageIcon className="h-5 w-5" />
               </div>
               <h3 className="font-special text-xl font-bold text-white">
                 High-Quality Visuals
               </h3>
             </div>
-            <p className="font-special text-gray-300">
+            <p className="mt-3 font-special text-gray-300">
               Generate stunning images that bring your story to life.
             </p>
           </Card>
           <Card className="mb-8 bg-primary p-6 transition-all duration-300 hover:scale-105 hover:bg-primary/90">
-            <div className="flex items-center gap-2">
-              <div className="mx-auto mb-6 flex h-14 w-14 !shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
-                <Mic className="h-6 w-6" />
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
+                <Mic className="h-5 w-5" />
               </div>
               <h3 className="font-special text-xl font-bold text-white">
                 Professional Voiceovers
               </h3>
             </div>
-            <p className="font-special text-gray-300">
+            <p className="mt-3 font-special text-gray-300">
               Add narration with our AI-powered voice synthesis technology.
             </p>
           </Card>
           <Card className="mb-8 bg-primary p-6 transition-all duration-300 hover:scale-105 hover:bg-primary/90">
-            <div className="flex items-center gap-2">
-              <div className="mx-auto mb-6 flex h-14 w-14 !shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
-                <Video className="h-6 w-6" />
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
+                <Video className="h-5 w-5" />
               </div>
               <h3 className="font-special text-xl font-bold text-white">
                 Seamless Video Creation
               </h3>
             </div>
-            <p className="font-special text-gray-300">
+            <p className="mt-3 font-special text-gray-300">
               Automatically combine your story, images, and audio into a
               captivating video.
             </p>
           </Card>
           <Card className="mb-8 bg-primary p-6 transition-all duration-300 hover:scale-105 hover:bg-primary/90">
-            <div className="flex items-center gap-2">
-              <div className="mx-auto mb-6 flex h-14 w-14 !shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
-                <Type className="h-6 w-6" />
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
+                <Type className="h-5 w-5" />
               </div>
               <h3 className="font-special text-xl font-bold text-white">
                 Auto-Generated Captions
               </h3>
             </div>
-            <p className="font-special text-gray-300">
+            <p className="mt-3 font-special text-gray-300">
               Ensure accessibility and engagement with accurate, timed captions.
             </p>
           </Card>
           <Card className="mb-8 bg-primary p-6 transition-all duration-300 hover:scale-105 hover:bg-primary/90">
-            <div className="flex items-center gap-2">
-              <div className="mx-auto mb-6 flex h-14 w-14 !shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
-                <Music className="h-6 w-6" />
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
+                <Music className="h-5 w-5" />
               </div>
               <h3 className="font-special text-xl font-bold text-white">
                 Background Music
               </h3>
             </div>
-            <p className="font-special text-gray-300">
+            <p className="mt-3 font-special text-gray-300">
               Set the mood with our library of soundtracks and effects.
             </p>
           </Card>
           <Card className="mb-8 bg-primary p-6 transition-all duration-300 hover:scale-105 hover:bg-primary/90">
-            <div className="flex items-center gap-2">
-              <div className="mx-auto mb-6 flex h-14 w-14 !shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
-                <UploadIcon className="h-6 w-6" />
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
+                <UploadIcon className="h-5 w-5" />
               </div>
               <h3 className="font-special text-xl font-bold text-white">
                 Easy Social Sharing
               </h3>
             </div>
-            <p className="font-special text-gray-300">
+            <p className="mt-3 font-special text-gray-300">
               Instantly share your video creations across multiple platforms.
             </p>
           </Card>
           <Card className="mb-8 bg-primary p-6 transition-all duration-300 hover:scale-105 hover:bg-primary/90">
-            <div className="flex items-center gap-2">
-              <div className="mx-auto mb-6 flex h-14 w-14 !shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
-                <Youtube className="h-6 w-6" />
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
+                <Youtube className="h-5 w-5" />
               </div>
               <h3 className="font-special text-xl font-bold text-white">
                 YouTube Integration
               </h3>
             </div>
-            <p className="font-special text-gray-300">
+            <p className="mt-3 font-special text-gray-300">
               Seamlessly upload to your YouTube channel directly from the
               platform.
             </p>
           </Card>
           <Card className="mb-8 bg-primary p-6 transition-all duration-300 hover:scale-105 hover:bg-primary/90">
-            <div className="flex items-center gap-2">
-              <div className="mx-auto mb-6 flex h-14 w-14 !shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
-                <Zap className="h-6 w-6" />
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
+                <Zap className="h-5 w-5" />
               </div>
               <h3 className="font-special text-xl font-bold text-white">
                 Fast Processing
               </h3>
             </div>
-            <p className="font-special text-gray-300">
+            <p className="mt-3 font-special text-gray-300">
               Generate your professional videos in minutes, not hours.
             </p>
           </Card>
           <Card className="mb-8 bg-primary p-6 transition-all duration-300 hover:scale-105 hover:bg-primary/90">
-            <div className="flex items-center gap-2">
-              <div className="mx-auto mb-6 flex h-14 w-14 !shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
-                <InstagramIcon className="h-6 w-6" />
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
+                <InstagramIcon className="h-5 w-5" />
               </div>
               <h3 className="font-special text-xl font-bold text-white">
                 TikTok-Ready Format
               </h3>
             </div>
-            <p className="font-special text-gray-300">
+            <p className="mt-3 font-special text-gray-300">
               Create vertical videos optimized for TikTok&apos;s viral
               potential.
             </p>
           </Card>
           <Card className="mb-8 bg-primary p-6 transition-all duration-300 hover:scale-105 hover:bg-primary/90">
-            <div className="flex items-center gap-2">
-              <div className="mx-auto mb-6 flex h-14 w-14 !shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
-                <InstagramIcon className="h-6 w-6" />
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-lg">
+                <InstagramIcon className="h-5 w-5" />
               </div>
               <h3 className="font-special text-xl font-bold text-white">
                 Instagram Stories
               </h3>
             </div>
-            <p className="font-special text-gray-300">
+            <p className="mt-3 font-special text-gray-300">
               Generate content perfect for Instagram Stories and Reels.
             </p>
           </Card>
