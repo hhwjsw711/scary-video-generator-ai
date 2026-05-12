@@ -43,7 +43,7 @@ export function Header() {
                 <Link
                   href={"/generate"}
                   className={cn(
-                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 md:flex",
+                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
                   )}
                 >
                   <VideoIcon className="h-6 w-6" /> Generate
@@ -51,7 +51,7 @@ export function Header() {
 
                 <Link
                   className={cn(
-                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 md:flex",
+                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
                   )}
                   href={"/stories"}
                 >
@@ -60,7 +60,7 @@ export function Header() {
 
                 <Link
                   className={cn(
-                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 md:flex",
+                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
                   )}
                   href={"/videos"}
                 >

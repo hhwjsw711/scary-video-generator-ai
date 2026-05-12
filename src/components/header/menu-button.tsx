@@ -13,13 +13,13 @@ export function MenuButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <MenuIcon />
+        <MenuIcon className="text-purple-300" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="space-y-2">
+      <DropdownMenuContent className="space-y-2 bg-gray-900 text-purple-300">
         <DropdownMenuItem asChild>
           <Link
             href="/generate"
-            className="flex cursor-pointer items-center gap-2"
+            className="flex cursor-pointer items-center gap-2 text-purple-300 hover:bg-purple-700 hover:text-white focus:bg-purple-700 focus:text-white"
           >
             <VideoIcon className="h-4 w-4" /> Generate
           </Link>
@@ -27,7 +27,7 @@ export function MenuButton() {
         <DropdownMenuItem asChild>
           <Link
             href="/stories"
-            className="flex cursor-pointer items-center gap-2"
+            className="flex cursor-pointer items-center gap-2 text-purple-300 hover:bg-purple-700 hover:text-white focus:bg-purple-700 focus:text-white"
           >
             <BookOpenText className="h-4 w-4" /> Stories
           </Link>
@@ -35,7 +35,7 @@ export function MenuButton() {
         <DropdownMenuItem asChild>
           <Link
             href="/videos"
-            className="flex cursor-pointer items-center gap-2"
+            className="flex cursor-pointer items-center gap-2 text-purple-300 hover:bg-purple-700 hover:text-white focus:bg-purple-700 focus:text-white"
           >
             <FilmIcon className="h-4 w-4" /> My videos
           </Link>

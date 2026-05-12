@@ -80,7 +80,7 @@ const Page = () => {
 
         <div
           className={cn(
-            "w-full max-w-[800px] rounded-lg border-2 border-purple-500 bg-gray-100 p-8 font-special dark:bg-gray-800",
+            "w-full max-w-[800px] rounded-lg border-2 border-purple-500 bg-gray-100 p-4 font-special dark:bg-gray-800 md:p-8",
           )}
         >
           <Form {...form}>
@@ -114,7 +114,7 @@ const Page = () => {
                     </FormLabel>
                     <FormControl>
                       <Textarea
-                        className="min-h-[400px] bg-gray-900 font-sans"
+                        className="min-h-[250px] bg-gray-900 font-sans md:min-h-[400px]"
                         {...field}
                         placeholder="Write your script here."
                       ></Textarea>

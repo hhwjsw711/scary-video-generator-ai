@@ -20,12 +20,12 @@ const CreateYourStory = () => {
 
       <div
         className={cn(
-          "mx-auto flex flex-col items-center justify-center gap-8 font-special text-white md:flex-row",
+          "mx-auto flex flex-col items-center justify-center gap-4 font-special text-white md:flex-row md:gap-8",
         )}
       >
         <Link
           href="/generate/script"
-          className="flex h-52 w-52 flex-col items-center justify-center rounded-lg bg-primary p-6 transition-colors hover:bg-primary-foreground"
+          className="flex h-40 w-full max-w-[200px] flex-col items-center justify-center rounded-lg bg-primary p-4 transition-colors hover:bg-primary-foreground md:h-52 md:w-52 md:p-6"
         >
           <div className="mb-4 text-5xl">
             <PenIcon className="h-14 w-14" />
@@ -34,7 +34,7 @@ const CreateYourStory = () => {
         </Link>
         <Link
           href="/generate/segment"
-          className="flex h-52 w-52 flex-col items-center justify-center rounded-lg bg-primary p-6 transition-colors hover:bg-primary-foreground"
+          className="flex h-40 w-full max-w-[200px] flex-col items-center justify-center rounded-lg bg-primary p-4 transition-colors hover:bg-primary-foreground md:h-52 md:w-52 md:p-6"
         >
           <div className="mb-4 text-5xl">
             <AlignJustifyIcon className="h-14 w-14" />
@@ -45,7 +45,7 @@ const CreateYourStory = () => {
         </Link>
         <Link
           href="/generate/guided"
-          className="flex h-52 w-52 flex-col items-center justify-center rounded-lg bg-primary p-6 transition-colors hover:bg-primary-foreground"
+          className="flex h-40 w-full max-w-[200px] flex-col items-center justify-center rounded-lg bg-primary p-4 transition-colors hover:bg-primary-foreground md:h-52 md:w-52 md:p-6"
         >
           <div className="mb-4 text-5xl">
             <SparklesIcon className="h-14 w-14" />

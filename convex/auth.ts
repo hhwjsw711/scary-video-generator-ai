@@ -7,7 +7,7 @@ export const { auth, signIn, signOut, store } = convexAuth({
         return {
           email: googleProfile.email,
           id: googleProfile.sub,
-          image: googleProfile.image,
+          image: googleProfile.picture,
           name: googleProfile.name,
           credits: 1000,
         };

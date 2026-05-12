@@ -7,7 +7,7 @@
 **项目路径**: `E:\Workspace\scary-video-generator-ai`  
 **项目名称**: Wordream  
 **创建时间**: 基于 create-t3-app (v7.37.0)  
-**最后更新**: 2026-05-12 (UI 样式统一化更新)
+**最后更新**: 2026-05-12 (移动端适配完成 + UI 样式统一化)
 
 ## 技术架构
 
@@ -233,6 +233,16 @@ convex/
 - 边框颜色: `border-purple-700`
 - 文字颜色: `text-purple-300`
 - 移除了 Footer 的版权区域上方的分隔线
+- 桌面端导航链接悬停: `transition-colors hover:text-white`
+
+#### 手机端菜单 (MenuButton)
+
+- **文件**: `src/components/header/menu-button.tsx`
+- Hamburger icon: `text-purple-300`
+- 下拉菜单背景: `bg-gray-900`
+- 菜单项文字: `text-purple-300`
+- 悬停/聚焦效果: `hover:bg-purple-700 hover:text-white focus:bg-purple-700 focus:text-white`
+- Icon 颜色继承父元素，无需单独设置
 
 #### User 下拉菜单样式
 
@@ -253,6 +263,30 @@ convex/
 - 图标大小: `h-5 w-5`
 - 标题与描述间距: `mt-3`
 - 网格: `md:grid-cols-3 lg:grid-cols-4`
+
+### 移动端响应式规范
+
+#### 字体响应式
+
+- 页面大标题: `text-2xl md:text-[40px]` (Nosifer 字体)
+- 副标题: `text-2xl md:text-4xl` (Amatic 字体)
+- 正文描述: `text-base md:text-lg`
+
+#### 间距响应式
+
+- 表单容器: `p-4 md:p-8`
+- Textarea 高度: `min-h-[200px] md:min-h-[300px]`
+- 卡片最小高度: `min-h-[200px] md:min-h-[400px]`
+
+#### 组件响应式
+
+- 生成选项卡片: `h-40 w-full max-w-[200px] md:h-52 md:w-52 md:p-6`
+- 网格布局: `grid-cols-1 md:grid-cols-* lg:grid-cols-*`
+
+#### Videos 页面特殊处理
+
+- 桌面端: Channels 信息浮动显示 (`float-right hidden md:block`)
+- 移动端: Channels 信息独立区块显示 (`mt-8 border-t border-purple-700 pt-4 md:hidden`)
 
 ### 颜色规范
 
@@ -485,6 +519,7 @@ npm run build        # 构建生产版本（会进行类型检查）
 - **视频列表**: `src/app/(required-auth)/videos/page.tsx`
 - **主布局**: `src/app/layout.tsx`
 - **Header**: `src/components/header/header.tsx`
+- **手机端菜单**: `src/components/header/menu-button.tsx`
 - **Footer**: `src/components/shared/footer.tsx`
 - **Hero**: `src/app/(required-auth)/_components/hero.tsx`
 - **Hero Canvas**: `src/app/(required-auth)/_components/hero-canvas.tsx`
@@ -496,7 +531,7 @@ npm run build        # 构建生产版本（会进行类型检查）
 1. ❌ 测试框架未配置（无 Jest/Vitest）
 2. ❌ 无 .cursorrules 或 Copilot 指令文件
 3. ❌ 无 CI/CD 配置
-4. ❌ 移动端适配（部分页面可能未优化）
+4. ✅ 移动端适配已完成 (2026-05-12)
 5. ❌ 图片和视频生成进度反馈
 
 ## 下一步建议
@@ -505,5 +540,5 @@ npm run build        # 构建生产版本（会进行类型检查）
 2. 创建 `.cursorrules` 或 `.github/copilot-instructions.md` 用于 AI 辅助编码
 3. 完善错误处理和用户反馈机制
 4. 添加日志记录和监控（Convex 提供日志功能）
-5. 优化移动端体验
+5. ✅ 移动端体验优化已完成 (2026-05-12)
 6. 添加生成进度实时反馈功能

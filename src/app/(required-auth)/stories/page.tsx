@@ -31,7 +31,7 @@ export default function Page({
     <div className="container h-full py-12">
       <h1
         className={cn(
-          "w-full text-center font-nosifer text-[40px] font-bold text-purple-300",
+          "w-full text-center font-nosifer text-2xl font-bold text-purple-300 md:text-[40px]",
         )}
       >
         Your Stories
@@ -59,7 +59,7 @@ export default function Page({
           <Link
             href="/generate"
             className={cn(
-              "flex min-h-[400px] flex-col items-center justify-center gap-4 rounded-xl border-2 border-purple-500 text-purple-500 hover:border-purple-300",
+              "flex min-h-[200px] flex-col items-center justify-center gap-4 rounded-xl border-2 border-purple-500 text-purple-500 hover:border-purple-300 md:min-h-[400px]",
             )}
           >
             <div>

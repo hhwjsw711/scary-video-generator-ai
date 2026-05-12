@@ -60,16 +60,16 @@ export default function RefinePage() {
     <div className="flex flex-col items-center justify-center py-12 text-white">
       <h1
         className={cn(
-          "w-full text-center font-nosifer text-[40px] font-bold text-purple-300",
+          "w-full text-center font-nosifer text-2xl font-bold text-purple-300 md:text-[40px]",
         )}
       >
         Refine story
       </h1>
 
-      <div className="mt-8 w-full max-w-[1000px] rounded-lg border-2 border-purple-500 bg-gray-800 p-8">
+      <div className="mt-8 w-full max-w-[1000px] rounded-lg border-2 border-purple-500 bg-gray-800 p-4 md:p-8">
         <h2
           className={cn(
-            "mb-4 w-full text-center font-amatic text-4xl font-bold text-purple-500",
+            "mb-4 w-full text-center font-amatic text-2xl font-bold text-purple-500 md:text-4xl",
           )}
         >
           {story?.name}
@@ -85,7 +85,7 @@ export default function RefinePage() {
                     <FormControl>
                       <Textarea
                         {...field}
-                        className="min-h-[300px] rounded-none bg-gray-800 text-purple-100"
+                        className="min-h-[200px] rounded-none bg-gray-800 text-purple-100 md:min-h-[300px]"
                         required
                       />
                     </FormControl>
