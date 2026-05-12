@@ -32,7 +32,9 @@ export function Header() {
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 text-xl">
-            <span className="font-nosifer text-2xl text-purple-300">Hivio</span>
+            <span className="font-nosifer text-2xl text-purple-300">
+              Wordream
+            </span>
           </Link>
 
           <div className="flex items-center gap-6">

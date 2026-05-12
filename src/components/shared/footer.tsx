@@ -12,7 +12,9 @@ export const Footer = () => {
       <div className="mx-auto max-w-7xl px-6 pb-0 pt-16">
         <div className="flex flex-col items-center justify-between gap-4 py-6 sm:flex-row">
           <div className="flex items-center gap-2">
-            <span className="font-nosifer text-xl text-purple-300">Hivio</span>
+            <span className="font-nosifer text-xl text-purple-300">
+              Wordream
+            </span>
           </div>
 
           <div className="flex items-center gap-6">
@@ -35,7 +37,7 @@ export const Footer = () => {
 
         <div className="border-t border-purple-700/50 py-4 text-center">
           <p className="font-special text-sm text-purple-400">
-            &copy; {new Date().getFullYear()} Hivio. All rights reserved.
+            &copy; {new Date().getFullYear()} Wordream. All rights reserved.
           </p>
         </div>
       </div>

@@ -1,3 +1,3 @@
-export const applicationName = "APP";
+export const applicationName = "Wordream";
 
 export const afterLoginUrl = "/";

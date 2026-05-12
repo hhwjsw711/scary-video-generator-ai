@@ -1,11 +1,11 @@
-# Architecture - Hivio
+# Architecture - Wordream
 
 ## 项目概述
 
-**Hivio** 是一个基于 T3 Stack 的 AI 视频生成平台，帮助用户通过 AI 生成视频内容。用户可以描述一个想法或粘贴剧本，系统会自动构建场景、角色、镜头和配乐。
+**Wordream** 是一个基于 T3 Stack 的 AI 视频生成平台，帮助用户通过 AI 生成视频内容。用户可以描述一个想法或粘贴剧本，系统会自动构建场景、角色、镜头和配乐。
 
 **项目路径**: `E:\Workspace\scary-video-generator-ai`  
-**项目名称**: Hivio  
+**项目名称**: Wordream  
 **创建时间**: 基于 create-t3-app (v7.37.0)  
 **最后更新**: 2026-05-12 (UI 样式统一化更新)
 
@@ -132,7 +132,7 @@ src/
 │   │   ├── flicker-text.tsx       # 闪烁文字效果
 │   │   └── custom-modal.tsx      # 自定义模态框
 │   ├── header/                   # 头部组件
-│   │   ├── header.tsx            # 主导航栏（Hivio 品牌）
+│   │   ├── header.tsx            # 主导航栏（Wordream 品牌）
 │   │   └── menu-button.tsx
 │   └── providers/                # Context Providers
 │       ├── convex-client-provider.tsx
@@ -267,12 +267,12 @@ convex/
 
 ### 字体规范
 
-| 字体          | 类名           | 字号      | 用途             | 示例         |
-| ------------- | -------------- | --------- | ---------------- | ------------ |
-| Amatic SC     | `font-amatic`  | 24px-80px | 大标题           | `Hivio` Logo |
-| Special Elite | `font-special` | sm-xl     | 正文、按钮、卡片 | 功能描述     |
-| Jolly Lodger  | `font-jolly`   | lg-4xl    | Hero 描述        | 副标题       |
-| Nosifer       | `font-nosifer` | 50px      | 页面大标题       | 区块标题     |
+| 字体          | 类名           | 字号      | 用途             | 示例            |
+| ------------- | -------------- | --------- | ---------------- | --------------- |
+| Amatic SC     | `font-amatic`  | 24px-80px | 大标题           | `Wordream` Logo |
+| Special Elite | `font-special` | sm-xl     | 正文、按钮、卡片 | 功能描述        |
+| Jolly Lodger  | `font-jolly`   | lg-4xl    | Hero 描述        | 副标题          |
+| Nosifer       | `font-nosifer` | 50px      | 页面大标题       | 区块标题        |
 
 ### 组件样式
 
@@ -311,7 +311,7 @@ convex/
 
 ```tsx
 <Link href="/">
-  <span className="font-nosifer text-2xl text-purple-300">Hivio</span>
+  <span className="font-nosifer text-2xl text-purple-300">Wordream</span>
 </Link>
 
 <Link className="font-amatic !text-[24px] !font-bold text-purple-300">
@@ -323,11 +323,11 @@ convex/
 
 ```tsx
 <footer className="border-t border-purple-700 text-purple-200">
-  <span className="font-nosifer text-xl text-purple-300">Hivio</span>
+  <span className="font-nosifer text-xl text-purple-300">Wordream</span>
   <span className="font-special text-sm text-purple-300">Docs</span>
   <span className="font-special text-sm text-purple-300">Terms</span>
   <span className="font-special text-sm text-purple-300">Privacy</span>
-  <p className="font-special text-sm text-purple-400">&copy; 2026 Hivio</p>
+  <p className="font-special text-sm text-purple-400">&copy; 2026 Wordream</p>
 </footer>
 ```
 
@@ -464,7 +464,7 @@ npm run build        # 构建生产版本（会进行类型检查）
 
 ### 品牌信息
 
-- **品牌名**: Hivio (不区分大小写，推荐使用 Hivio)
+- **品牌名**: Wordream (不区分大小写，推荐使用 Wordream)
 - **品牌颜色**: 紫色主题 (purple-300 到 purple-700)
 - **字体**: Nosifer 用于品牌名和页面大标题
 

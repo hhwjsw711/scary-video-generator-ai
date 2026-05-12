@@ -47,7 +47,7 @@ export const nosifer = Nosifer({
 });
 
 export const metadata: Metadata = {
-  title: "Hivio - AI Video Platform",
+  title: "Wordream - AI Video Platform",
   icons: [
     { rel: "icon", type: "image/svg+xml", sizes: "48x48", url: "/favicon.svg" },
   ],
