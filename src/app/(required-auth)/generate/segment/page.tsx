@@ -16,15 +16,15 @@ const Page = () => {
     <div className="flex flex-col items-center justify-center py-32">
       <h1
         className={cn(
-          "font-nosifer mb-4 text-center text-4xl font-[700] text-purple-300",
+          "mb-4 text-center font-nosifer text-4xl font-[700] text-purple-300",
         )}
       >
-        Create Your Story
+        Create Your Video
       </h1>
-      <p className={cn("font-special mb-8 text-center text-lg text-gray-300")}>
-        Choose your video orientation
+      <p className={cn("mb-8 text-center font-special text-lg text-gray-300")}>
+        Choose your video orientation and start creating.
       </p>
-      <div className="font-special mx-auto gap-8 md:grid md:grid-cols-2">
+      <div className="mx-auto gap-8 font-special md:grid md:grid-cols-2">
         <Button
           onClick={() => {
             setVideoFormat("9:16");

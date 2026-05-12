@@ -47,17 +47,19 @@ export const nosifer = Nosifer({
 });
 
 export const metadata: Metadata = {
-  title: "Scary video generator AI",
+  title: "Hivio - AI Video Platform",
   icons: [
-    { rel: "icon", type: "image/png", sizes: "48x48", url: "/favicon.ico" },
+    { rel: "icon", type: "image/svg+xml", sizes: "48x48", url: "/favicon.svg" },
   ],
   keywords: [
-    "Scary story generator",
-    "Scary story generator",
-    "Scary video ai",
+    "AI video generator",
+    "video production",
+    "AI film maker",
+    "script to video",
+    "AI movie",
   ],
   description:
-    "Experience the power of AI-generated scary stories with captivating visuals, haunting voiceovers, and engaging captions - perfect for YouTube, TikTok, and beyond!",
+    "Describe an idea or paste a script, and it builds scenes, casts characters, generates shots, and scores music — all from one interface. Multi-scene, fully exportable.",
 };
 
 export default async function RootLayout({

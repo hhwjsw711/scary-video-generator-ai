@@ -69,12 +69,13 @@ const Page = () => {
             "mb-4 text-center font-nosifer text-4xl font-[700] text-purple-300",
           )}
         >
-          Create Your Story
+          Create from Script
         </h1>
         <p
           className={cn("mb-8 text-center font-special text-lg text-gray-300")}
         >
-          Transform your ideas into captivating visual narratives
+          Paste your script or describe your idea — AI generates scenes,
+          visuals, and music.
         </p>
 
         <div

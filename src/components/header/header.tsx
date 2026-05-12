@@ -17,7 +17,6 @@ import {
   LogOut,
   VideoIcon,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { api } from "~/convex/_generated/api";
@@ -33,9 +32,7 @@ export function Header() {
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 text-xl">
-            <div className="">
-              <Image width={50} height={50} alt="skull-icon" src="/skull.png" />
-            </div>
+            <span className="font-nosifer text-2xl text-purple-300">Hivio</span>
           </Link>
 
           <div className="flex items-center gap-6">
@@ -44,7 +41,7 @@ export function Header() {
                 <Link
                   href={"/generate"}
                   className={cn(
-                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold md:flex",
+                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 md:flex",
                   )}
                 >
                   <VideoIcon className="h-6 w-6" /> Generate
@@ -52,7 +49,7 @@ export function Header() {
 
                 <Link
                   className={cn(
-                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold md:flex",
+                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 md:flex",
                   )}
                   href={"/stories"}
                 >
@@ -61,7 +58,7 @@ export function Header() {
 
                 <Link
                   className={cn(
-                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold md:flex",
+                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 md:flex",
                   )}
                   href={"/videos"}
                 >
@@ -79,10 +76,10 @@ export function Header() {
             unauthenticated={
               <>
                 <button
-                  className="flex items-center justify-between rounded-md border border-black px-4 py-2"
+                  className="flex items-center rounded-md bg-primary px-4 py-2 text-white transition-colors hover:bg-primary/90"
                   onClick={() => signIn("google")}
                 >
-                  <GoogleIcon className="mr-2 h-5 w-5 stroke-white" />
+                  <GoogleIcon className="mr-2 h-5 w-5" />
                   Sign In
                 </button>
               </>
@@ -160,6 +157,7 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
       {...props}
       role="img"
       viewBox="0 0 24 24"
+      fill="white"
       xmlns="http://www.w3.org/2000/svg"
     >
       <title>Google</title>

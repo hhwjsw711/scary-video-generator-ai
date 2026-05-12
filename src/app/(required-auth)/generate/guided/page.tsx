@@ -53,10 +53,10 @@ const GuidedStoryCreation = () => {
       <h1
         className={cn("mb-4 font-nosifer text-4xl font-bold text-purple-300")}
       >
-        Guided Story Creation
+        Guided Video Creation
       </h1>
       <p className={cn("mb-8 font-special text-lg text-gray-300")}>
-        Let AI guide you through creating your story
+        Let AI guide you through creating your video step by step.
       </p>
 
       <div

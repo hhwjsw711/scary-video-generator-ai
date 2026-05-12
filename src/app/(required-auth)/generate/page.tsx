@@ -11,10 +11,11 @@ const CreateYourStory = () => {
           "mb-4 text-center font-nosifer text-4xl font-[700] text-purple-300",
         )}
       >
-        Create Your Story
+        Create Your Video
       </h1>
       <p className={cn("mb-8 text-center font-special text-lg text-gray-300")}>
-        Transform your ideas into captivating visual narratives
+        Describe an idea or paste a script — we build scenes, characters, shots,
+        and music.
       </p>
 
       <div
