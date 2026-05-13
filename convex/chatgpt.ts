@@ -369,7 +369,17 @@ export const refineStory = internalAction({
     try {
       const systemPromt: ChatCompletionMessageParam = {
         role: "system",
-        content: `You are an horror teller AI's. Your task is  suport user  fix the story follow the user instuction's. `,
+        content: `You are a professional screenplay editor. Your task is to modify an existing screenplay based on user instructions.
+
+The user's request includes:
+- The current screenplay content
+- The modification instructions
+
+Requirements:
+1. Keep the same screenplay format (scene headings, action descriptions, character dialogue, camera directions)
+2. Maintain consistency with unmentioned parts of the story
+3. Only output the modified screenplay - no JSON, no markdown, no explanations
+4. Output language must match the original story language`,
       };
       const completion = await openai.beta.chat.completions.parse({
         model: "gpt-4o-2024-08-06",
