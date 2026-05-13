@@ -10,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
@@ -17,11 +18,128 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "convex/react";
 import { ConvexError } from "convex/values";
-import { Loader2Icon } from "lucide-react";
+import {
+  Loader2Icon,
+  Sparkles,
+  Ghost,
+  Skull,
+  Eye,
+  Film,
+  Castle,
+  Briefcase,
+  Award,
+  Rocket,
+  Palette,
+  Monitor,
+  Mountain,
+  Camera,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { z } from "zod";
 import { api } from "~/convex/_generated/api";
+
+const DURATION_PRESETS = [
+  { value: 15, label: "15s" },
+  { value: 30, label: "30s" },
+  { value: 60, label: "1m" },
+  { value: 120, label: "2m" },
+  { value: 180, label: "3m" },
+] as const;
+
+const STYLE_PRESETS = [
+  {
+    id: "product-ad",
+    label: "Product Ad",
+    icon: Sparkles,
+    description: "Fresh, tactile product content",
+  },
+  {
+    id: "real-estate",
+    label: "Real Estate",
+    icon: Castle,
+    description: "Luxury property cinematography",
+  },
+  {
+    id: "animatic",
+    label: "Animatic",
+    icon: Film,
+    description: "Storyboard pre-visualization",
+  },
+  {
+    id: "corporate",
+    label: "Corporate",
+    icon: Briefcase,
+    description: "Clean professional visuals",
+  },
+  {
+    id: "award-season",
+    label: "Award Season",
+    icon: Award,
+    description: "Deep emotional storytelling",
+  },
+  {
+    id: "documentary",
+    label: "Documentary",
+    icon: Camera,
+    description: "Natural observational style",
+  },
+  {
+    id: "action",
+    label: "Action",
+    icon: Rocket,
+    description: "High-energy dynamic visuals",
+  },
+  {
+    id: "rom-com",
+    label: "Rom-Com",
+    icon: Eye,
+    description: "Warm bright cheerful style",
+  },
+  {
+    id: "animated",
+    label: "Animated",
+    icon: Palette,
+    description: "Premium stylized animation",
+  },
+  {
+    id: "neo-noir",
+    label: "Neo-Noir",
+    icon: Ghost,
+    description: "Dark stylized thriller",
+  },
+  {
+    id: "pastel",
+    label: "Pastel",
+    icon: Sparkles,
+    description: "Whimsical symmetrical pastels",
+  },
+  {
+    id: "sci-fi",
+    label: "Sci-Fi Futuristic",
+    icon: Monitor,
+    description: "High-tech sleek designs",
+  },
+  {
+    id: "horror-gothic",
+    label: "Horror Gothic",
+    icon: Skull,
+    description: "Dark atmospheric horror",
+  },
+  {
+    id: "western",
+    label: "Western Epic",
+    icon: Mountain,
+    description: "Wide vistas golden hour",
+  },
+  {
+    id: "lo-fi-retro",
+    label: "Lo-Fi Retro",
+    icon: Camera,
+    description: "Vintage smartphone aesthetic",
+  },
+] as const;
 
 const schema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -33,11 +151,15 @@ const schema = z.object({
 
 const GuidedStoryCreation = () => {
   const router = useRouter();
+  const [targetDuration, setTargetDuration] = useState(30);
+  const [selectedStyleId, setSelectedStyleId] =
+    useState<string>("horror-gothic");
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
       title: "",
       description: "",
+      targetDuration: 30,
     },
   });
   const mutateCreate = useMutation(api.stories.createStory);
@@ -50,6 +172,8 @@ const GuidedStoryCreation = () => {
         name: data.title,
         prompt: data.description,
         story: "",
+        targetDuration: targetDuration,
+        styleId: selectedStyleId,
       });
       router.push(`/stories/${storyId}/refine`);
     } catch (error) {
@@ -129,6 +253,90 @@ const GuidedStoryCreation = () => {
                 )}
               />
 
+              <div className="space-y-2">
+                <Label className="text-purple-400">Target Video Duration</Label>
+                <p className="text-sm text-gray-400">
+                  Choose the target length for your video. This determines how
+                  detailed the AI-generated story will be.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {DURATION_PRESETS.map((preset) => (
+                    <Button
+                      key={preset.value}
+                      type="button"
+                      onClick={() => setTargetDuration(preset.value)}
+                      className={cn(
+                        "min-w-[80px] flex-1 transition-all",
+                        targetDuration === preset.value
+                          ? "bg-primary text-white"
+                          : "bg-gray-700 text-gray-300 hover:bg-gray-600",
+                      )}
+                    >
+                      {preset.label}
+                    </Button>
+                  ))}
+                </div>
+                <p className="text-xs text-purple-400">
+                  {targetDuration < 60
+                    ? `${targetDuration} seconds (${Math.round((targetDuration / 30) * 4)}-${Math.round((targetDuration / 30) * 6)} scenes)`
+                    : targetDuration < 120
+                      ? `1 minute (${Math.round((targetDuration / 60) * 8)}-${Math.round((targetDuration / 60) * 12)} scenes)`
+                      : targetDuration < 180
+                        ? `2 minutes (${Math.round((targetDuration / 60) * 15)}-${Math.round((targetDuration / 60) * 20)} scenes)`
+                        : `3 minutes (${Math.round((targetDuration / 60) * 20)}-${Math.round((targetDuration / 60) * 30)} scenes)`}
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-purple-400">Visual Style</Label>
+                <p className="text-sm text-gray-400">
+                  Choose the visual style for your horror video. Each style
+                  includes unique mood, lighting, and camera direction.
+                </p>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {STYLE_PRESETS.map((style) => {
+                    const Icon = style.icon;
+                    return (
+                      <button
+                        key={style.id}
+                        type="button"
+                        onClick={() => setSelectedStyleId(style.id)}
+                        className={cn(
+                          "flex flex-col items-start gap-1 rounded-lg border-2 p-3 transition-all hover:border-purple-400",
+                          selectedStyleId === style.id
+                            ? "border-primary bg-primary/20"
+                            : "border-gray-700 bg-gray-800 hover:bg-gray-700",
+                        )}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Icon
+                            className={cn(
+                              "h-4 w-4",
+                              selectedStyleId === style.id
+                                ? "text-purple-300"
+                                : "text-gray-400",
+                            )}
+                          />
+                          <span
+                            className={cn(
+                              "font-special text-sm font-medium",
+                              selectedStyleId === style.id
+                                ? "text-purple-300"
+                                : "text-gray-300",
+                            )}
+                          >
+                            {style.label}
+                          </span>
+                        </div>
+                        <span className="text-xs text-gray-500">
+                          {style.description}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               <Button
                 type="submit"
                 className="w-full"
@@ -137,7 +345,7 @@ const GuidedStoryCreation = () => {
                 {form.formState.isSubmitting ? (
                   <Loader2Icon className="h-4 w-4 animate-spin" />
                 ) : (
-                  <span>Generate guided Story (1 credit)</span>
+                  <span>Generate Script (1 credit)</span>
                 )}
               </Button>
             </form>

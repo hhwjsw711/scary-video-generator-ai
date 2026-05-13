@@ -189,20 +189,61 @@ convex/
 ### 1. 视频生成流程
 
 ```
-用户输入 → AI 生成视频项目 → 生成图片 → 生成语音 → 合成视频 → 上传 YouTube
+用户输入 → AI 生成脚本 → 生成图片 → 生成语音 → 合成视频 → 上传 YouTube
 ```
 
 - **入口**: `/generate/script`, `/generate/guided`, `/generate/segment`
 - **核心文件**: `convex/stories.ts`, `convex/chatgpt.ts`
 - **组件**: `src/components/stories/`
 
-### 2. 项目优化 (Refine)
+### 2. Guided 生成 (引导式脚本生成)
+
+- **路径**: `/generate/guided`
+- **功能**: 用户输入故事想法，选择目标时长和视觉风格，AI 生成专业剧本格式
+- **参数**:
+  - `targetDuration`: 目标时长 (15s/30s/1m/2m/3m)
+  - `styleId`: 视觉风格 (15种预设)
+- **输出格式**: 专业剧本格式 (场景标题、动作描述、角色对话、镜头指示)
+- **后端**: `convex/chatgpt.ts` - `generateStory` action
+- **UI 组件**: `src/app/(required-auth)/generate/guided/page.tsx`
+
+#### 15 种视觉风格预设
+
+| ID            | 名称              | 描述                           |
+| ------------- | ----------------- | ------------------------------ |
+| product-ad    | Product Ad        | Fresh, tactile product content |
+| real-estate   | Real Estate       | Luxury property cinematography |
+| animatic      | Animatic          | Storyboard pre-visualization   |
+| corporate     | Corporate         | Clean professional visuals     |
+| award-season  | Award Season      | Deep emotional storytelling    |
+| documentary   | Documentary       | Natural observational style    |
+| action        | Action            | High-energy dynamic visuals    |
+| rom-com       | Rom-Com           | Warm bright cheerful style     |
+| animated      | Animated          | Premium stylized animation     |
+| neo-noir      | Neo-Noir          | Dark stylized thriller         |
+| pastel        | Pastel            | Whimsical symmetrical pastels  |
+| sci-fi        | Sci-Fi Futuristic | High-tech sleek designs        |
+| horror-gothic | Horror Gothic     | Dark atmospheric horror        |
+| western       | Western Epic      | Wide vistas golden hour        |
+| lo-fi-retro   | Lo-Fi Retro       | Vintage smartphone aesthetic   |
+
+#### 时长与场景数映射
+
+| 时长 | 场景数       | 描述字数 |
+| ---- | ------------ | -------- |
+| 15s  | 2-4 scenes   | ~400 字  |
+| 30s  | 4-6 scenes   | ~800 字  |
+| 1m   | 8-12 scenes  | ~1500 字 |
+| 2m   | 15-20 scenes | ~2500 字 |
+| 3m   | 20-30 scenes | ~3500 字 |
+
+### 3. 项目优化 (Refine)
 
 - **路径**: `/stories/[storyId]/refine`
 - **功能**: 修改项目内容、生成图片提示词、调整格式（16:9 或 9:16）
 - **核心**: `convex/storySegments.ts`
 
-### 3. 视频生成
+### 4. 视频生成
 
 - **流程**: 项目 → 生成语音 → 生成图片 → 合成视频 → 上传 YouTube
 - **服务**:
@@ -211,13 +252,13 @@ convex/
   - 视频: `convex/videos.ts` (使用 Replicate)
   - 上传: `convex/youtube.ts`
 
-### 4. YouTube 集成
+### 5. YouTube 集成
 
 - **功能**: 连接 YouTube 账号、上传视频、管理频道
 - **组件**: `src/components/videos/connect-youtube-button.tsx`
 - **后端**: `convex/youtube.ts`, `convex/channels.ts`
 
-### 5. 积分系统
+### 6. 积分系统
 
 - **文件**: `convex/credits.ts`, `src/lib/calculate-credits.ts`
 - **用途**: 控制用户使用 AI 生成功能的次数
@@ -515,7 +556,9 @@ npm run build        # 构建生产版本（会进行类型检查）
 
 - **首页**: `src/app/(required-auth)/page.tsx`
 - **项目列表**: `src/app/(required-auth)/stories/page.tsx`
-- **项目生成**: `src/app/(required-auth)/generate/script/page.tsx`
+- **脚本生成**: `src/app/(required-auth)/generate/script/page.tsx`
+- **引导生成 (Guided)**: `src/app/(required-auth)/generate/guided/page.tsx`
+- **片段生成**: `src/app/(required-auth)/generate/segment/page.tsx`
 - **视频列表**: `src/app/(required-auth)/videos/page.tsx`
 - **主布局**: `src/app/layout.tsx`
 - **Header**: `src/components/header/header.tsx`
@@ -537,8 +580,28 @@ npm run build        # 构建生产版本（会进行类型检查）
 ## 下一步建议
 
 1. 配置 Vitest + Testing Library 进行测试
-2. 创建 `.cursorrules` 或 `.github/copilot-instructions.md` 用于 AI 辅助编码
+2. 创建 `.cursorrules` 或 `.github/copilot_instructions.md` 用于 AI 辅助编码
 3. 完善错误处理和用户反馈机制
 4. 添加日志记录和监控（Convex 提供日志功能）
 5. ✅ 移动端体验优化已完成 (2026-05-12)
 6. 添加生成进度实时反馈功能
+
+## 2026-05-13 Guided 生成功能增强
+
+### 新增功能
+
+1. **时长选择**: 用户可选择目标视频时长 (15s/30s/1m/2m/3m)
+2. **风格选择**: 15 种视觉风格预设
+3. **剧本格式输出**: AI 输出专业剧本格式 (场景标题、动作描述、角色对话、镜头指示)
+
+### 数据库变更
+
+- `stories` 表新增 `styleId` 可选字段 (存储用户选择的视觉风格)
+- `createStory` mutation 新增 `targetDuration` 和 `styleId` 参数
+
+### 修改的文件
+
+- `convex/schema.ts`: 新增 styleId 字段
+- `convex/stories.ts`: createStory 支持新参数
+- `convex/chatgpt.ts`: generateStory 使用新的剧本格式 prompt
+- `src/app/(required-auth)/generate/guided/page.tsx`: 添加时长和风格选择 UI

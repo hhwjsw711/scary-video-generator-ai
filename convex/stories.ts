@@ -142,6 +142,8 @@ export const createStory = mutation({
     ),
     prompt: v.optional(v.string()),
     format: v.optional(v.union(v.literal("16:9"), v.literal("9:16"))),
+    targetDuration: v.optional(v.number()),
+    styleId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
@@ -154,6 +156,7 @@ export const createStory = mutation({
       name: args.name,
       content: args.story,
       createType: args.createType,
+      styleId: args.styleId,
       AIGenerateInfo:
         args.createType === "by-ai"
           ? {
@@ -201,6 +204,8 @@ export const createStory = mutation({
         prompt: args.prompt!,
         name: args.name,
         storyId,
+        targetDuration: args.targetDuration || 30,
+        styleId: args.styleId,
       });
     }
     return storyId;

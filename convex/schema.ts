@@ -23,6 +23,7 @@ const schema = defineSchema({
       v.literal("by-segments"),
       v.literal("by-ai"),
     ),
+    styleId: v.optional(v.string()),
     AIGenerateInfo: v.optional(
       v.object({
         prompt: v.string(),
