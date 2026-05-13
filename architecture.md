@@ -725,3 +725,59 @@ npm run build        # 构建生产版本（会进行类型检查）
 2. 每个 talent 可添加多个 Reference Media（图片/视频）作为参考
 3. 每个 talent 可添加多个 Talent Sheet，用于 AI 生成时的形象参考
 4. 支持设置默认形象、收藏、删除等操作
+
+### 人才库功能优化 (2026-05-13)
+
+#### 1. 列表页布局优化
+
+- **工具栏**: 非空状态时，过滤按钮 (`All Talent` / `Favorites`) 与 `Add Talent` 按钮放在同一行工具栏，过滤按钮在左，AddTalent 在右
+- **空状态**: 只展示空状态居中提示 + 一个 `AddTalentDialog`，不显示工具栏
+- **加载状态**: 显示 "Loading talents..."
+
+#### 2. 人才卡片展示优化
+
+**图片优先级** (从上到下):
+
+1. 第一张 Reference Media（按创建时间升序）
+2. default Talent Sheet 的图片
+3. talent 头像 (imageUrl)
+
+**底部统计信息**:
+
+- `X sheets` (purple-300 高亮) — Talent Sheets 数量
+- `X images` — 参考图片数量
+- `X videos` — 参考视频数量
+- `No reference` — 三者均为空时显示
+
+**视频展示**：
+
+- 卡片上：如果第一张 media 是视频，渲染 `<video>`（首帧缩略图）+ 居中播放图标覆盖层
+- 详情页：`VideoThumbnail` 组件，默认显示首帧 + 播放图标，悬停时图标淡出并静音播放，离开暂停
+- 视频加载失败时显示纯播放图标 fallback
+
+#### 3. 上传流程优化
+
+**流程变更**:
+
+- **之前**: 选择文件 → 立即自动上传
+- **现在**: 选择文件 → 显示预览 → 点击 `Upload X files` 按钮 → 上传
+
+**按钮进度反馈**:
+
+- 单文件: `Upload 1 file` → `Uploading...`
+- 多文件: `Upload 5 files` → `Uploading 2/5...`
+
+**对话框关闭保护**:
+
+- 上传中点击外部/按 Escape → 阻止关闭（`onInteractOutside` + `handleClose` 双重拦截）
+- 上传完成 → 自动关闭对话框
+- 已移除有歧义的 `Done` 按钮
+
+#### 修改的文件
+
+| 文件                                                 | 修改内容                                          |
+| ---------------------------------------------------- | ------------------------------------------------- |
+| `src/app/(required-auth)/talent/page.tsx`            | 工具栏布局、卡片展示优化、视频/图片区分渲染       |
+| `src/app/(required-auth)/talent/[talentId]/page.tsx` | 新增 `VideoThumbnail` 组件（悬停播放 + 错误回退） |
+| `src/components/talent/talent-media-upload.tsx`      | 确认后上传、进度显示、`onUploadingChange` 回调    |
+| `src/components/talent/add-talent-media-dialog.tsx`  | 上传中关闭保护、移除 Done 按钮                    |
