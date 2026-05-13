@@ -722,17 +722,32 @@ npm run build        # 构建生产版本（会进行类型检查）
 ### 使用说明
 
 1. 用户可在 `/talent` 页面创建人才，标记为 Human 或 AI
-2. 每个 talent 可添加多个 Reference Media（图片/视频）作为参考
-3. 每个 talent 可添加多个 Talent Sheet，用于 AI 生成时的形象参考
-4. 支持设置默认形象、收藏、删除等操作
+2. 工具栏始终可见：左侧过滤按钮 `[All Talent] [Favorites]`，右侧 `[Add Talent]`
+3. 每个 talent 可添加多个 Reference Media（图片/视频）作为参考
+4. 每个 talent 可添加多个 Talent Sheet，用于 AI 生成时的形象参考
+5. 支持设置默认形象、收藏、删除等操作
 
-### 人才库功能优化 (2026-05-13)
+### 人才库 UI 优化 (2026-05-13)
 
 #### 1. 列表页布局优化
 
-- **工具栏**: 非空状态时，过滤按钮 (`All Talent` / `Favorites`) 与 `Add Talent` 按钮放在同一行工具栏，过滤按钮在左，AddTalent 在右
-- **空状态**: 只展示空状态居中提示 + 一个 `AddTalentDialog`，不显示工具栏
-- **加载状态**: 显示 "Loading talents..."
+**页面结构** (所有状态一致):
+
+```
+Talent Library (标题)
+描述文字
+[All Talent] [Favorites]          [Add Talent]  ← 工具栏始终显示
+───────────────────────────────────────────────
+Loading / 空状态 / 网格内容                     ← 仅这里变化
+```
+
+- **工具栏始终显示**: 过滤按钮 (`All Talent` / `Favorites`) 与 `Add Talent` 按钮放在同一行，过滤按钮在左，AddTalent 在右
+- **描述文字始终显示**
+- **Loading**: `talents === undefined` 时显示 "Loading talents..."
+- **空状态** (区分两种场景):
+  - `filter=all` + 无 talent → "You don't have any talent yet."
+  - `filter=favorites` + 无收藏 → "No favorites yet."
+  - 空状态不包含按钮（AddTalent 已固定在工具栏，切换筛选通过 "All Talent" 过滤按钮即可）
 
 #### 2. 人才卡片展示优化
 

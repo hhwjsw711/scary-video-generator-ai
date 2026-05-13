@@ -56,60 +56,61 @@ export default function Page() {
         Talent Library
       </h1>
 
-      {talents && talents.length > 0 ? (
-        <>
-          <p className={cn("py-4 text-center font-special text-lg")}>
-            Manage your team&apos;s talent for consistent AI-generated content.
-          </p>
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant={filter === "all" ? "default" : "outline"}
-                size="sm"
-                className="gap-2 border-purple-500 text-purple-300 hover:bg-purple-700 hover:text-white"
-                onClick={() => router.push("/talent?filter=all")}
-              >
-                <User className="h-4 w-4" />
-                All Talent
-              </Button>
-              <Button
-                variant={filter === "favorites" ? "default" : "outline"}
-                size="sm"
-                className="gap-2 border-purple-500 text-purple-300 hover:bg-purple-700 hover:text-white"
-                onClick={() => router.push("/talent?filter=favorites")}
-              >
-                <Star className="h-4 w-4" />
-                Favorites
-              </Button>
-            </div>
-            <AddTalentDialog />
-          </div>
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:grid-cols-4">
-            {talents?.map((talent) => (
-              <TalentCard
-                key={talent._id}
-                talent={talent}
-                onToggleFavorite={() => toggleFavorite({ id: talent._id })}
-                onDelete={() => deleteTalent({ id: talent._id })}
-                onClick={() => router.push(`/talent/${talent._id}`)}
-              />
-            ))}
-            <div className="flex min-h-[200px] items-center justify-center rounded-xl border-2 border-purple-500 md:min-h-[300px]">
-              <AddTalentDialog />
-            </div>
-          </div>
-        </>
-      ) : talents && talents.length === 0 ? (
-        <div className="flex h-full flex-col items-center justify-center gap-4 py-12">
-          <p className={cn("font-amatic text-[40px] font-bold")}>
-            You don&apos;t have any talent yet.
-          </p>
-          <AddTalentDialog />
+      <p className={cn("py-4 text-center font-special text-lg")}>
+        Manage your team&apos;s talent for consistent AI-generated content.
+      </p>
+
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant={filter === "all" ? "default" : "outline"}
+            size="sm"
+            className="gap-2 border-purple-500 text-purple-300 hover:bg-purple-700 hover:text-white"
+            onClick={() => router.push("/talent?filter=all")}
+          >
+            <User className="h-4 w-4" />
+            All Talent
+          </Button>
+          <Button
+            variant={filter === "favorites" ? "default" : "outline"}
+            size="sm"
+            className="gap-2 border-purple-500 text-purple-300 hover:bg-purple-700 hover:text-white"
+            onClick={() => router.push("/talent?filter=favorites")}
+          >
+            <Star className="h-4 w-4" />
+            Favorites
+          </Button>
         </div>
-      ) : (
+        <AddTalentDialog />
+      </div>
+
+      {talents === undefined ? (
         <div className="flex h-full items-center justify-center">
           <div className={cn("font-amatic text-[40px] font-bold")}>
             Loading talents ...
+          </div>
+        </div>
+      ) : talents.length === 0 ? (
+        <div className="flex h-full flex-col items-center justify-center gap-4 py-12">
+          <p className={cn("font-amatic text-[40px] font-bold")}>
+            {filter === "favorites"
+              ? "No favorites yet."
+              : "You don&apos;t have any talent yet."}
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:grid-cols-4">
+          {talents.map((talent) => (
+            <TalentCard
+              key={talent._id}
+              talent={talent}
+              onToggleFavorite={() => toggleFavorite({ id: talent._id })}
+              onDelete={() => deleteTalent({ id: talent._id })}
+              onClick={() => router.push(`/talent/${talent._id}`)}
+            />
+          ))}
+          <div className="flex min-h-[200px] items-center justify-center rounded-xl border-2 border-purple-500 md:min-h-[300px]">
+            <AddTalentDialog />
           </div>
         </div>
       )}
