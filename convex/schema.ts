@@ -175,6 +175,38 @@ const schema = defineSchema({
     channelId: v.string(),
     channelTitle: v.string(),
   }).index("userId", ["userId"]),
+
+  talents: defineTable({
+    userId: v.id("users"),
+    name: v.string(),
+    description: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    isFavorite: v.optional(v.boolean()),
+    isHuman: v.optional(v.boolean()),
+    isPublic: v.optional(v.boolean()),
+  }).index("userId", ["userId"]),
+
+  talentSheets: defineTable({
+    talentId: v.id("talents"),
+    name: v.string(),
+    imageUrl: v.optional(v.string()),
+    imagePublicId: v.optional(v.string()),
+    isDefault: v.optional(v.boolean()),
+    source: v.optional(
+      v.union(v.literal("manual_upload"), v.literal("ai_generated")),
+    ),
+  }).index("talentId", ["talentId"]),
+
+  talentMedia: defineTable({
+    talentId: v.id("talents"),
+    type: v.union(
+      v.literal("image"),
+      v.literal("video"),
+      v.literal("recording"),
+    ),
+    url: v.string(),
+    publicId: v.optional(v.string()),
+  }).index("talentId", ["talentId"]),
 });
 
 export default schema;

@@ -33,6 +33,18 @@ const config = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "*.convex.cloud",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.convex.site",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };

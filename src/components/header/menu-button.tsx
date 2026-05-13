@@ -6,7 +6,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { BookOpenText, FilmIcon, MenuIcon, VideoIcon } from "lucide-react";
+import {
+  BookOpenText,
+  FilmIcon,
+  MenuIcon,
+  UserIcon,
+  VideoIcon,
+} from "lucide-react";
 import Link from "next/link";
 
 export function MenuButton() {
@@ -38,6 +44,14 @@ export function MenuButton() {
             className="flex cursor-pointer items-center gap-2 text-purple-300 hover:bg-purple-700 hover:text-white focus:bg-purple-700 focus:text-white"
           >
             <FilmIcon className="h-4 w-4" /> My videos
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link
+            href="/talent"
+            className="flex cursor-pointer items-center gap-2 text-purple-300 hover:bg-purple-700 hover:text-white focus:bg-purple-700 focus:text-white"
+          >
+            <UserIcon className="h-4 w-4" /> Talent
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

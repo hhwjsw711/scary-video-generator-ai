@@ -7,7 +7,7 @@
 **项目路径**: `E:\Workspace\scary-video-generator-ai`  
 **项目名称**: Wordream  
 **创建时间**: 基于 create-t3-app (v7.37.0)  
-**最后更新**: 2026-05-12 (移动端适配完成 + UI 样式统一化)
+**最后更新**: 2026-05-13 (人才库功能完成)
 
 ## 技术架构
 
@@ -113,8 +113,9 @@ src/
 │   │   ├── card.tsx              # 卡片
 │   │   ├── dialog.tsx            # 对话框
 │   │   ├── input.tsx             # 输入框
-│   │   ├── select.tsx            # 下拉选择
-│   │   ├── toast.tsx             # 提示消息
+│   │   ├── select.tsx             # 下拉选择
+│   │   ├── toast.tsx              # 提示消息
+│   │   ├── file-upload.tsx        # 文件上传组件（支持拖拽/粘贴）
 │   │   └── ...                  # 其他 20+ 组件
 │   ├── stories/                  # 项目相关组件
 │   │   ├── story-item.tsx        # 项目项展示
@@ -126,6 +127,10 @@ src/
 │   │   ├── video-item.tsx        # 视频项
 │   │   ├── upload-youtube-form.tsx
 │   │   └── connect-youtube-button.tsx
+│   ├── talent/                   # 人才库相关组件
+│   │   ├── add-talent-media-dialog.tsx
+│   │   ├── add-talent-sheet-dialog.tsx
+│   │   └── talent-media-upload.tsx
 │   ├── shared/                   # 共享组件
 │   │   ├── loader.tsx            # 加载器
 │   │   ├── footer.tsx            # 页脚（紫色主题）
@@ -181,7 +186,8 @@ convex/
 ├── http.ts               # HTTP 端点
 ├── users.ts              # 用户管理
 ├── logs.ts               # 日志记录
-└── storage.ts            # 存储配置
+├── storage.ts            # 存储配置（上传功能）
+└── talent.ts             # 人才库功能
 ```
 
 ## 核心功能模块
@@ -441,6 +447,9 @@ await deleteStory({ id: storyId });
 - `videos`: 视频元数据、状态
 - `videoSegments`: 视频片段、语音状态
 - `channels`: YouTube 频道
+- `talents`: 人才库（虚拟角色）
+- `talentSheets`: 人才形象表
+- `talentMedia`: 人才参考素材
 
 ## 第三方服务集成
 
@@ -560,6 +569,8 @@ npm run build        # 构建生产版本（会进行类型检查）
 - **引导生成 (Guided)**: `src/app/(required-auth)/generate/guided/page.tsx`
 - **片段生成**: `src/app/(required-auth)/generate/segment/page.tsx`
 - **视频列表**: `src/app/(required-auth)/videos/page.tsx`
+- **人才库列表**: `src/app/(required-auth)/talent/page.tsx`
+- **人才详情**: `src/app/(required-auth)/talent/[talentId]/page.tsx`
 - **主布局**: `src/app/layout.tsx`
 - **Header**: `src/components/header/header.tsx`
 - **手机端菜单**: `src/components/header/menu-button.tsx`
@@ -567,6 +578,8 @@ npm run build        # 构建生产版本（会进行类型检查）
 - **Hero**: `src/app/(required-auth)/_components/hero.tsx`
 - **Hero Canvas**: `src/app/(required-auth)/_components/hero-canvas.tsx`
 - **Convex Schema**: `convex/schema.ts`
+- **Convex Talent**: `convex/talent.ts`
+- **Convex Storage**: `convex/storage.ts`
 - **环境配置**: `src/env.js`
 
 ### 待优化项
@@ -605,3 +618,110 @@ npm run build        # 构建生产版本（会进行类型检查）
 - `convex/stories.ts`: createStory 支持新参数
 - `convex/chatgpt.ts`: generateStory 使用新的剧本格式 prompt
 - `src/app/(required-auth)/generate/guided/page.tsx`: 添加时长和风格选择 UI
+
+## 2026-05-13 人才库 (Talent Library) 功能
+
+### 新增功能
+
+管理 AI 视频中使用的虚拟角色/人才，支持图片和视频参考素材的上传与管理。
+
+### 数据库 Schema
+
+#### talents 表 (人才主表)
+
+| 字段        | 类型                    | 说明                            |
+| ----------- | ----------------------- | ------------------------------- |
+| userId      | v.id("users")           | 所属用户                        |
+| name        | v.string()              | 人才名称                        |
+| description | v.optional(v.string())  | 描述                            |
+| imageUrl    | v.optional(v.string())  | 头像 URL                        |
+| isFavorite  | v.optional(v.boolean()) | 是否收藏                        |
+| isHuman     | v.optional(v.boolean()) | 是否真人 (true=Human, false=AI) |
+| isPublic    | v.optional(v.boolean()) | 是否公开                        |
+
+#### talentSheets 表 (形象表)
+
+| 字段          | 类型                     | 说明                                |
+| ------------- | ------------------------ | ----------------------------------- |
+| talentId      | v.id("talents")          | 关联的人才                          |
+| name          | v.string()               | 形象名称                            |
+| imageUrl      | v.optional(v.string())   | 形象图片 URL                        |
+| imagePublicId | v.optional(v.string())   | 图片公开 ID                         |
+| isDefault     | v.optional(v.boolean())  | 是否默认形象                        |
+| source        | v.optional(v.union(...)) | 来源 (manual_upload / ai_generated) |
+
+#### talentMedia 表 (参考素材表)
+
+| 字段     | 类型                   | 说明                             |
+| -------- | ---------------------- | -------------------------------- |
+| talentId | v.id("talents")        | 关联的人才                       |
+| type     | v.union(...)           | 类型 (image / video / recording) |
+| url      | v.string()             | 素材 URL                         |
+| publicId | v.optional(v.string()) | 公开 ID                          |
+
+### Convex 后端
+
+#### 新增文件
+
+- `convex/talent.ts`: 人才库所有查询和变更
+- `convex/storage.ts`: 新增 `generateUploadUrl`, `uploadTalentMedia`, `getStorageUrl`
+
+#### API 列表
+
+| 函数                 | 类型     | 说明                                   |
+| -------------------- | -------- | -------------------------------------- |
+| getTalents           | query    | 获取人才列表，支持 favoritesOnly 过滤  |
+| getTalentById        | query    | 获取单个人才详情（含 sheets 和 media） |
+| createTalent         | mutation | 创建人才                               |
+| updateTalent         | mutation | 更新人才信息                           |
+| deleteTalent         | mutation | 删除人才（级联删除 sheets 和 media）   |
+| toggleTalentFavorite | mutation | 切换收藏状态                           |
+| addTalentMedia       | mutation | 添加参考素材                           |
+| deleteTalentMedia    | mutation | 删除参考素材                           |
+| addTalentSheet       | mutation | 添加形象                               |
+| setDefaultSheet      | mutation | 设置默认形象                           |
+| deleteTalentSheet    | mutation | 删除形象                               |
+| generateUploadUrl    | mutation | 获取上传 URL                           |
+| uploadTalentMedia    | mutation | 上传素材并创建记录                     |
+| getStorageUrl        | mutation | 获取存储 URL                           |
+
+### 前端页面和组件
+
+#### 页面
+
+| 路径                 | 说明                                |
+| -------------------- | ----------------------------------- |
+| `/talent`            | 人才列表页，支持 All/Favorites 过滤 |
+| `/talent/[talentId]` | 人才详情页，管理 media 和 sheets    |
+
+#### 组件
+
+| 组件                                                | 说明                              |
+| --------------------------------------------------- | --------------------------------- |
+| `src/components/talent/add-talent-media-dialog.tsx` | 添加参考素材对话框                |
+| `src/components/talent/add-talent-sheet-dialog.tsx` | 添加形象对话框                    |
+| `src/components/talent/talent-media-upload.tsx`     | 素材上传组件（支持多文件）        |
+| `src/components/ui/file-upload.tsx`                 | 通用文件上传组件（支持拖拽/粘贴） |
+
+### 导航集成
+
+- Header: 添加 Talent 链接
+- MenuButton: 添加 Talent 菜单项
+
+### 配置更新
+
+#### next.config.js 图片域名
+
+新增 Convex 存储域名：
+
+```js
+{ protocol: "https", hostname: "*.convex.cloud" },
+{ protocol: "https", hostname: "*.convex.site" },
+```
+
+### 使用说明
+
+1. 用户可在 `/talent` 页面创建人才，标记为 Human 或 AI
+2. 每个 talent 可添加多个 Reference Media（图片/视频）作为参考
+3. 每个 talent 可添加多个 Talent Sheet，用于 AI 生成时的形象参考
+4. 支持设置默认形象、收藏、删除等操作

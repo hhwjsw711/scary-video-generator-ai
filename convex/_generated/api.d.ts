@@ -28,6 +28,7 @@ import type * as sqs from "../sqs.js";
 import type * as storage from "../storage.js";
 import type * as stories from "../stories.js";
 import type * as storySegments from "../storySegments.js";
+import type * as talent from "../talent.js";
 import type * as users from "../users.js";
 import type * as videos from "../videos.js";
 import type * as videoSegments from "../videoSegments.js";
@@ -56,6 +57,7 @@ declare const fullApi: ApiFromModules<{
   storage: typeof storage;
   stories: typeof stories;
   storySegments: typeof storySegments;
+  talent: typeof talent;
   users: typeof users;
   videos: typeof videos;
   videoSegments: typeof videoSegments;

@@ -145,7 +145,9 @@ export const uploadToYoutube = action({
       method: "GET",
       responseType: "arraybuffer", // Get the file as binary data
     });
-    const uploadUrl = await ctx.runMutation(internal.storage.generateUploadUrl);
+    const uploadUrl = await ctx.runMutation(
+      internal.storage.generateUploadUrlInternal,
+    );
 
     const uploadResponse = await fetch(uploadUrl, {
       method: "POST",
