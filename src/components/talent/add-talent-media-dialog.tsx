@@ -5,10 +5,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -29,9 +27,11 @@ export function AddTalentMediaDialog({
   onComplete,
 }: AddTalentMediaDialogProps) {
   const [open, setOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const router = useRouter();
 
   const handleClose = () => {
+    if (isUploading) return;
     setOpen(false);
     router.refresh();
     onComplete?.();
@@ -50,7 +50,12 @@ export function AddTalentMediaDialog({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl">
+      <DialogContent
+        className="max-w-2xl"
+        onInteractOutside={(e) => {
+          if (isUploading) e.preventDefault();
+        }}
+      >
         <DialogHeader>
           <DialogTitle>Add Reference Media</DialogTitle>
           <DialogDescription>
@@ -58,13 +63,11 @@ export function AddTalentMediaDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <TalentMediaUpload talentId={talentId} />
-
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">Done</Button>
-          </DialogClose>
-        </DialogFooter>
+        <TalentMediaUpload
+          talentId={talentId}
+          onComplete={handleClose}
+          onUploadingChange={setIsUploading}
+        />
       </DialogContent>
     </Dialog>
   );

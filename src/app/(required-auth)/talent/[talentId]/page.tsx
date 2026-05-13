@@ -28,10 +28,11 @@ import {
   User,
   Plus,
   X,
+  Video,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import type { Doc, Id } from "~/convex/_generated/dataModel";
 import { AddTalentMediaDialog } from "@/components/talent/add-talent-media-dialog";
 import { AddTalentSheetDialog } from "@/components/talent/add-talent-sheet-dialog";
@@ -174,13 +175,7 @@ export default function Page({
                       fill
                     />
                   )}
-                  {media.type === "video" && (
-                    <video
-                      src={media.url}
-                      className="h-full w-full object-cover"
-                      muted
-                    />
-                  )}
+                  {media.type === "video" && <VideoThumbnail url={media.url} />}
                   <Button
                     variant="destructive"
                     size="icon"
@@ -317,6 +312,38 @@ export default function Page({
         )}
       </section>
     </div>
+  );
+}
+
+function VideoThumbnail({ url }: { url: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [hasError, setHasError] = useState(false);
+
+  if (hasError) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-gray-800">
+        <Video className="h-8 w-8 text-gray-500" />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <video
+        ref={videoRef}
+        src={url}
+        className="h-full w-full object-cover"
+        muted
+        playsInline
+        preload="metadata"
+        onMouseEnter={() => videoRef.current?.play()}
+        onMouseLeave={() => videoRef.current?.pause()}
+        onError={() => setHasError(true)}
+      />
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/20 opacity-100 transition-opacity group-hover:opacity-0">
+        <Video className="h-8 w-8 text-white/80" />
+      </div>
+    </>
   );
 }
 

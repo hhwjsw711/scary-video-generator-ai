@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/ui/file-upload";
 import type { FileUploadProps } from "@/components/ui/file-upload";
 import { useMutation } from "convex/react";
@@ -10,86 +11,101 @@ import type { Id } from "~/convex/_generated/dataModel";
 interface TalentMediaUploadProps {
   talentId: Id<"talents">;
   disabled?: boolean;
+  onComplete?: () => void;
+  onUploadingChange?: (uploading: boolean) => void;
 }
 
 export function TalentMediaUpload({
   talentId,
   disabled = false,
+  onComplete,
+  onUploadingChange,
 }: TalentMediaUploadProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [completedCount, setCompletedCount] = useState(0);
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl);
   const uploadTalentMedia = useMutation(api.storage.uploadTalentMedia);
 
-  const handleUpload: FileUploadProps["onUpload"] = useCallback(
-    async (
-      uploadFiles: File[],
-      {
-        onProgress,
-        onSuccess,
-        onError,
-      }: {
-        onProgress: (file: File, percent: number) => void;
-        onSuccess: (file: File) => void;
-        onError: (file: File, error: Error) => void;
-      },
-    ) => {
-      setIsUploading(true);
+  const handleUpload = useCallback(async () => {
+    if (files.length === 0) return;
 
-      for (const uploadFile of uploadFiles) {
-        try {
-          // 1. 获取上传 URL
-          const uploadUrl: string = await generateUploadUrl();
+    setIsUploading(true);
+    setCompletedCount(0);
+    onUploadingChange?.(true);
 
-          // 2. 直接上传到 Convex 存储
-          const result = await fetch(uploadUrl, {
-            method: "POST",
-            headers: { "Content-Type": uploadFile.type },
-            body: uploadFile,
-          });
+    for (const uploadFile of files) {
+      try {
+        const uploadUrl: string = await generateUploadUrl();
 
-          if (!result.ok) {
-            throw new Error("Failed to upload to storage");
-          }
+        const result = await fetch(uploadUrl, {
+          method: "POST",
+          headers: { "Content-Type": uploadFile.type },
+          body: uploadFile,
+        });
 
-          const { storageId } = (await result.json()) as { storageId: string };
-
-          // 3. 标记上传完成
-          const mediaType = uploadFile.type.startsWith("video/")
-            ? ("video" as const)
-            : ("image" as const);
-
-          await uploadTalentMedia({
-            talentId,
-            type: mediaType,
-            storageId: storageId as Id<"_storage">,
-          });
-
-          onProgress(uploadFile, 100);
-          onSuccess(uploadFile);
-        } catch (error) {
-          console.error("Upload error:", error);
-          onError(
-            uploadFile,
-            error instanceof Error ? error : new Error("Upload failed"),
-          );
+        if (!result.ok) {
+          throw new Error("Failed to upload to storage");
         }
-      }
 
-      setIsUploading(false);
-      setFiles([]);
-    },
-    [talentId, generateUploadUrl, uploadTalentMedia],
-  );
+        const { storageId } = (await result.json()) as { storageId: string };
+
+        const mediaType = uploadFile.type.startsWith("video/")
+          ? ("video" as const)
+          : ("image" as const);
+
+        await uploadTalentMedia({
+          talentId,
+          type: mediaType,
+          storageId: storageId as Id<"_storage">,
+        });
+
+        setCompletedCount((prev) => prev + 1);
+      } catch (error) {
+        console.error("Upload error:", error);
+        alert(
+          `Failed to upload ${uploadFile.name}: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`,
+        );
+      }
+    }
+
+    setIsUploading(false);
+    onUploadingChange?.(false);
+    setFiles([]);
+    onComplete?.();
+  }, [
+    files,
+    talentId,
+    generateUploadUrl,
+    uploadTalentMedia,
+    onComplete,
+    onUploadingChange,
+  ]);
 
   return (
-    <FileUpload
-      value={files}
-      onValueChange={setFiles}
-      onUpload={handleUpload}
-      accept="image/*,video/*"
-      multiple
-      disabled={disabled || isUploading}
-    />
+    <div className="space-y-4">
+      <FileUpload
+        value={files}
+        onValueChange={setFiles}
+        accept="image/*,video/*"
+        multiple
+        disabled={disabled || isUploading}
+      />
+      {files.length > 0 && (
+        <div className="flex justify-end">
+          <Button
+            onClick={handleUpload}
+            disabled={isUploading || files.length === 0}
+            className="bg-purple-500 text-white hover:bg-purple-700"
+          >
+            {isUploading
+              ? `Uploading ${completedCount}/${files.length}...`
+              : `Upload ${files.length} file${files.length > 1 ? "s" : ""}`}
+          </Button>
+        </div>
+      )}
+    </div>
   );
 }

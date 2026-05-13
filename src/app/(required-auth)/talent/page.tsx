@@ -23,6 +23,7 @@ import {
   User,
   Sparkles,
   ImageIcon,
+  Video,
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -55,28 +56,50 @@ export default function Page() {
         Talent Library
       </h1>
 
-      <div className="mb-6 mt-2 flex flex-wrap items-center justify-center gap-2">
-        <Button
-          variant={filter === "all" ? "default" : "outline"}
-          size="sm"
-          className="gap-2 border-purple-500 text-purple-300 hover:bg-purple-700 hover:text-white"
-          onClick={() => router.push("/talent?filter=all")}
-        >
-          <User className="h-4 w-4" />
-          All Talent
-        </Button>
-        <Button
-          variant={filter === "favorites" ? "default" : "outline"}
-          size="sm"
-          className="gap-2 border-purple-500 text-purple-300 hover:bg-purple-700 hover:text-white"
-          onClick={() => router.push("/talent?filter=favorites")}
-        >
-          <Star className="h-4 w-4" />
-          Favorites
-        </Button>
-      </div>
-
-      {talents?.length === 0 ? (
+      {talents && talents.length > 0 ? (
+        <>
+          <p className={cn("py-4 text-center font-special text-lg")}>
+            Manage your team&apos;s talent for consistent AI-generated content.
+          </p>
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant={filter === "all" ? "default" : "outline"}
+                size="sm"
+                className="gap-2 border-purple-500 text-purple-300 hover:bg-purple-700 hover:text-white"
+                onClick={() => router.push("/talent?filter=all")}
+              >
+                <User className="h-4 w-4" />
+                All Talent
+              </Button>
+              <Button
+                variant={filter === "favorites" ? "default" : "outline"}
+                size="sm"
+                className="gap-2 border-purple-500 text-purple-300 hover:bg-purple-700 hover:text-white"
+                onClick={() => router.push("/talent?filter=favorites")}
+              >
+                <Star className="h-4 w-4" />
+                Favorites
+              </Button>
+            </div>
+            <AddTalentDialog />
+          </div>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:grid-cols-4">
+            {talents?.map((talent) => (
+              <TalentCard
+                key={talent._id}
+                talent={talent}
+                onToggleFavorite={() => toggleFavorite({ id: talent._id })}
+                onDelete={() => deleteTalent({ id: talent._id })}
+                onClick={() => router.push(`/talent/${talent._id}`)}
+              />
+            ))}
+            <div className="flex min-h-[200px] items-center justify-center rounded-xl border-2 border-purple-500 md:min-h-[300px]">
+              <AddTalentDialog />
+            </div>
+          </div>
+        </>
+      ) : talents && talents.length === 0 ? (
         <div className="flex h-full flex-col items-center justify-center gap-4 py-12">
           <p className={cn("font-amatic text-[40px] font-bold")}>
             You don&apos;t have any talent yet.
@@ -84,27 +107,6 @@ export default function Page() {
           <AddTalentDialog />
         </div>
       ) : (
-        <p className={cn("py-4 text-center font-special text-lg")}>
-          Manage your team&apos;s talent for consistent AI-generated content.
-        </p>
-      )}
-      <div className="grid grid-cols-1 gap-8 py-12 md:grid-cols-3 lg:grid-cols-4">
-        {talents?.map((talent) => (
-          <TalentCard
-            key={talent._id}
-            talent={talent}
-            onToggleFavorite={() => toggleFavorite({ id: talent._id })}
-            onDelete={() => deleteTalent({ id: talent._id })}
-            onClick={() => router.push(`/talent/${talent._id}`)}
-          />
-        ))}
-        {talents !== undefined && talents.length > 0 && (
-          <div className="flex min-h-[200px] items-center justify-center rounded-xl border-2 border-purple-500 md:min-h-[300px]">
-            <AddTalentDialog />
-          </div>
-        )}
-      </div>
-      {talents === undefined && (
         <div className="flex h-full items-center justify-center">
           <div className={cn("font-amatic text-[40px] font-bold")}>
             Loading talents ...
@@ -129,8 +131,24 @@ function TalentCard({
   onDelete: () => void;
   onClick: () => void;
 }) {
+  const sortedMedia = [...(talent.media || [])].sort(
+    (a, b) => a._creationTime - b._creationTime,
+  );
+  const firstMedia = sortedMedia[0];
+  const firstMediaUrl = firstMedia?.url;
+
   const defaultSheet = talent.sheets?.find((s) => s.isDefault);
-  const imageUrl = defaultSheet?.imageUrl || talent.imageUrl;
+  const sheetImageUrl = defaultSheet?.imageUrl;
+  const talentImageUrl = talent.imageUrl;
+
+  const imageUrl = firstMediaUrl || sheetImageUrl || talentImageUrl;
+
+  const imageCount =
+    talent.media?.filter((m) => m.type === "image").length || 0;
+  const videoCount =
+    talent.media?.filter((m) => m.type === "video").length || 0;
+  const isFirstMediaVideo = firstMedia?.type === "video";
+  const sheetCount = talent.sheets?.length || 0;
 
   return (
     <div
@@ -212,12 +230,27 @@ function TalentCard({
         <div>
           <div className="relative aspect-square w-full bg-gray-800">
             {imageUrl ? (
-              <Image
-                src={imageUrl}
-                className="object-cover"
-                fill
-                alt={talent.name}
-              />
+              <>
+                {isFirstMediaVideo ? (
+                  <>
+                    <video
+                      src={imageUrl}
+                      className="h-full w-full object-cover"
+                      muted
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                      <Video className="h-10 w-10 text-white/80" />
+                    </div>
+                  </>
+                ) : (
+                  <Image
+                    src={imageUrl}
+                    className="object-cover"
+                    fill
+                    alt={talent.name}
+                  />
+                )}
+              </>
             ) : (
               <div className="flex h-full w-full items-center justify-center">
                 <User className="h-12 w-12 text-gray-600" />
@@ -230,10 +263,28 @@ function TalentCard({
                 {talent.description}
               </div>
             )}
-            <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
-              <ImageIcon className="h-3 w-3" />
-              {talent.sheets?.length || 0} sheets, {talent.media?.length || 0}{" "}
-              media
+            <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-gray-500">
+              {sheetCount > 0 && (
+                <span className="flex items-center gap-1 text-purple-300">
+                  <ImageIcon className="h-3 w-3" />
+                  {sheetCount} {sheetCount === 1 ? "sheet" : "sheets"}
+                </span>
+              )}
+              {imageCount > 0 && (
+                <span className="flex items-center gap-1">
+                  <ImageIcon className="h-3 w-3" />
+                  {imageCount} {imageCount === 1 ? "image" : "images"}
+                </span>
+              )}
+              {videoCount > 0 && (
+                <span className="flex items-center gap-1">
+                  <Video className="h-3 w-3" />
+                  {videoCount} {videoCount === 1 ? "video" : "videos"}
+                </span>
+              )}
+              {sheetCount === 0 && imageCount === 0 && videoCount === 0 && (
+                <span className="text-gray-600">No reference</span>
+              )}
             </div>
           </div>
         </div>
