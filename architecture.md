@@ -7,7 +7,8 @@
 **项目路径**: `E:\Workspace\scary-video-generator-ai`  
 **项目名称**: Wordream  
 **创建时间**: 基于 create-t3-app (v7.37.0)  
-**最后更新**: 2026-05-14 (用户资料管理: Settings页 + 头像/姓名修改)
+**域名**: wordream.com (DNS 在 Cloudflare，邮件收发通过 Resend API + Cloudflare Email Routing)
+**最后更新**: 2026-05-14 (Terms & Privacy 页面 + 品牌信息补充)
 
 ## 技术架构
 
@@ -91,6 +92,10 @@ src/
 │   ├── error.tsx                 # 错误处理页
 │   ├── not-found.tsx             # 404 页面
 │   ├── maintenance.tsx           # 维护页面
+│   ├── terms/
+│   │   └── page.tsx              # Terms of Service (不含 Link 到 Privacy)
+│   ├── privacy/
+│   │   └── page.tsx              # Privacy Policy (21 节，GDPR/CCPA/AU)
 │   └── (required-auth)/          # 需要认证的路由组
 │       ├── page.tsx              # 仪表盘首页
 │       ├── _components/
@@ -416,12 +421,23 @@ convex/
 ```tsx
 <footer className="border-t border-purple-700 text-purple-200">
   <span className="font-nosifer text-xl text-purple-300">Wordream</span>
-  <span className="font-special text-sm text-purple-300">Docs</span>
-  <span className="font-special text-sm text-purple-300">Terms</span>
-  <span className="font-special text-sm text-purple-300">Privacy</span>
+  <Link
+    href="/terms"
+    className="font-special text-sm text-purple-300 transition-colors hover:text-white"
+  >
+    Terms
+  </Link>
+  <Link
+    href="/privacy"
+    className="font-special text-sm text-purple-300 transition-colors hover:text-white"
+  >
+    Privacy
+  </Link>
   <p className="font-special text-sm text-purple-400">&copy; 2026 Wordream</p>
 </footer>
 ```
+
+> 使用 `next/link` 的 `Link` 组件，悬停效果 `transition-colors hover:text-white`
 
 ### Hero 区域
 
@@ -586,6 +602,8 @@ npm run build        # 构建生产版本（会进行类型检查）
 - **团队列表**: `src/app/(required-auth)/teams/page.tsx`
 - **团队详情**: `src/app/(required-auth)/teams/[teamId]/page.tsx`
 - **用户设置**: `src/app/(required-auth)/settings/page.tsx`
+- **Terms of Service**: `src/app/terms/page.tsx` (公开页面，无需登录)
+- **Privacy Policy**: `src/app/privacy/page.tsx` (公开页面，无需登录)
 - **主布局**: `src/app/layout.tsx`
 - **Header**: `src/components/header/header.tsx`
 - **手机端菜单**: `src/components/header/menu-button.tsx`
@@ -1126,3 +1144,43 @@ Loading / 空状态 / 网格内容                     ← 仅这里变化
 | `src/app/(required-auth)/settings/page.tsx` | 新建: 用户设置页面（头像 + 姓名编辑） |
 | `src/components/header/header.tsx`          | 新增 Settings 下拉菜单项              |
 | `src/components/header/menu-button.tsx`     | 新增 Settings 手机端菜单项            |
+
+## 2026-05-14 Terms & Privacy 页面
+
+### 新增功能
+
+1. **Terms of Service 页面 (`/terms`)**: 17 节，涵盖积分退款政策、AI 透明声明、澳大利亚消费者法、争议解决
+2. **Privacy Policy 页面 (`/privacy`)**: 21 节，覆盖 GDPR / CCPA / AU Privacy Act，含 AI 处理披露、数据跨境传输、Cookie 声明
+3. **Footer 链接**: Terms 和 Privacy 从纯文本改为 `next/link` 的 `Link` 组件，hover 效果白色
+
+### 品牌信息更新
+
+| 项目     | 值                          |
+| -------- | --------------------------- |
+| 域名     | wordream.com                |
+| DNS      | Cloudflare                  |
+| 邮件发送 | Resend API                  |
+| 邮件接收 | Cloudflare Email Routing    |
+| 邮箱     | support@wordream.com (通用) |
+|          | privacy@wordream.com (隐私) |
+
+### 样式规范（Legal 页面）
+
+- 页面大标题: `font-nosifer text-2xl md:text-[50px] text-purple-300`
+- 正文: `font-special leading-relaxed text-gray-300`
+- 小节标题: `font-special text-2xl font-bold text-purple-300`
+- 提示框: `rounded-lg border border-purple-700 bg-muted/50 p-4`
+- 链接: `underline underline-offset-4 text-purple-300 hover:text-white`
+- 列表: `list-disc space-y-2 pl-6`
+- 页面容器: `mx-auto max-w-3xl px-6 py-24 md:py-32`
+
+> 两个页面均放在 `src/app/`（`(required-auth)` 外部），无需登录即可访问。
+
+### 修改的文件
+
+| 文件                               | 修改内容                            |
+| ---------------------------------- | ----------------------------------- |
+| `src/app/terms/page.tsx`           | 新建: Terms of Service 页面         |
+| `src/app/privacy/page.tsx`         | 新建: Privacy Policy 页面           |
+| `src/components/shared/footer.tsx` | Terms/Privacy 改为 Link 组件        |
+| `architecture.md`                  | 更新项目结构、品牌信息、Footer 链接 |

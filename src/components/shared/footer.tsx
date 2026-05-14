@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 function XIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className="size-5">
@@ -19,10 +21,18 @@ export const Footer = () => {
 
           <div className="flex items-center gap-6">
             <span className="font-special text-sm text-purple-300">Docs</span>
-            <span className="font-special text-sm text-purple-300">Terms</span>
-            <span className="font-special text-sm text-purple-300">
+            <Link
+              href="/terms"
+              className="font-special text-sm text-purple-300 transition-colors hover:text-white"
+            >
+              Terms
+            </Link>
+            <Link
+              href="/privacy"
+              className="font-special text-sm text-purple-300 transition-colors hover:text-white"
+            >
               Privacy
-            </span>
+            </Link>
             <a
               href="https://x.com/hhwjsw711"
               target="_blank"
