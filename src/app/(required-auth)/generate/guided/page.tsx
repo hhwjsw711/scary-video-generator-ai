@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
 import {
   Loader2Icon,
@@ -33,12 +33,21 @@ import {
   Monitor,
   Mountain,
   Camera,
+  UsersIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { z } from "zod";
 import { api } from "~/convex/_generated/api";
+import type { Id } from "~/convex/_generated/dataModel";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const DURATION_PRESETS = [
   { value: 15, label: "15s" },
@@ -154,6 +163,10 @@ const GuidedStoryCreation = () => {
   const [targetDuration, setTargetDuration] = useState(30);
   const [selectedStyleId, setSelectedStyleId] =
     useState<string>("horror-gothic");
+  const [selectedTeamId, setSelectedTeamId] = useState<string>("none");
+
+  const teams = useQuery(api.teams.list);
+
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -174,6 +187,10 @@ const GuidedStoryCreation = () => {
         story: "",
         targetDuration: targetDuration,
         styleId: selectedStyleId,
+        teamId:
+          selectedTeamId !== "none"
+            ? (selectedTeamId as Id<"teams">)
+            : undefined,
       });
       router.push(`/stories/${storyId}/refine`);
     } catch (error) {
@@ -228,6 +245,44 @@ const GuidedStoryCreation = () => {
                   </FormItem>
                 )}
               />
+
+              <div className="space-y-2">
+                <Label className="text-purple-400">Team (Optional)</Label>
+                <p className="text-sm text-gray-400">
+                  Select a team to share this story with, or leave empty for
+                  private.
+                </p>
+                <Select
+                  value={selectedTeamId}
+                  onValueChange={setSelectedTeamId}
+                >
+                  <SelectTrigger className="border-purple-700 bg-gray-900 text-purple-300">
+                    <SelectValue placeholder="Select a team">
+                      {selectedTeamId === "none"
+                        ? "Private (No Team)"
+                        : (teams?.find((t) => t._id === selectedTeamId)?.name ??
+                          "Select a team")}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="border-purple-700 bg-gray-900 text-purple-300">
+                    <SelectItem value="none">
+                      <div className="flex items-center gap-2">
+                        <UsersIcon className="h-4 w-4" />
+                        Private (No Team)
+                      </div>
+                    </SelectItem>
+                    {teams?.map((team) => (
+                      <SelectItem key={team._id} value={team._id}>
+                        <div className="flex items-center gap-2">
+                          <UsersIcon className="h-4 w-4" />
+                          {team.name}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               <FormField
                 control={form.control}
                 name="description"

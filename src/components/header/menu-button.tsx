@@ -11,6 +11,7 @@ import {
   FilmIcon,
   MenuIcon,
   UserIcon,
+  UsersIcon,
   VideoIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -52,6 +53,14 @@ export function MenuButton() {
             className="flex cursor-pointer items-center gap-2 text-purple-300 hover:bg-purple-700 hover:text-white focus:bg-purple-700 focus:text-white"
           >
             <UserIcon className="h-4 w-4" /> Talent
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link
+            href="/teams"
+            className="flex cursor-pointer items-center gap-2 text-purple-300 hover:bg-purple-700 hover:text-white focus:bg-purple-700 focus:text-white"
+          >
+            <UsersIcon className="h-4 w-4" /> Teams
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

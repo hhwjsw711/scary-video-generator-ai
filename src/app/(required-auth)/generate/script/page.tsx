@@ -11,19 +11,27 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { cn, splitStory } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
-import { Loader2Icon, Monitor, SmartphoneIcon } from "lucide-react";
+import { Loader2Icon, Monitor, SmartphoneIcon, UsersIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { api } from "~/convex/_generated/api";
+import type { Id } from "~/convex/_generated/dataModel";
 const schema = z.object({
   name: z.string().min(1),
   story: z.string().min(1, "The story should be at least 200 characters long."),
@@ -31,9 +39,11 @@ const schema = z.object({
 
 const Page = () => {
   const [videoFormat, setvideoFormat] = useState<"16:9" | "9:16">("16:9");
+  const [selectedTeamId, setSelectedTeamId] = useState<string>("none");
 
   const router = useRouter();
   const mutate = useMutation(api.stories.createStory);
+  const teams = useQuery(api.teams.list);
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -50,6 +60,10 @@ const Page = () => {
         ...data,
         createType: "full-scripted",
         format: videoFormat,
+        teamId:
+          selectedTeamId !== "none"
+            ? (selectedTeamId as Id<"teams">)
+            : undefined,
       });
       router.push("/stories/" + id);
     } catch (error) {
@@ -104,6 +118,44 @@ const Page = () => {
                   </FormItem>
                 )}
               />
+
+              <div className="space-y-2">
+                <Label className="text-purple-400">Team (Optional)</Label>
+                <p className="text-sm text-gray-400">
+                  Select a team to share this story with, or leave empty for
+                  private.
+                </p>
+                <Select
+                  value={selectedTeamId}
+                  onValueChange={setSelectedTeamId}
+                >
+                  <SelectTrigger className="border-purple-700 bg-gray-900 text-purple-300">
+                    <SelectValue placeholder="Select a team">
+                      {selectedTeamId === "none"
+                        ? "Private (No Team)"
+                        : (teams?.find((t) => t._id === selectedTeamId)?.name ??
+                          "Select a team")}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="border-purple-700 bg-gray-900 text-purple-300">
+                    <SelectItem value="none">
+                      <div className="flex items-center gap-2">
+                        <UsersIcon className="h-4 w-4" />
+                        Private (No Team)
+                      </div>
+                    </SelectItem>
+                    {teams?.map((team) => (
+                      <SelectItem key={team._id} value={team._id}>
+                        <div className="flex items-center gap-2">
+                          <UsersIcon className="h-4 w-4" />
+                          {team.name}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               <FormField
                 control={form.control}
                 name="story"

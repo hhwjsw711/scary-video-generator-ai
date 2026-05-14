@@ -2,10 +2,12 @@
 import { useModal } from "@/components/providers/modal-provider";
 import CustomModal from "@/components/shared/custom-modal";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery } from "convex/react";
-import { notFound } from "next/navigation";
-import { useMemo } from "react";
+import { ConvexError } from "convex/values";
+import { notFound, useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
 import { api } from "~/convex/_generated/api";
 import { Id } from "~/convex/_generated/dataModel";
 import { EditStoryContextForm } from "@/components/stories/edit-story-context-form";
@@ -19,16 +21,36 @@ export default function Page({
 }: {
   params: { storyId: Id<"stories"> };
 }) {
+  const router = useRouter();
+  const { toast } = useToast();
   const segments = useQuery(api.storySegments.getByStoryId, { storyId });
   const story = useQuery(api.stories.get, { id: storyId });
   const format = story?.format;
   const { setOpen } = useModal();
+
+  useEffect(() => {
+    if (story === null) {
+      router.push("/stories");
+    }
+  }, [story, router]);
 
   const doneRefine = useMemo(
     () =>
       story?.AIGenerateInfo ? story?.AIGenerateInfo?.finishedRefine : true,
     [story?.AIGenerateInfo?.finishedRefine],
   );
+
+  if (story === undefined) {
+    return (
+      <div className="container flex h-full items-center justify-center py-12">
+        <div
+          className={cn("font-amatic text-[40px] font-bold text-purple-300")}
+        >
+          Loading...
+        </div>
+      </div>
+    );
+  }
 
   if (story === null) return notFound();
 

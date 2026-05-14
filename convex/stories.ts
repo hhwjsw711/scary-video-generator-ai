@@ -12,16 +12,48 @@ import { Doc } from "./_generated/dataModel";
 import { splitStory } from "@/lib/utils";
 import md5 from "md5";
 
+const checkStoryAccess = async (ctx: any, storyId: string, userId: string) => {
+  const story = await ctx.db.get(storyId as any);
+  if (!story) throw new ConvexError("Story not found");
+
+  if (story.teamId) {
+    const teamId = story.teamId;
+    const membership = await ctx.db
+      .query("teamMembers")
+      .withIndex("by_teamId_and_userId", (q: any) =>
+        q.eq("teamId", teamId).eq("userId", userId),
+      )
+      .unique();
+    if (!membership) {
+      throw new ConvexError("You don't have access to this story");
+    }
+  } else if (story.userId !== userId) {
+    throw new ConvexError("You don't have access to this story");
+  }
+
+  return story;
+};
+
 export const isStoryBelongToUser = internalQuery({
   args: { storyId: v.string(), userId: v.id("users") },
   handler: async (ctx, { storyId, userId }) => {
-    const story = await ctx.db
-      .query("stories")
-      .filter((q) => q.eq(q.field("userId"), userId))
-      .order("desc")
-      .first();
-    if (story?.userId !== userId) return false;
-    return true;
+    const story = (await ctx.db.get(storyId as any)) as Doc<"stories"> | null;
+    if (!story) return false;
+
+    if (story.userId === userId) return true;
+
+    if (story.teamId) {
+      const teamId = story.teamId;
+      const membership = await ctx.db
+        .query("teamMembers")
+        .withIndex("by_teamId_and_userId", (q) =>
+          q.eq("teamId", teamId).eq("userId", userId),
+        )
+        .unique();
+      return !!membership;
+    }
+
+    return false;
   },
 });
 export const get = query({
@@ -29,7 +61,26 @@ export const get = query({
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) throw new ConvexError("Unauthenticated");
-    return await ctx.db.get(args.id);
+
+    const story = await ctx.db.get(args.id);
+    if (!story) return null;
+
+    if (story.teamId) {
+      const teamId = story.teamId;
+      const membership = await ctx.db
+        .query("teamMembers")
+        .withIndex("by_teamId_and_userId", (q) =>
+          q.eq("teamId", teamId).eq("userId", userId),
+        )
+        .unique();
+      if (!membership) {
+        throw new ConvexError("You don't have access to this story");
+      }
+    } else if (story.userId !== userId) {
+      throw new ConvexError("You don't have access to this story");
+    }
+
+    return story;
   },
 });
 export const internalGet = internalQuery({
@@ -46,13 +97,65 @@ export const getStories = query({
     if (userId === null) {
       throw new Error("Unauthenticated");
     }
-    return await ctx.db
+
+    const userStories = await ctx.db
       .query("stories")
       .filter((q) => q.eq(q.field("userId"), userId))
       .order("desc")
       .collect();
+
+    const memberships = await ctx.db
+      .query("teamMembers")
+      .withIndex("by_userId", (q) => q.eq("userId", userId))
+      .take(50);
+
+    const teamIds = memberships.map((m) => m.teamId);
+    let teamStories: Doc<"stories">[] = [];
+
+    for (const teamId of teamIds) {
+      const stories = await ctx.db
+        .query("stories")
+        .withIndex("by_teamId", (q) => q.eq("teamId", teamId))
+        .collect();
+      teamStories.push(...stories);
+    }
+
+    const allStories = [...userStories, ...teamStories];
+    const uniqueStories = Array.from(
+      new Map(allStories.map((s) => [s._id, s])).values(),
+    );
+
+    return uniqueStories.sort((a, b) => b._creationTime - a._creationTime);
   },
 });
+
+export const getStoriesByTeam = query({
+  args: { teamId: v.id("teams") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) {
+      throw new Error("Unauthenticated");
+    }
+
+    // Verify user is a member of the team
+    const membership = await ctx.db
+      .query("teamMembers")
+      .withIndex("by_teamId_and_userId", (q) =>
+        q.eq("teamId", args.teamId).eq("userId", userId),
+      )
+      .unique();
+    if (!membership) {
+      throw new ConvexError("You are not a member of this team");
+    }
+
+    return await ctx.db
+      .query("stories")
+      .withIndex("by_teamId", (q) => q.eq("teamId", args.teamId))
+      .order("desc")
+      .collect();
+  },
+});
+
 export const edit = mutation({
   args: {
     name: v.optional(v.string()),
@@ -144,6 +247,7 @@ export const createStory = mutation({
     format: v.optional(v.union(v.literal("16:9"), v.literal("9:16"))),
     targetDuration: v.optional(v.number()),
     styleId: v.optional(v.string()),
+    teamId: v.optional(v.id("teams")),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
@@ -151,8 +255,23 @@ export const createStory = mutation({
       throw new ConvexError("Unauthenticated");
     }
 
+    // If teamId is provided, verify user is a member of the team
+    if (args.teamId) {
+      const teamId = args.teamId;
+      const membership = await ctx.db
+        .query("teamMembers")
+        .withIndex("by_teamId_and_userId", (q) =>
+          q.eq("teamId", teamId).eq("userId", userId),
+        )
+        .unique();
+      if (!membership) {
+        throw new ConvexError("You are not a member of this team");
+      }
+    }
+
     const storyId = await ctx.db.insert("stories", {
       userId,
+      teamId: args.teamId ?? undefined,
       name: args.name,
       content: args.story,
       createType: args.createType,
@@ -219,8 +338,16 @@ export const deleteStory = mutation({
       throw new Error("Unauthenticated");
     }
     const story = await ctx.runQuery(api.stories.get, { id: args.id });
-    if (story?.userId !== userId)
+    if (!story) throw new ConvexError("Story not found");
+
+    const hasAccess = await ctx.runQuery(internal.stories.isStoryBelongToUser, {
+      storyId: args.id as string,
+      userId,
+    });
+    if (!hasAccess) {
       throw new ConvexError("You do not have permission on this story");
+    }
+
     const segments = await ctx.db
       .query("storySegments")
       .filter((q) => q.eq(q.field("storyId"), story._id))

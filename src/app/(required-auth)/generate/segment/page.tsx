@@ -1,17 +1,29 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { useMutation } from "convex/react";
-import { Monitor, Smartphone } from "lucide-react";
+import { useMutation, useQuery } from "convex/react";
+import { Monitor, Smartphone, UsersIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "~/convex/_generated/api";
+import type { Id } from "~/convex/_generated/dataModel";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Page = () => {
   const mutate = useMutation(api.stories.createStory);
   const [isCreating, setIsCreating] = useState(false);
   const router = useRouter();
   const [videoFormat, setVideoFormat] = useState<"16:9" | "9:16">("16:9");
+  const [selectedTeamId, setSelectedTeamId] = useState<string>("none");
+
+  const teams = useQuery(api.teams.list);
   return (
     <div className="flex flex-col items-center justify-center py-32">
       <h1
@@ -57,6 +69,38 @@ const Page = () => {
           </div>
           <p className="text-center font-semibold">Horizontal</p>
         </Button>
+        <div className="col-span-2 space-y-2">
+          <Label className="text-purple-400">Team (Optional)</Label>
+          <p className="text-sm text-gray-400">
+            Select a team to share this story with, or leave empty for private.
+          </p>
+          <Select value={selectedTeamId} onValueChange={setSelectedTeamId}>
+            <SelectTrigger className="border-purple-700 bg-gray-900 text-purple-300">
+              <SelectValue placeholder="Select a team">
+                {selectedTeamId === "none"
+                  ? "Private (No Team)"
+                  : (teams?.find((t) => t._id === selectedTeamId)?.name ??
+                    "Select a team")}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent className="border-purple-700 bg-gray-900 text-purple-300">
+              <SelectItem value="none">
+                <div className="flex items-center gap-2">
+                  <UsersIcon className="h-4 w-4" />
+                  Private (No Team)
+                </div>
+              </SelectItem>
+              {teams?.map((team) => (
+                <SelectItem key={team._id} value={team._id}>
+                  <div className="flex items-center gap-2">
+                    <UsersIcon className="h-4 w-4" />
+                    {team.name}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         <Button
           onClick={async () => {
             const storyId = await mutate({
@@ -65,6 +109,10 @@ const Page = () => {
               name: "Untitled",
               story: "",
               prompt: "",
+              teamId:
+                selectedTeamId !== "none"
+                  ? (selectedTeamId as Id<"teams">)
+                  : undefined,
             });
             router.push(`/stories/${storyId}`);
           }}

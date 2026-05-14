@@ -12,20 +12,41 @@ import {
   PlusIcon,
   Smartphone,
   TrashIcon,
+  UsersIcon,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { api } from "~/convex/_generated/api";
 import type { Doc, Id } from "~/convex/_generated/dataModel";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function Page({
   params: { storyId },
 }: {
   params: { storyId: Id<"stories"> };
 }) {
+  const [selectedTeamId, setSelectedTeamId] = useState<string>("all");
+
   const stories = useQuery(api.stories.getStories);
+  const teams = useQuery(api.teams.list);
+
+  const displayedStories = useMemo(() => {
+    if (selectedTeamId === "all") {
+      return stories ?? [];
+    } else if (selectedTeamId === "private") {
+      return (stories ?? []).filter((s) => !s.teamId);
+    } else {
+      return (stories ?? []).filter((s) => s.teamId === selectedTeamId);
+    }
+  }, [selectedTeamId, stories]);
 
   return (
     <div className="container h-full py-12">
@@ -37,16 +58,52 @@ export default function Page({
         Your Stories
       </h1>
 
-      {stories?.length === 0 ? (
+      <div className="flex items-center justify-center gap-4 py-4">
+        <Select value={selectedTeamId} onValueChange={setSelectedTeamId}>
+          <SelectTrigger className="w-[200px] border-purple-700 bg-gray-900 text-purple-300">
+            <SelectValue placeholder="Filter by team" />
+          </SelectTrigger>
+          <SelectContent className="border-purple-700 bg-gray-900 text-purple-300">
+            <SelectItem value="all">
+              <div className="flex items-center gap-2">
+                <UsersIcon className="h-4 w-4" />
+                All Stories
+              </div>
+            </SelectItem>
+            <SelectItem value="private">
+              <div className="flex items-center gap-2">
+                <UsersIcon className="h-4 w-4" />
+                Private Only
+              </div>
+            </SelectItem>
+            {teams?.map((team) => (
+              <SelectItem key={team._id} value={team._id}>
+                <div className="flex items-center gap-2">
+                  <UsersIcon className="h-4 w-4" />
+                  {team.name}
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {displayedStories.length === 0 ? (
         <div className="flex h-full flex-col items-center justify-center gap-4 py-12">
           <p className={cn("font-amatic text-[40px] font-bold")}>
-            You don&apos;t have any story.
+            {selectedTeamId === "all"
+              ? "You don't have any story yet."
+              : selectedTeamId === "private"
+                ? "No private stories found."
+                : "No stories in this team."}
           </p>
-          <Button className={cn("font-amatic text-[24px]")} asChild>
-            <Link href="/generate" className="!font-bold">
-              Generate
-            </Link>
-          </Button>
+          {(selectedTeamId === "all" || selectedTeamId === "private") && (
+            <Button className={cn("font-amatic text-[24px]")} asChild>
+              <Link href="/generate" className="!font-bold">
+                Generate
+              </Link>
+            </Button>
+          )}
         </div>
       ) : (
         <p className={cn("py-4 text-center font-special text-lg")}>
@@ -54,8 +111,10 @@ export default function Page({
         </p>
       )}
       <div className="grid grid-cols-1 gap-8 py-12 md:grid-cols-3">
-        {stories?.map((s) => <StoryItem key={s._id} story={s} />)}
-        {stories !== undefined && stories.length > 0 && (
+        {displayedStories.map((s) => (
+          <StoryItem key={s._id} story={s} />
+        ))}
+        {displayedStories.length > 0 && (
           <Link
             href="/generate"
             className={cn(
@@ -102,6 +161,12 @@ function StoryItem({ story }: { story: Doc<"stories"> }) {
     >
       <div className="flex justify-between bg-gray-800 px-4 py-2">
         <div className="mr-2 flex flex-1 items-center space-x-2">
+          {story.teamId && (
+            <div className="inline-flex items-center rounded-full border border-purple-500 bg-purple-900/50 px-2 py-1 text-xs font-semibold text-purple-300">
+              <UsersIcon className="mr-1 h-3 w-3" />
+              Team
+            </div>
+          )}
           <h3 className="line-clamp-1 overflow-hidden text-sm font-medium tracking-tight text-purple-200">
             {story.name}
           </h3>

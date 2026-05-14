@@ -571,6 +571,8 @@ npm run build        # 构建生产版本（会进行类型检查）
 - **视频列表**: `src/app/(required-auth)/videos/page.tsx`
 - **人才库列表**: `src/app/(required-auth)/talent/page.tsx`
 - **人才详情**: `src/app/(required-auth)/talent/[talentId]/page.tsx`
+- **团队列表**: `src/app/(required-auth)/teams/page.tsx`
+- **团队详情**: `src/app/(required-auth)/teams/[teamId]/page.tsx`
 - **主布局**: `src/app/layout.tsx`
 - **Header**: `src/components/header/header.tsx`
 - **手机端菜单**: `src/components/header/menu-button.tsx`
@@ -580,6 +582,8 @@ npm run build        # 构建生产版本（会进行类型检查）
 - **Convex Schema**: `convex/schema.ts`
 - **Convex Talent**: `convex/talent.ts`
 - **Convex Storage**: `convex/storage.ts`
+- **Convex Teams**: `convex/teams.ts`
+- **Convex TeamMembers**: `convex/teamMembers.ts`
 - **环境配置**: `src/env.js`
 
 ### 待优化项
@@ -796,3 +800,133 @@ Loading / 空状态 / 网格内容                     ← 仅这里变化
 | `src/app/(required-auth)/talent/[talentId]/page.tsx` | 新增 `VideoThumbnail` 组件（悬停播放 + 错误回退） |
 | `src/components/talent/talent-media-upload.tsx`      | 确认后上传、进度显示、`onUploadingChange` 回调    |
 | `src/components/talent/add-talent-media-dialog.tsx`  | 上传中关闭保护、移除 Done 按钮                    |
+
+## 2026-05-14 团队管理 (Teams) 功能
+
+### 新增功能
+
+管理团队协作，支持团队成员共享视频项目（stories）。用户可以创建团队、邀请成员、管理权限。
+
+### 数据库 Schema
+
+#### teams 表 (团队主表)
+
+| 字段        | 类型          | 说明       |
+| ----------- | ------------- | ---------- |
+| name        | v.string()    | 团队名称   |
+| description | v.string()    | 团队描述   |
+| ownerId     | v.id("users") | 团队所有者 |
+
+索引: `by_ownerId`
+
+#### teamMembers 表 (团队成员表)
+
+| 字段   | 类型                                 | 说明     |
+| ------ | ------------------------------------ | -------- |
+| teamId | v.id("teams")                        | 关联团队 |
+| userId | v.id("users")                        | 关联用户 |
+| role   | v.union("admin", "editor", "viewer") | 成员角色 |
+
+索引: `by_teamId`, `by_userId`, `by_teamId_and_userId`
+
+#### stories 表变更
+
+- 新增 `teamId: v.optional(v.id("teams"))` 字段
+- 支持私有 stories (teamId = null) 和团队 stories (teamId 存在)
+- 新增索引: `by_teamId`, `by_userId_and_teamId`
+
+### Convex 后端
+
+#### convex/teams.ts
+
+| 函数   | 类型     | 说明                           |
+| ------ | -------- | ------------------------------ |
+| list   | query    | 获取用户所在的所有团队         |
+| get    | query    | 获取单个团队详情               |
+| create | mutation | 创建团队（创建者自动为 admin） |
+| update | mutation | 更新团队信息（仅 admin）       |
+| remove | mutation | 删除团队（仅 owner）           |
+
+#### convex/teamMembers.ts
+
+| 函数       | 类型     | 说明                               |
+| ---------- | -------- | ---------------------------------- |
+| listByTeam | query    | 获取团队成员列表                   |
+| add        | mutation | 添加成员（通过 email，仅 admin）   |
+| updateRole | mutation | 修改成员角色（仅 admin）           |
+| remove     | mutation | 移除成员（支持自移除，有保护逻辑） |
+
+#### convex/stories.ts 变更
+
+- `get` query: 添加团队成员访问权限检查
+- `getStories` query: 同时返回私有 stories 和团队 stories
+- `getStoriesByTeam` query: 获取指定团队的所有 stories
+- `createStory` mutation: 新增 `teamId` 参数
+- `isStoryBelongToUser` internalQuery: 支持团队访问检查
+- `deleteStory` mutation: 使用权限检查替代简单 userId 检查
+- `edit` mutation: 使用扩展后的权限检查
+
+### 前端页面
+
+#### 页面路由
+
+| 路径              | 说明              |
+| ----------------- | ----------------- |
+| `/teams`          | 团队列表页面      |
+| `/teams/[teamId]` | 团队详情/成员管理 |
+
+#### 新增/修改的文件
+
+| 文件                                                | 修改内容                                        |
+| --------------------------------------------------- | ----------------------------------------------- |
+| `convex/schema.ts`                                  | 新增 teams, teamMembers 表，stories 添加 teamId |
+| `convex/teams.ts`                                   | 团队 CRUD 操作                                  |
+| `convex/teamMembers.ts`                             | 成员管理操作                                    |
+| `src/components/header/header.tsx`                  | 添加 Teams 导航链接                             |
+| `src/components/header/menu-button.tsx`             | 添加 Teams 菜单项                               |
+| `src/app/(required-auth)/teams/page.tsx`            | 团队列表页面                                    |
+| `src/app/(required-auth)/teams/[teamId]/page.tsx`   | 团队详情页面（含成员管理、编辑、删除）          |
+| `src/app/(required-auth)/generate/script/page.tsx`  | 添加团队选择器                                  |
+| `src/app/(required-auth)/generate/guided/page.tsx`  | 添加团队选择器                                  |
+| `src/app/(required-auth)/generate/segment/page.tsx` | 添加团队选择器                                  |
+| `src/app/(required-auth)/stories/page.tsx`          | 添加团队筛选、团队标签显示                      |
+
+### 权限模型
+
+#### 访问权限
+
+| 类型         | 条件                        |
+| ------------ | --------------------------- |
+| 私有 stories | userId === currentUser      |
+| 团队 stories | teamId 存在且用户是团队成员 |
+
+#### 成员操作权限
+
+| 操作             | Owner | Admin | Editor | Viewer |
+| ---------------- | ----- | ----- | ------ | ------ |
+| 创建团队         | ✓     | -     | -      | -      |
+| 删除团队         | ✓     | -     | -      | -      |
+| 编辑团队信息     | ✓     | ✓     | -      | -      |
+| 添加成员         | ✓     | ✓     | -      | -      |
+| 移除成员         | ✓     | ✓     | -      | -      |
+| 修改成员角色     | ✓     | ✓     | -      | -      |
+| 退出团队         | ✓     | ✓     | ✓      | ✓      |
+| 创建团队 stories | ✓     | ✓     | ✓      | -      |
+| 查看团队         | ✓     | ✓     | ✓      | ✓      |
+
+#### Admin 保护逻辑
+
+- **防止移除 owner**: team.ownerId === targetUser.userId 时禁止移除
+- **防止移除最后一个 admin**: adminCount <= 1 时禁止移除
+- **防止 admin 移除其他 admin**: 仅 owner 可以移除 admin
+- **自移除保护**: 自移除时若为最后一个 admin 则禁止
+
+### 使用说明
+
+1. 用户可在 `/teams` 页面创建团队
+2. 创建者自动成为团队 admin 和 owner
+3. admin 可通过 email 添加团队成员
+4. 成员可选择角色：admin / editor / viewer
+5. 在生成页面可选择团队，创建团队共享的 stories
+6. stories 列表页可按团队筛选
+7. 团队成员均可查看/编辑/删除团队 stories（权限通过 isStoryBelongToUser 检查）

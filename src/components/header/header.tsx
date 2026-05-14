@@ -16,6 +16,7 @@ import {
   Loader2Icon,
   LogOut,
   UserIcon,
+  UsersIcon,
   VideoIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -75,6 +76,15 @@ export function Header() {
                   href="/talent"
                 >
                   <UserIcon className="h-6 w-6" /> Talent
+                </Link>
+
+                <Link
+                  className={cn(
+                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
+                  )}
+                  href="/teams"
+                >
+                  <UsersIcon className="h-6 w-6" /> Teams
                 </Link>
               </>
             )}

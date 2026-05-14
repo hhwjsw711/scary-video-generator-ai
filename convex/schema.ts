@@ -14,9 +14,25 @@ const schema = defineSchema({
     // other "users" fields...
     credits: v.number(),
   }).index("email", ["email"]),
+
+  teams: defineTable({
+    name: v.string(),
+    description: v.string(),
+    ownerId: v.id("users"),
+  }).index("by_ownerId", ["ownerId"]),
+
+  teamMembers: defineTable({
+    teamId: v.id("teams"),
+    userId: v.id("users"),
+    role: v.union(v.literal("admin"), v.literal("editor"), v.literal("viewer")),
+  })
+    .index("by_teamId", ["teamId"])
+    .index("by_userId", ["userId"])
+    .index("by_teamId_and_userId", ["teamId", "userId"]),
   stories: defineTable({
     name: v.string(),
     userId: v.id("users"),
+    teamId: v.optional(v.id("teams")),
     content: v.string(),
     createType: v.union(
       v.literal("full-scripted"),
@@ -58,7 +74,9 @@ const schema = defineSchema({
         }),
       ),
     ),
-  }),
+  })
+    .index("by_teamId", ["teamId"])
+    .index("by_userId_and_teamId", ["userId", "teamId"]),
   storySegments: defineTable({
     text: v.string(),
     imagePrompt: v.string(),
