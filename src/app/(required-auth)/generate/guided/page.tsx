@@ -34,6 +34,7 @@ import {
   Mountain,
   Camera,
   UsersIcon,
+  User,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -267,7 +268,7 @@ const GuidedStoryCreation = () => {
                   <SelectContent className="border-purple-700 bg-gray-900 text-purple-300">
                     <SelectItem value="none">
                       <div className="flex items-center gap-2">
-                        <UsersIcon className="h-4 w-4" />
+                        <User className="h-4 w-4" />
                         Private (No Team)
                       </div>
                     </SelectItem>

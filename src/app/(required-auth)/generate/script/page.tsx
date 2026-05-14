@@ -25,7 +25,13 @@ import { cn, splitStory } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
-import { Loader2Icon, Monitor, SmartphoneIcon, UsersIcon } from "lucide-react";
+import {
+  Loader2Icon,
+  Monitor,
+  SmartphoneIcon,
+  User,
+  UsersIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -140,7 +146,7 @@ const Page = () => {
                   <SelectContent className="border-purple-700 bg-gray-900 text-purple-300">
                     <SelectItem value="none">
                       <div className="flex items-center gap-2">
-                        <UsersIcon className="h-4 w-4" />
+                        <User className="h-4 w-4" />
                         Private (No Team)
                       </div>
                     </SelectItem>

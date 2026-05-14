@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery } from "convex/react";
-import { Monitor, Smartphone, UsersIcon } from "lucide-react";
+import { Monitor, Smartphone, User, UsersIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "~/convex/_generated/api";
@@ -86,7 +86,7 @@ const Page = () => {
             <SelectContent className="border-purple-700 bg-gray-900 text-purple-300">
               <SelectItem value="none">
                 <div className="flex items-center gap-2">
-                  <UsersIcon className="h-4 w-4" />
+                  <User className="h-4 w-4" />
                   Private (No Team)
                 </div>
               </SelectItem>
