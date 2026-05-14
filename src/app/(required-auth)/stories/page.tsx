@@ -6,6 +6,7 @@ import { Popover } from "@radix-ui/react-popover";
 import { useMutation, useQuery } from "convex/react";
 import {
   EllipsisVertical,
+  Lock,
   Monitor,
   Phone,
   PhoneIcon,
@@ -52,18 +53,22 @@ export default function Page({
     <div className="container h-full py-12">
       <h1
         className={cn(
-          "w-full text-center font-nosifer text-2xl font-bold text-purple-300 md:text-[40px]",
+          "mb-4 w-full text-center font-nosifer text-2xl font-bold text-purple-300 md:text-[40px]",
         )}
       >
         Your Stories
       </h1>
 
-      <div className="flex items-center justify-center gap-4 py-4">
+      <p className={cn("py-4 text-center font-special text-lg")}>
+        Here are the stories you&apos;ve generated.
+      </p>
+
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <Select value={selectedTeamId} onValueChange={setSelectedTeamId}>
-          <SelectTrigger className="w-[200px] border-purple-700 bg-gray-900 text-purple-300">
+          <SelectTrigger className="w-[180px] border-purple-500 bg-gray-900 text-purple-300 hover:border-purple-300">
             <SelectValue placeholder="Filter by team" />
           </SelectTrigger>
-          <SelectContent className="border-purple-700 bg-gray-900 text-purple-300">
+          <SelectContent className="border-purple-500 bg-gray-900 text-purple-300">
             <SelectItem value="all">
               <div className="flex items-center gap-2">
                 <UsersIcon className="h-4 w-4" />
@@ -72,7 +77,7 @@ export default function Page({
             </SelectItem>
             <SelectItem value="private">
               <div className="flex items-center gap-2">
-                <UsersIcon className="h-4 w-4" />
+                <Lock className="h-4 w-4" />
                 Private Only
               </div>
             </SelectItem>
@@ -105,12 +110,8 @@ export default function Page({
             </Button>
           )}
         </div>
-      ) : (
-        <p className={cn("py-4 text-center font-special text-lg")}>
-          Here are the stories you've generated.
-        </p>
-      )}
-      <div className="grid grid-cols-1 gap-8 py-12 md:grid-cols-3">
+      ) : null}
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
         {displayedStories.map((s) => (
           <StoryItem key={s._id} story={s} />
         ))}

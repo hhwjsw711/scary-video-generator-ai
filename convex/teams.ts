@@ -125,6 +125,14 @@ export const remove = mutation({
       await ctx.db.delete(member._id);
     }
 
+    const stories = await ctx.db
+      .query("stories")
+      .withIndex("by_teamId", (q) => q.eq("teamId", args.teamId))
+      .collect();
+    for (const story of stories) {
+      await ctx.db.patch(story._id, { teamId: undefined });
+    }
+
     await ctx.db.delete(args.teamId);
 
     return null;

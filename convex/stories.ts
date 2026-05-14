@@ -161,6 +161,7 @@ export const edit = mutation({
     name: v.optional(v.string()),
     id: v.id("stories"),
     content: v.optional(v.string()),
+    teamId: v.optional(v.union(v.id("teams"), v.null())),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
@@ -179,6 +180,7 @@ export const edit = mutation({
     return await ctx.db.patch(args.id, {
       name: args.name ? args.name : story.name,
       content: args.content ? args.content : story.content,
+      teamId: args.teamId ?? undefined,
     });
   },
 });

@@ -930,3 +930,42 @@ Loading / 空状态 / 网格内容                     ← 仅这里变化
 5. 在生成页面可选择团队，创建团队共享的 stories
 6. stories 列表页可按团队筛选
 7. 团队成员均可查看/编辑/删除团队 stories（权限通过 isStoryBelongToUser 检查）
+
+### 团队管理增强 (2026-05-14)
+
+#### 新增功能
+
+1. **故事详情页团队修改**
+
+   - 路径: `/stories/[storyId]`
+   - 功能: 在故事详情页右上角可以修改故事的团队归属
+   - 支持: 私有 ↔ 团队之间切换
+
+2. **删除团队时自动清理**
+
+   - 删除团队时，自动将关联的 stories 设为私有
+   - 防止 stories 的 teamId 指向不存在的团队
+
+3. **Stories 列表页样式优化**
+   - 布局改为工具栏样式（与 Talent 页面一致）
+   - Private 选项使用 Lock 图标，团队使用 UsersIcon 图标
+   - 统一间距与 Talent 页面一致
+
+#### 修改的文件
+
+| 文件                                                 | 修改内容                       |
+| ---------------------------------------------------- | ------------------------------ |
+| `convex/stories.ts`                                  | edit mutation 新增 teamId 参数 |
+| `convex/teams.ts`                                    | remove 新增清理 stories 的逻辑 |
+| `src/app/(required-auth)/stories/[storyId]/page.tsx` | 添加团队选择器                 |
+| `src/app/(required-auth)/stories/page.tsx`           | 布局优化 + Lock 图标           |
+
+#### 边界情况处理
+
+| 场景             | 处理方式                       |
+| ---------------- | ------------------------------ |
+| 快速连续切换团队 | isChangingTeam 状态禁用选择器  |
+| 切换失败         | toast 错误提示                 |
+| teams 加载中     | 不显示选择器（防止显示空下拉） |
+| 用户无团队       | 详情页不显示团队选择器         |
+| 删除团队         | 关联的 stories 自动转为私有    |
