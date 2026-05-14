@@ -50,6 +50,8 @@
 ```json
 {
   "convex": "^1.16.2",
+  "@convex-dev/auth": "^0.0.71",
+  "@convex-dev/stripe": "^0.1.4",
   "next": "^14.2.4",
   "react": "^18.3.1",
   "openai": "^4.65.0",
@@ -468,8 +470,8 @@ await deleteStory({ id: storyId });
 
 主要表：
 
-- `users`: 用户信息 + 积分（name 字段: Google 用户自动获取，Password 用户从邮箱前缀派生）
-- `stories`: 视频项目内容、格式、AI 生成信息
+- `users`: 用户信息 + 积分（name 字段: Google 用户自动获取，Password 用户从邮箱前缀派生；注册赠送 1000 积分）
+- `stories`: 视频项目内容、格式、AI 生成信息（可选 teamId，决定积分扣费来源）
 - `storySegments`: 项目片段、图片状态
 - `videos`: 视频元数据、状态
 - `videoSegments`: 视频片段、语音状态
@@ -477,6 +479,9 @@ await deleteStory({ id: storyId });
 - `talents`: 人才库（虚拟角色）
 - `talentSheets`: 人才形象表
 - `talentMedia`: 人才参考素材
+- `teams`: 团队信息 + 团队积分池（credits 字段）
+- `teamMembers`: 团队成员 + 角色（admin/editor/viewer）
+- `creditTransactions`: 积分交易流水（充值/消费/赠送/退款，含 stripePaymentId 幂等键）
 
 ## 第三方服务集成
 
@@ -511,6 +516,18 @@ await deleteStory({ id: storyId });
 - **文件**: `convex/sqs.ts`
 - **用途**: 异步任务队列（用于长时间运行的视频生成任务）
 - **配置**: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SQS_QUEUE_URL
+
+### Stripe
+
+- **文件**: `convex/stripe.ts`, `convex/http.ts`
+- **组件**: `@convex-dev/stripe` (已在 `convex/convex.config.ts` 引入)
+- **用途**: 积分包购买（一次性支付），Customer Portal 管理
+- **模式**: 双积分池 — 个人 (`users.credits`) + 团队 (`teams.credits`)
+- **积分包**: Starter (1,000) / Pro (3,500) / Team (15,000)
+- **Webhook**: `/stripe/webhook`，处理 `payment_intent.succeeded` / `payment_intent.payment_failed`
+- **幂等保护**: `addCredit` / `addTeamCredit` 按 `stripePaymentId` 去重
+- **配置**: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_*` (3 个 Price ID)
+- **页面**: `/billing` (购买积分、查看交易、Customer Portal)
 
 ## 代码风格和规范
 
@@ -602,6 +619,7 @@ npm run build        # 构建生产版本（会进行类型检查）
 - **团队列表**: `src/app/(required-auth)/teams/page.tsx`
 - **团队详情**: `src/app/(required-auth)/teams/[teamId]/page.tsx`
 - **用户设置**: `src/app/(required-auth)/settings/page.tsx`
+- **积分购买**: `src/app/(required-auth)/billing/page.tsx`
 - **Terms of Service**: `src/app/terms/page.tsx` (公开页面，无需登录)
 - **Privacy Policy**: `src/app/privacy/page.tsx` (公开页面，无需登录)
 - **主布局**: `src/app/layout.tsx`
@@ -619,6 +637,9 @@ npm run build        # 构建生产版本（会进行类型检查）
 - **Convex Storage**: `convex/storage.ts`
 - **Convex Teams**: `convex/teams.ts`
 - **Convex TeamMembers**: `convex/teamMembers.ts`
+- **Convex Stripe**: `convex/stripe.ts`
+- **Convex Credits**: `convex/credits.ts`
+- **Convex HTTP**: `convex/http.ts` (含 Stripe webhook 路由)
 - **环境配置**: `src/env.js`
 
 ### 待优化项
@@ -628,6 +649,7 @@ npm run build        # 构建生产版本（会进行类型检查）
 3. ❌ 无 CI/CD 配置
 4. ✅ 移动端适配已完成 (2026-05-12)
 5. ❌ 图片和视频生成进度反馈
+6. ✅ Stripe 积分支付已集成 (2026-05-14)
 
 ## 下一步建议
 
@@ -637,6 +659,7 @@ npm run build        # 构建生产版本（会进行类型检查）
 4. 添加日志记录和监控（Convex 提供日志功能）
 5. ✅ 移动端体验优化已完成 (2026-05-12)
 6. 添加生成进度实时反馈功能
+7. 完善 Stripe 退款流程和 Customer Portal 自定义
 
 ## 2026-05-13 Guided 生成功能增强
 
@@ -1184,3 +1207,178 @@ Loading / 空状态 / 网格内容                     ← 仅这里变化
 | `src/app/privacy/page.tsx`         | 新建: Privacy Policy 页面           |
 | `src/components/shared/footer.tsx` | Terms/Privacy 改为 Link 组件        |
 | `architecture.md`                  | 更新项目结构、品牌信息、Footer 链接 |
+
+## 2026-05-14 积分支付系统 (Stripe)
+
+### 新增功能
+
+1. **双积分池模型**: 个人积分 (`users.credits`) + 团队积分 (`teams.credits`)
+2. **Stripe 支付集成**: 通过 `@convex-dev/stripe` 组件实现一次性支付购买积分包
+3. **积分交易流水**: `creditTransactions` 表记录所有充值/消费/赠送/退款
+4. **Billing 页面 (`/billing`)**: 积分购买、余额查看、交易历史、Customer Portal
+
+### 积分模型
+
+#### 消费规则
+
+| 场景 | 扣费来源 | 说明 |
+|---|---|---|
+| 私有 story (teamId = null) | `users.credits` | 扣个人积分 |
+| 团队 story (teamId 存在) | `teams.credits` | 扣团队积分池 |
+| 生成视频 | 跟随 story 的 teamId | 有 teamId → 团队，无 → 个人 |
+
+#### 积分消耗公式
+
+| 操作 | 消耗 |
+|---|---|
+| AI 生成故事 (by-ai) | 1 credit |
+| 手动脚本 + Refine | segments数 × 10 + Math.ceil(字数/1000) |
+| 生成视频 | 分钟数 × 30 + 片段数 × 20 |
+| by-segments | 不消耗（手动分段模式） |
+
+#### 积分包配置 (Stripe Price)
+
+| 包名 | 积分 | 环境变量 |
+|---|---|---|
+| Starter | 1,000 | `STRIPE_PRICE_STARTER` |
+| Pro | 3,500 | `STRIPE_PRICE_PRO` |
+| Team | 15,000 | `STRIPE_PRICE_TEAM` |
+
+### 数据库 Schema 变更
+
+#### teams 表新增字段
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `credits` | `v.number()` | 团队积分池，新建团队时初始化为 0 |
+
+#### creditTransactions 表 (新建)
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `userId` | `v.id("users")` | 操作用户 |
+| `teamId` | `v.optional(v.id("teams"))` | 团队 ID（null = 个人交易） |
+| `amount` | `v.number()` | 正数=充值, 负数=消耗 |
+| `type` | union | `purchase` / `consumption` / `signup_bonus` / `refund` |
+| `description` | `v.string()` | 交易描述 |
+| `stripePaymentId` | `v.optional(v.string())` | Stripe Payment Intent ID（幂等键） |
+
+索引: `by_userId`, `by_teamId`
+
+### Convex 后端
+
+#### convex/credits.ts (重构)
+
+| 函数 | 类型 | 说明 |
+|---|---|---|
+| `updateCredit` | internalMutation | 扣减积分（个人/团队），记录消费流水 |
+| `addCredit` | internalMutation | 充值个人积分，含 Stripe 幂等保护 |
+| `addTeamCredit` | internalMutation | 充值团队积分，含 Stripe 幂等保护 |
+| `getUserTransactions` | query | 查询个人交易历史 |
+| `getTeamTransactions` | query | 查询团队交易历史 |
+
+#### convex/stripe.ts (新建)
+
+| 函数 | 类型 | 说明 |
+|---|---|---|
+| `createCreditCheckout` | action | 创建 Stripe Checkout Session（个人/团队） |
+| `createCustomerPortal` | action | 创建 Customer Portal Session |
+| `getCreditPacks` | query | 返回可用积分包列表 |
+
+#### convex/http.ts (改动)
+
+新增 Stripe Webhook 路由 (`/stripe/webhook`):
+
+| 事件 | 处理 |
+|---|---|
+| `payment_intent.succeeded` | 按 metadata 分流到个人/团队充值 |
+| `payment_intent.payment_failed` | 记录日志 |
+
+**幂等保护**: `addCredit` / `addTeamCredit` 内按 `stripePaymentId` 去重，重复投递直接 return。
+
+### 前端页面
+
+#### `/billing` (`src/app/(required-auth)/billing/page.tsx`)
+
+- 个人/团队积分余额卡片
+- Personal / Team Tab 切换
+- Team 模式下拉选择（非 admin 的 team 选项 disabled）
+- 3 个积分包卡片（Pro 标记为 Popular）
+- Customer Portal 入口 ("Manage Billing" 按钮)
+- 交易历史列表（根据 tab 切换显示个人或团队交易）
+- 支付成功/取消 URL 回调处理（toast + router.replace）
+
+#### 导航集成
+
+| 位置 | 改动 |
+|---|---|
+| `header.tsx` — 桌面导航 | 新增 Billing 链接 (`CreditCard` 图标) |
+| `menu-button.tsx` — 手机端菜单 | 新增 Billing 菜单项 |
+
+### Stripe 支付流程
+
+```
+用户点击购买 → createCreditCheckout action → 
+Stripe Checkout Session → 用户完成支付 → 
+Webhook payment_intent.succeeded → 
+metadata.targetType 判断 → addCredit 或 addTeamCredit →
+积分充入对应池 + 写入 creditTransactions
+```
+
+### 环境变量
+
+| 变量 | 说明 | 设置方式 |
+|---|---|---|
+| `STRIPE_SECRET_KEY` | Stripe 密钥 | `npx convex env set` |
+| `STRIPE_WEBHOOK_SECRET` | Webhook 签名 | `npx convex env set` |
+| `STRIPE_PRICE_STARTER` | Starter 包 Price ID | `npx convex env set` |
+| `STRIPE_PRICE_PRO` | Pro 包 Price ID | `npx convex env set` |
+| `STRIPE_PRICE_TEAM` | Team 包 Price ID | `npx convex env set` |
+
+### Webhook URL
+
+```
+https://<your-convex-deployment>.convex.site/stripe/webhook
+```
+
+需在 Stripe Dashboard → Developers → Webhooks 配置，监听事件:
+- `payment_intent.succeeded`
+- `payment_intent.payment_failed`
+
+### 权限模型
+
+| 操作 | 个人 | 团队 admin | 团队 editor/viewer |
+|---|---|---|---|
+| 购买个人积分 | ✓ | ✓ | ✓ |
+| 购买团队积分 | — | ✓ | ✗ |
+| 查看个人交易 | ✓ | ✓ | ✓ |
+| 查看团队交易 | — | ✓ | ✓ |
+
+### 关键边界处理
+
+| 场景 | 处理 |
+|---|---|
+| Webhook 重复投递 | `stripePaymentId` 幂等去重 |
+| reduceCredit ≤ 0 | `updateCredit` 抛 ConvexError |
+| 团队积分余额不足 | 错误信息含具体所需/可用数值 |
+| 非 admin 尝试购买团队积分 | 后端 + 前端双重拦截 |
+| 个人购买时 teamId 参数 | metadata 中不传 teamId（条件展开） |
+| 故事从个人移到团队后 refine | 按当前 `story.teamId` 扣费（跟随归属） |
+| Price ID 未配置 | `createCreditCheckout` 抛明确错误 |
+| 快速连续点击购买 | `isCheckingOut` 状态禁用所有按钮 |
+
+### 修改的文件
+
+| 文件 | 修改内容 |
+|---|---|
+| `convex/schema.ts` | teams 加 credits；新建 creditTransactions 表 |
+| `convex/credits.ts` | 重构：双积分池 + 幂等 + 交易流水 |
+| `convex/stories.ts` | 3 处扣费调用传入 teamId + storyId |
+| `convex/videos.ts` | 视频生成扣费按 teamId 分流 + 团队余额检查 |
+| `convex/teams.ts` | 创建团队时初始化 credits: 0 |
+| `convex/stripe.ts` | 新建: Checkout / Portal / Packs |
+| `convex/http.ts` | 注册 Stripe webhook 路由 + 事件处理 |
+| `src/app/(required-auth)/billing/page.tsx` | 新建: 积分购买页面 |
+| `src/components/header/header.tsx` | 新增 Billing 导航链接 |
+| `src/components/header/menu-button.tsx` | 新增 Billing 菜单项 |
+| `convex/convex.config.ts` | 已有 `@convex-dev/stripe` 组件引用 |
