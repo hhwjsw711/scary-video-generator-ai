@@ -7,7 +7,7 @@
 **项目路径**: `E:\Workspace\scary-video-generator-ai`  
 **项目名称**: Wordream  
 **创建时间**: 基于 create-t3-app (v7.37.0)  
-**最后更新**: 2026-05-14 (认证增强: Password登录 + 密码重置)
+**最后更新**: 2026-05-14 (用户资料管理: Settings页 + 头像/姓名修改)
 
 ## 技术架构
 
@@ -104,6 +104,8 @@ src/
 │       │       └── refine/       # 项目优化页面
 │       ├── videos/               # 视频管理
 │       │   └── page.tsx          # 视频列表
+│       ├── settings/             # 用户设置
+│       │   └── page.tsx          # 资料编辑（头像 + 姓名）
 │       └── generate/             # 生成功能
 │           ├── page.tsx          # 生成入口
 │           ├── script/           # 脚本生成
@@ -193,7 +195,7 @@ convex/
 ├── channels.ts           # YouTube 频道
 ├── sqs.ts                # AWS SQS 消息队列
 ├── http.ts               # HTTP 端点
-├── users.ts              # 用户管理
+├── users.ts              # 用户管理（viewer 查询 + update 变更）
 ├── logs.ts               # 日志记录
 ├── storage.ts            # 存储配置（上传功能）
 └── talent.ts             # 人才库功能
@@ -450,7 +452,7 @@ await deleteStory({ id: storyId });
 
 主要表：
 
-- `users`: 用户信息 + 积分
+- `users`: 用户信息 + 积分（name 字段: Google 用户自动获取，Password 用户从邮箱前缀派生）
 - `stories`: 视频项目内容、格式、AI 生成信息
 - `storySegments`: 项目片段、图片状态
 - `videos`: 视频元数据、状态
@@ -583,6 +585,7 @@ npm run build        # 构建生产版本（会进行类型检查）
 - **人才详情**: `src/app/(required-auth)/talent/[talentId]/page.tsx`
 - **团队列表**: `src/app/(required-auth)/teams/page.tsx`
 - **团队详情**: `src/app/(required-auth)/teams/[teamId]/page.tsx`
+- **用户设置**: `src/app/(required-auth)/settings/page.tsx`
 - **主布局**: `src/app/layout.tsx`
 - **Header**: `src/components/header/header.tsx`
 - **手机端菜单**: `src/components/header/menu-button.tsx`
@@ -828,7 +831,7 @@ Loading / 空状态 / 网格内容                     ← 仅这里变化
 
 - `Password` provider (`id: "password"`) — 处理邮箱+密码的登录/注册
 - `reset: ResendOTPPasswordReset` — 密码重置通过 Resend 发送 8 位验证码
-- `profile` 回调 — 注册时自动设置 `credits: 1000`（与 Google provider 一致）
+- `profile` 回调 — 注册时自动设置 `credits: 1000`（与 Google provider 一致）；同时从邮箱前缀自动派生 `name`（eg. `user@example.com` → `name: "user"`）
 - `Google` provider — 保持原有 Google OAuth 登录不变
 
 **邮件发送** — `convex/otp/ResendOTPPasswordReset.ts`:
@@ -1061,3 +1064,65 @@ Loading / 空状态 / 网格内容                     ← 仅这里变化
 | teams 加载中     | 不显示选择器（防止显示空下拉） |
 | 用户无团队       | 详情页不显示团队选择器         |
 | 删除团队         | 关联的 stories 自动转为私有    |
+
+## 2026-05-14 用户资料管理 (User Settings)
+
+### 新增功能
+
+1. **用户设置页面 (`/settings`)**: 用户可编辑头像和显示名称
+2. **自动命名**: Password（邮箱）注册用户自动从邮箱前缀派生 `name`，不再显示空名
+3. **导航入口**: 桌面端用户下拉菜单 + 手机端菜单均添加 "Settings" 链接
+
+### 后端变更
+
+**`convex/auth.ts`** — Password provider profile 回调:
+
+- 新增从邮箱前缀自动派生 `name`（eg. `user@example.com` → `"user"`）
+- 增加 `params.email` 为 `undefined` 时的安全兜底（`?? ""`）
+
+**`convex/users.ts`** — 新增 `update` mutation:
+
+| 参数  | 类型                     | 说明                    |
+| ----- | ------------------------ | ----------------------- |
+| name  | `v.optional(v.string())` | 用户显示名称            |
+| image | `v.optional(v.string())` | 头像 URL（Convex 存储） |
+
+- 仅 patch 传入的字段，未传字段保持不变
+- 未认证时抛 `ConvexError("Unauthenticated")`
+
+### 前端页面
+
+#### `/settings` 页面 (`src/app/(required-auth)/settings/page.tsx`)
+
+**Profile Picture 卡片:**
+
+- 大尺寸 Avatar（`h-24 w-24`）展示当前头像
+- 右下角相机按钮触发文件选择
+- 上传流程: `generateUploadUrl → POST → getStorageUrl → updateUser`
+- 上传中按钮禁用并显示 spinner
+- 非图片文件 toast 提示拒绝
+- Blob URL 通过 ref 追踪，新选择时释放旧 URL，组件卸载时 cleanup
+
+**Display Name 卡片:**
+
+- Name input: `value={name}` 直接绑定 state，`placeholder` 显示当前服务端值
+- 用户删除文字时不会跳回原名（区别于上一版使用 `currentName` 回退的逻辑）
+- Email input: 只读显示，提示不可更改
+- Save 按钮: `disabled` 条件为 `isSaving || !(name.trim() && name.trim() !== user?.name)`，空值或未变更时禁用
+
+### 导航集成
+
+| 位置                           | 改动                                               |
+| ------------------------------ | -------------------------------------------------- |
+| `header.tsx` — ProfileDropdown | 用户名与 Sign out 之间新增 `Link href="/settings"` |
+| `menu-button.tsx`              | Teams 菜单项之后新增 `Link href="/settings"`       |
+
+### 修改的文件
+
+| 文件                                        | 修改内容                              |
+| ------------------------------------------- | ------------------------------------- |
+| `convex/auth.ts`                            | Password profile 派生 name，安全兜底  |
+| `convex/users.ts`                           | 新增 update mutation                  |
+| `src/app/(required-auth)/settings/page.tsx` | 新建: 用户设置页面（头像 + 姓名编辑） |
+| `src/components/header/header.tsx`          | 新增 Settings 下拉菜单项              |
+| `src/components/header/menu-button.tsx`     | 新增 Settings 手机端菜单项            |

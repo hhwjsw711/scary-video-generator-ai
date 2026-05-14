@@ -10,6 +10,7 @@ import {
   BookOpenText,
   FilmIcon,
   MenuIcon,
+  Settings,
   UserIcon,
   UsersIcon,
   VideoIcon,
@@ -61,6 +62,14 @@ export function MenuButton() {
             className="flex cursor-pointer items-center gap-2 text-purple-300 hover:bg-purple-700 hover:text-white focus:bg-purple-700 focus:text-white"
           >
             <UsersIcon className="h-4 w-4" /> Teams
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link
+            href="/settings"
+            className="flex cursor-pointer items-center gap-2 text-purple-300 hover:bg-purple-700 hover:text-white focus:bg-purple-700 focus:text-white"
+          >
+            <Settings className="h-4 w-4" /> Settings
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

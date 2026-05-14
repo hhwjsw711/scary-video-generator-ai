@@ -14,6 +14,7 @@ import {
   FilmIcon,
   Loader2Icon,
   LogOut,
+  Settings,
   UserIcon,
   UsersIcon,
   VideoIcon,
@@ -225,6 +226,16 @@ function ProfileDropdown() {
         <DropdownMenuLabel className="text-purple-300">
           {user?.name}
         </DropdownMenuLabel>
+
+        <DropdownMenuItem asChild>
+          <Link
+            href="/settings"
+            className="flex cursor-pointer items-center text-purple-300 focus:bg-purple-700 focus:text-white"
+          >
+            <Settings className="mr-2 h-4 w-4" />
+            Settings
+          </Link>
+        </DropdownMenuItem>
 
         <DropdownMenuItem
           asChild

@@ -10,8 +10,11 @@ export const { auth, signIn, signOut, store } = convexAuth({
       id: "password",
       reset: ResendOTPPasswordReset,
       profile(params) {
+        const email = (params.email as string | undefined) ?? "";
+        const name = email.split("@")[0] || email;
         return {
-          email: params.email as string,
+          email,
+          name,
           credits: 1000,
         };
       },
