@@ -23,6 +23,8 @@ import type * as credits from "../credits.js";
 import type * as http from "../http.js";
 import type * as images from "../images.js";
 import type * as logs from "../logs.js";
+import type * as otp_PasswordResetEmail from "../otp/PasswordResetEmail.js";
+import type * as otp_ResendOTPPasswordReset from "../otp/ResendOTPPasswordReset.js";
 import type * as replicate from "../replicate.js";
 import type * as sqs from "../sqs.js";
 import type * as storage from "../storage.js";
@@ -54,6 +56,8 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   images: typeof images;
   logs: typeof logs;
+  "otp/PasswordResetEmail": typeof otp_PasswordResetEmail;
+  "otp/ResendOTPPasswordReset": typeof otp_ResendOTPPasswordReset;
   replicate: typeof replicate;
   sqs: typeof sqs;
   storage: typeof storage;

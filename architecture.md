@@ -7,7 +7,7 @@
 **项目路径**: `E:\Workspace\scary-video-generator-ai`  
 **项目名称**: Wordream  
 **创建时间**: 基于 create-t3-app (v7.37.0)  
-**最后更新**: 2026-05-13 (人才库功能完成)
+**最后更新**: 2026-05-14 (认证增强: Password登录 + 密码重置)
 
 ## 技术架构
 
@@ -20,7 +20,7 @@
 - **数据库**:
   - Convex (主数据库，NoSQL)
   - Drizzle ORM + MySQL (通过 Lucia Auth 使用)
-- **认证**: Convex Auth + Lucia Auth
+- **认证**: Convex Auth + Lucia Auth (登录方式: Google OAuth, Password 邮箱密码, 密码重置)
 - **AI 服务**: OpenAI API, Replicate, Cloudinary
 - **状态管理**: Convex hooks (useQuery/useMutation) + Zustand
 - **验证**: Zod (@t3-oss/env-nextjs)
@@ -56,7 +56,9 @@
   "cloudinary": "^2.5.0",
   "@radix-ui/react-*": "多个 Radix UI 组件",
   "lucide-react": "^0.429.0",
-  "gsap": "^3.12.5"
+  "gsap": "^3.12.5",
+  "resend": "^4.0.0",
+  "@react-email/components": "^0.0.25"
 }
 ```
 
@@ -131,6 +133,10 @@ src/
 │   │   ├── add-talent-media-dialog.tsx
 │   │   ├── add-talent-sheet-dialog.tsx
 │   │   └── talent-media-upload.tsx
+│   ├── auth/                     # 认证相关组件
+│   │   ├── SignInWithPassword.tsx       # 邮箱密码登录/注册表单
+│   │   ├── ResetPasswordWithEmailCode.tsx  # 密码重置流程（两步）
+│   │   └── CodeInput.tsx               # 验证码输入框
 │   ├── shared/                   # 共享组件
 │   │   ├── loader.tsx            # 加载器
 │   │   ├── footer.tsx            # 页脚（紫色主题）
@@ -169,7 +175,10 @@ convex/
 ├── tsconfig.json         # Convex TypeScript 配置
 ├── _generated/           # 自动生成的类型（不要手动修改）
 ├── auth.config.ts        # Convex Auth 配置
-├── auth.ts               # 认证逻辑
+├── auth.ts               # 认证逻辑（Password + Google providers）
+├── otp/                  # 邮件验证码
+│   ├── PasswordResetEmail.tsx      # 重置密码邮件模板 (React Email)
+│   └── ResendOTPPasswordReset.ts   # Resend 发码服务端 provider
 ├── stories.ts            # 项目相关查询/变更
 ├── videos.ts             # 视频相关查询/变更
 ├── storySegments.ts      # 项目片段处理
@@ -539,9 +548,10 @@ npm run build        # 构建生产版本（会进行类型检查）
 
 ### 环境变量
 
-- **配置**: `src/env.js` (使用 Zod 验证)
+- **配置**: `src/env.js` (使用 Zod 验证，仅限 Next.js 端)
+- **Convex 环境变量**: `AUTH_RESEND_KEY`, `AUTH_EMAIL` 需通过 `npx convex env set` 设置到 Convex 后端
 - **示例**: `.env.example`
-- **本地**: `.env.local` (已存在，包含实际密钥)
+- **本地**: `.env.local` (已存在，包含实际密钥；`npx convex dev` 会自动读取)
 - **跳过验证**: `SKIP_ENV_VALIDATION=1 npm run build` (用于 Docker)
 
 ## 已知信息和注意事项
@@ -579,6 +589,10 @@ npm run build        # 构建生产版本（会进行类型检查）
 - **Footer**: `src/components/shared/footer.tsx`
 - **Hero**: `src/app/(required-auth)/_components/hero.tsx`
 - **Hero Canvas**: `src/app/(required-auth)/_components/hero-canvas.tsx`
+- **Convex Auth**: `convex/auth.ts`
+- **Password 重置后端**: `convex/otp/ResendOTPPasswordReset.ts`
+- **Password 表单**: `src/components/auth/SignInWithPassword.tsx`
+- **密码重置 UI**: `src/components/auth/ResetPasswordWithEmailCode.tsx`
 - **Convex Schema**: `convex/schema.ts`
 - **Convex Talent**: `convex/talent.ts`
 - **Convex Storage**: `convex/storage.ts`
@@ -800,6 +814,84 @@ Loading / 空状态 / 网格内容                     ← 仅这里变化
 | `src/app/(required-auth)/talent/[talentId]/page.tsx` | 新增 `VideoThumbnail` 组件（悬停播放 + 错误回退） |
 | `src/components/talent/talent-media-upload.tsx`      | 确认后上传、进度显示、`onUploadingChange` 回调    |
 | `src/components/talent/add-talent-media-dialog.tsx`  | 上传中关闭保护、移除 Done 按钮                    |
+
+## 2026-05-14 认证增强: Password 登录 + 密码重置
+
+### 新增功能
+
+1. **Password (邮箱+密码) 登录/注册**: 用户在原有的 Google 登录之外，可选择邮箱+密码注册和登录
+2. **密码重置 (Forgot Password)**: 通过邮箱验证码重置密码
+
+### 认证配置
+
+**后端** — `convex/auth.ts`:
+
+- `Password` provider (`id: "password"`) — 处理邮箱+密码的登录/注册
+- `reset: ResendOTPPasswordReset` — 密码重置通过 Resend 发送 8 位验证码
+- `profile` 回调 — 注册时自动设置 `credits: 1000`（与 Google provider 一致）
+- `Google` provider — 保持原有 Google OAuth 登录不变
+
+**邮件发送** — `convex/otp/ResendOTPPasswordReset.ts`:
+
+- 使用 `@convex-dev/auth/providers/Email` 发送验证码
+- 8 位纯数字验证码，通过 Resend API 发送
+- 邮件模板为 `convex/otp/PasswordResetEmail.tsx` (React Email)
+
+### 前端交互
+
+**认证弹窗** — `src/components/header/header.tsx`:
+
+- 点击 "Sign In" 打开 Dialog
+- 两个视图切换: `signin`（默认）和 `reset`
+- `signin` 视图: Google 按钮 + 分隔线 + Password 表单
+- `reset` 视图: 两步重置流程
+
+**Password 表单** — `src/components/auth/SignInWithPassword.tsx`:
+
+- Sign In / Sign Up 切换（通过 hidden `flow` 字段）
+- Sign In 时显示 "Forgot password?" 链接
+- 提交时按钮显示 spinner 并禁用（`submitting` 状态）
+
+**重置密码** — `src/components/auth/ResetPasswordWithEmailCode.tsx`:
+
+- 步骤 1: 输入邮箱 → 调用 `signIn("password")` 带 `flow="reset"` → 发送验证码
+- 步骤 2: 输入 8 位验证码 + 新密码 → 调用 `signIn("password")` 带 `flow="reset-verification"`
+
+**验证码输入** — `src/components/auth/CodeInput.tsx`:
+
+- 单行输入框，`inputMode="numeric"`，`autoComplete="one-time-code"`
+- `name="code"` 与 Convex Auth 的字段名称匹配
+
+### 边界情况处理
+
+| 场景              | 处理方式                                                |
+| ----------------- | ------------------------------------------------------- |
+| Dialog 关闭       | 重置 `authView` 为 `"signin"`                           |
+| 邮件发送失败      | Toast 提示 "Could not send reset code"                  |
+| 验证码/密码错误   | Toast 提示 "Invalid code or password"（不透露具体错误） |
+| 提交中关闭 Dialog | dialog 关闭时 authView 自动重置                         |
+| 快速连续点击      | `submitting` 状态禁止重复提交                           |
+| AuthLoader 干扰   | Dialog 打开时隐藏全局 auth loading spinner              |
+
+### 环境变量
+
+| 变量              | 说明           | 设置方式                             |
+| ----------------- | -------------- | ------------------------------------ |
+| `AUTH_RESEND_KEY` | Resend API Key | `npx convex env set` 或 `.env.local` |
+| `AUTH_EMAIL`      | 发件人地址     | `npx convex env set` 或 `.env.local` |
+
+### 修改的文件
+
+| 文件                                                 | 说明                                     |
+| ---------------------------------------------------- | ---------------------------------------- |
+| `convex/auth.ts`                                     | 新增 Password provider + profile 回调    |
+| `convex/otp/ResendOTPPasswordReset.ts`               | 新建: Resend 发码服务端                  |
+| `convex/otp/PasswordResetEmail.tsx`                  | 新建: 重置码邮件模板                     |
+| `src/components/auth/SignInWithPassword.tsx`         | 新建: 邮箱密码表单                       |
+| `src/components/auth/ResetPasswordWithEmailCode.tsx` | 新建: 重置流程 UI                        |
+| `src/components/auth/CodeInput.tsx`                  | 新建: 验证码输入                         |
+| `src/components/header/header.tsx`                   | 重构: 从直接 Google 登录改为 Dialog 弹窗 |
+| `.env.example`                                       | 添加 AUTH_RESEND_KEY, AUTH_EMAIL 注释    |
 
 ## 2026-05-14 团队管理 (Teams) 功能
 

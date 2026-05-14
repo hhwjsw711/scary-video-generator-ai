@@ -5,7 +5,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuthActions } from "@convex-dev/auth/react";
@@ -20,15 +19,25 @@ import {
   VideoIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { api } from "~/convex/_generated/api";
 import { AuthLoader } from "../shared/auth-loader";
 import { MenuButton } from "./menu-button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { SignInWithPassword } from "@/components/auth/SignInWithPassword";
+import { ResetPasswordWithEmailCode } from "@/components/auth/ResetPasswordWithEmailCode";
 import { cn } from "@/lib/utils";
 
 export function Header() {
   const user = useQuery(api.users.viewer);
   const { signIn } = useAuthActions();
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const [authView, setAuthView] = useState<"signin" | "reset">("signin");
   return (
     <div className="select-none border-b py-2">
       <div className="container mx-auto flex items-center justify-between">
@@ -94,16 +103,66 @@ export function Header() {
         <div className="flex items-center justify-between gap-5">
           {/* <ModeToggle /> */}
           <AuthLoader
-            authLoading={<Loader2Icon className="animate-spin" />}
+            authLoading={
+              !showAuthDialog ? (
+                <Loader2Icon className="animate-spin" />
+              ) : undefined
+            }
             unauthenticated={
               <>
                 <button
                   className="flex items-center rounded-md bg-primary px-4 py-2 text-white transition-colors hover:bg-primary/90"
-                  onClick={() => signIn("google")}
+                  onClick={() => setShowAuthDialog(true)}
                 >
-                  <GoogleIcon className="mr-2 h-5 w-5" />
                   Sign In
                 </button>
+                <Dialog
+                  open={showAuthDialog}
+                  onOpenChange={(open) => {
+                    setShowAuthDialog(open);
+                    if (!open) setAuthView("signin");
+                  }}
+                >
+                  <DialogContent className="border-purple-700 bg-gray-900 sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle className="text-center font-nosifer text-2xl text-purple-300">
+                        {authView === "reset" ? "Reset Password" : "Wordream"}
+                      </DialogTitle>
+                    </DialogHeader>
+                    {authView === "reset" ? (
+                      <ResetPasswordWithEmailCode
+                        onBack={() => setAuthView("signin")}
+                        onSuccess={() => {
+                          setShowAuthDialog(false);
+                          setAuthView("signin");
+                        }}
+                      />
+                    ) : (
+                      <div className="flex flex-col gap-3">
+                        <button
+                          className="flex items-center justify-center gap-2 rounded-md border border-purple-700 bg-gray-800 px-4 py-2 text-white transition-colors hover:bg-gray-700"
+                          onClick={() => signIn("google")}
+                        >
+                          <GoogleIcon className="h-5 w-5" />
+                          <span className="font-special">
+                            Continue with Google
+                          </span>
+                        </button>
+                        <div className="flex items-center gap-2">
+                          <div className="h-px flex-1 bg-purple-700" />
+                          <span className="font-special text-xs text-gray-500">
+                            or
+                          </span>
+                          <div className="h-px flex-1 bg-purple-700" />
+                        </div>
+                        <SignInWithPassword
+                          onSuccess={() => setShowAuthDialog(false)}
+                          onForgotPassword={() => setAuthView("reset")}
+                        />
+                      </div>
+                    )}
+                  </DialogContent>
+                </Dialog>
               </>
             }
           >
