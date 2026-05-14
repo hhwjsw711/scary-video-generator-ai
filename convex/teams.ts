@@ -63,6 +63,7 @@ export const create = mutation({
       name: args.name,
       description: args.description,
       ownerId: userId,
+      credits: 0,
     });
 
     await ctx.db.insert("teamMembers", {

@@ -11,6 +11,7 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import { useQuery } from "convex/react";
 import {
   BookOpenText,
+  CreditCard,
   FilmIcon,
   Loader2Icon,
   LogOut,
@@ -95,6 +96,15 @@ export function Header() {
                   href="/teams"
                 >
                   <UsersIcon className="h-6 w-6" /> Teams
+                </Link>
+
+                <Link
+                  className={cn(
+                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
+                  )}
+                  href="/billing"
+                >
+                  <CreditCard className="h-6 w-6" /> Billing
                 </Link>
               </>
             )}

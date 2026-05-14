@@ -4,9 +4,12 @@ import { auth } from "./auth";
 import { voiceGeneratedCallback } from "./voices";
 import { segmentVideoGeneratedCallback } from "./videoSegments";
 import { finalVideoGeneratedCallback } from "./videos";
-import { internal } from "./_generated/api";
+import { internal, components } from "./_generated/api";
 import { httpAction } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
+import { registerRoutes } from "@convex-dev/stripe";
+import type Stripe from "stripe";
+
 const http = httpRouter();
 
 http.route({
@@ -83,4 +86,53 @@ http.route({
 });
 
 auth.addHttpRoutes(http);
+
+registerRoutes(http, components.stripe, {
+  webhookPath: "/stripe/webhook",
+  events: {
+    "payment_intent.succeeded": async (ctx, event: Stripe.PaymentIntentSucceededEvent) => {
+      const payment = event.data.object;
+      const metadata = payment.metadata;
+
+      if (metadata.type !== "credit_purchase") return;
+
+      const creditAmount = parseInt(metadata.creditAmount ?? "0");
+      if (!creditAmount || isNaN(creditAmount)) return;
+
+      const stripePaymentId = payment.id;
+      const userId = metadata.userId as Id<"users">;
+      const pack = metadata.pack ?? "unknown";
+
+      if (metadata.targetType === "team" && metadata.teamId) {
+        const teamId = metadata.teamId as Id<"teams">;
+        await ctx.runMutation(internal.credits.addTeamCredit, {
+          teamId,
+          userId,
+          amount: creditAmount,
+          description: `Team credit pack (${pack}) purchase`,
+          stripePaymentId,
+        });
+      } else {
+        await ctx.runMutation(internal.credits.addCredit, {
+          userId,
+          amount: creditAmount,
+          type: "purchase",
+          description: `Credit pack (${pack}) purchase`,
+          stripePaymentId,
+        });
+      }
+    },
+    "payment_intent.payment_failed": async (ctx, event: Stripe.PaymentIntentPaymentFailedEvent) => {
+      const payment = event.data.object;
+      const metadata = payment.metadata;
+      if (metadata.type === "credit_purchase") {
+        await ctx.runMutation(internal.logs.create, {
+          function: "stripe_webhook",
+          message: `Payment failed for credit purchase: ${payment.id}`,
+        });
+      }
+    },
+  },
+});
+
 export default http;

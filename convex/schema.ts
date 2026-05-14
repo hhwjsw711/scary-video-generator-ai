@@ -19,6 +19,7 @@ const schema = defineSchema({
     name: v.string(),
     description: v.string(),
     ownerId: v.id("users"),
+    credits: v.number(),
   }).index("by_ownerId", ["ownerId"]),
 
   teamMembers: defineTable({
@@ -225,6 +226,22 @@ const schema = defineSchema({
     url: v.string(),
     publicId: v.optional(v.string()),
   }).index("talentId", ["talentId"]),
+
+  creditTransactions: defineTable({
+    userId: v.id("users"),
+    teamId: v.optional(v.id("teams")),
+    amount: v.number(),
+    type: v.union(
+      v.literal("purchase"),
+      v.literal("consumption"),
+      v.literal("signup_bonus"),
+      v.literal("refund"),
+    ),
+    description: v.string(),
+    stripePaymentId: v.optional(v.string()),
+  })
+    .index("by_userId", ["userId"])
+    .index("by_teamId", ["teamId"]),
 });
 
 export default schema;

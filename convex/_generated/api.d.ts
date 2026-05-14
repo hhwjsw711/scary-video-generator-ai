@@ -1,5 +1,3 @@
-/* prettier-ignore-start */
-
 /* eslint-disable */
 /**
  * Generated `api` utility.
@@ -10,11 +8,6 @@
  * @module
  */
 
-import type {
-  ApiFromModules,
-  FilterApi,
-  FunctionReference,
-} from "convex/server";
 import type * as auth from "../auth.js";
 import type * as channels from "../channels.js";
 import type * as chatgpt from "../chatgpt.js";
@@ -30,23 +23,22 @@ import type * as sqs from "../sqs.js";
 import type * as storage from "../storage.js";
 import type * as stories from "../stories.js";
 import type * as storySegments from "../storySegments.js";
+import type * as stripe from "../stripe.js";
 import type * as talent from "../talent.js";
 import type * as teamMembers from "../teamMembers.js";
 import type * as teams from "../teams.js";
 import type * as users from "../users.js";
-import type * as videos from "../videos.js";
 import type * as videoSegments from "../videoSegments.js";
+import type * as videos from "../videos.js";
 import type * as voices from "../voices.js";
 import type * as youtube from "../youtube.js";
 
-/**
- * A utility for referencing Convex functions in your app's API.
- *
- * Usage:
- * ```js
- * const myFunctionReference = api.myModule.myFunction;
- * ```
- */
+import type {
+  ApiFromModules,
+  FilterApi,
+  FunctionReference,
+} from "convex/server";
+
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   channels: typeof channels;
@@ -63,22 +55,43 @@ declare const fullApi: ApiFromModules<{
   storage: typeof storage;
   stories: typeof stories;
   storySegments: typeof storySegments;
+  stripe: typeof stripe;
   talent: typeof talent;
   teamMembers: typeof teamMembers;
   teams: typeof teams;
   users: typeof users;
-  videos: typeof videos;
   videoSegments: typeof videoSegments;
+  videos: typeof videos;
   voices: typeof voices;
   youtube: typeof youtube;
 }>;
+
+/**
+ * A utility for referencing Convex functions in your app's public API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = api.myModule.myFunction;
+ * ```
+ */
 export declare const api: FilterApi<
   typeof fullApi,
   FunctionReference<any, "public">
 >;
+
+/**
+ * A utility for referencing Convex functions in your app's internal API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = internal.myModule.myFunction;
+ * ```
+ */
 export declare const internal: FilterApi<
   typeof fullApi,
   FunctionReference<any, "internal">
 >;
 
-/* prettier-ignore-end */
+export declare const components: {
+  stripe: import("@convex-dev/stripe/_generated/component.js").ComponentApi<"stripe">;
+};

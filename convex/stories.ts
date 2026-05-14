@@ -299,6 +299,8 @@ export const createStory = mutation({
         userId,
         reduceCredit:
           segments.length * 10 + Math.ceil(args.story.length / 1000),
+        teamId: args.teamId,
+        storyId,
       });
 
       await ctx.scheduler.runAfter(0, internal.stories.fullScriptedStoryJob, {
@@ -320,6 +322,8 @@ export const createStory = mutation({
       await ctx.runMutation(internal.credits.updateCredit, {
         userId,
         reduceCredit: 1,
+        teamId: args.teamId,
+        storyId,
       });
       await ctx.scheduler.runAfter(0, internal.chatgpt.generateStory, {
         prompt: args.prompt!,
@@ -458,6 +462,8 @@ export const onDoneRefine = mutation({
     await ctx.runMutation(internal.credits.updateCredit, {
       userId,
       reduceCredit: totalCredits,
+      teamId: story.teamId,
+      storyId: id,
     });
 
     // Update story with format and content

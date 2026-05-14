@@ -78,17 +78,29 @@ export const create = mutation({
       segments.length,
     ).totalCredits;
 
-    // Check if user has enough credits
-    if (user.credits < requiredCredits) {
-      throw new ConvexError(
-        `Not enough credits. Required: ${requiredCredits}, Available: ${user.credits}`,
-      );
+    // Check credits based on team ownership
+    if (story.teamId) {
+      const team = await ctx.db.get(story.teamId);
+      if (!team) throw new ConvexError("Team not found");
+      if (team.credits < requiredCredits) {
+        throw new ConvexError(
+          `Team doesn't have enough credits. Required: ${requiredCredits}, Available: ${team.credits}`,
+        );
+      }
+    } else {
+      if (user.credits < requiredCredits) {
+        throw new ConvexError(
+          `Not enough credits. Required: ${requiredCredits}, Available: ${user.credits}`,
+        );
+      }
     }
 
     // Deduct credits
     await ctx.runMutation(internal.credits.updateCredit, {
       reduceCredit: requiredCredits,
       userId,
+      teamId: story.teamId,
+      storyId: story._id,
     });
 
     // Create video

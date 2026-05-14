@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   BookOpenText,
+  CreditCard,
   FilmIcon,
   MenuIcon,
   Settings,
@@ -62,6 +63,14 @@ export function MenuButton() {
             className="flex cursor-pointer items-center gap-2 text-purple-300 hover:bg-purple-700 hover:text-white focus:bg-purple-700 focus:text-white"
           >
             <UsersIcon className="h-4 w-4" /> Teams
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link
+            href="/billing"
+            className="flex cursor-pointer items-center gap-2 text-purple-300 hover:bg-purple-700 hover:text-white focus:bg-purple-700 focus:text-white"
+          >
+            <CreditCard className="h-4 w-4" /> Billing
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
