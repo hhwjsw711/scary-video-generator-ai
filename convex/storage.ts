@@ -34,8 +34,24 @@ export const uploadTalentMedia = mutation({
     if (!talent) throw new ConvexError("Talent not found");
     if (talent.userId !== userId) throw new ConvexError("Forbidden");
 
-    const url = await ctx.storage.getUrl(args.storageId);
+    const url = (await ctx.storage.getUrl(args.storageId)) as string | null;
     if (!url) throw new ConvexError("Failed to get storage URL");
+
+    const ALLOWED_TYPES: Record<string, string[]> = {
+      image: ["image/png", "image/jpeg", "image/webp"],
+      video: ["video/mp4", "video/webm", "video/quicktime"],
+      recording: ["audio/mpeg", "audio/wav", "audio/webm"],
+    };
+
+    const allowed = ALLOWED_TYPES[args.type];
+    if (allowed) {
+      const contentType = url.split("?").at(0)?.split(".").pop();
+      if (contentType && !allowed.some((t) => t.endsWith(contentType))) {
+        throw new ConvexError(
+          `Invalid file type for ${args.type}. Allowed: ${allowed.join(", ")}`,
+        );
+      }
+    }
 
     const mediaId = await ctx.db.insert("talentMedia", {
       talentId: args.talentId,
@@ -52,6 +68,8 @@ export const getStorageUrl = mutation({
     storageId: v.id("_storage"),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new ConvexError("Unauthenticated");
     const url = await ctx.storage.getUrl(args.storageId);
     if (!url) throw new ConvexError("Failed to get storage URL");
     return url;

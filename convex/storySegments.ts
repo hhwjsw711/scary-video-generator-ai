@@ -12,7 +12,19 @@ import { Doc } from "./_generated/dataModel";
 export const get = query({
   args: { id: v.id("storySegments") },
   handler: async (ctx, { id }) => {
-    return await ctx.db.get(id);
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthenticated");
+    const segment = await ctx.db.get(id);
+    if (!segment) return null;
+    const hasAccess = await ctx.runQuery(
+      internal.stories.isStoryBelongsToUser,
+      {
+        storyId: segment.storyId,
+        userId,
+      },
+    );
+    if (!hasAccess) throw new ConvexError("Forbidden");
+    return segment;
   },
 });
 export const edit = mutation({
@@ -54,11 +66,9 @@ export const edit = mutation({
       imageStatus: args.imageStatus ? args.imageStatus : segment.imageStatus,
     });
     if (segment.text !== args.text) {
-      await ctx.scheduler.runAfter(
-        0,
-        internal.stories.concatStoryContentFromSegments,
-        { storyId: story._id },
-      );
+      await ctx.scheduler.runAfter(0, internal.stories.rebuildStoryContent, {
+        storyId: story._id,
+      });
     }
   },
 });
@@ -127,11 +137,45 @@ export const editImageStatus = internalMutation({
 export const getByStoryId = query({
   args: { storyId: v.id("stories") },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthenticated");
+    const hasAccess = await ctx.runQuery(
+      internal.stories.isStoryBelongsToUser,
+      {
+        storyId: args.storyId,
+        userId,
+      },
+    );
+    if (!hasAccess) throw new ConvexError("Forbidden");
     const records = await ctx.db
       .query("storySegments")
-      .filter((q) => q.eq(q.field("storyId"), args.storyId))
+      .withIndex("storyId", (q) => q.eq("storyId", args.storyId))
       .collect();
     return records.sort((a, b) => a.order - b.order);
+  },
+});
+export const getFirstSegmentImage = query({
+  args: { storyId: v.id("stories") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthenticated");
+    const hasAccess = await ctx.runQuery(
+      internal.stories.isStoryBelongsToUser,
+      {
+        storyId: args.storyId,
+        userId,
+      },
+    );
+    if (!hasAccess) throw new ConvexError("Forbidden");
+    const records = await ctx.db
+      .query("storySegments")
+      .withIndex("storyId", (q) => q.eq("storyId", args.storyId))
+      .order("asc")
+      .take(1);
+    if (records.length === 0) return null;
+    return records[0]!.imageStatus.status === "saved"
+      ? records[0]!.imageStatus.imageUrl
+      : null;
   },
 });
 export const isSegmentBelongToStoryAndUser = internalQuery({
@@ -139,12 +183,21 @@ export const isSegmentBelongToStoryAndUser = internalQuery({
     segmentId: v.id("storySegments"),
     userId: v.id("users"),
   },
-  async handler(ctx, { segmentId, userId }) {
+  handler: async (ctx, { segmentId, userId }) => {
     const segment = await ctx.db.get(segmentId);
-    if (!segment) return false; // Segment not found
-    const story = await ctx.runQuery(api.stories.get, { id: segment.storyId });
-    if (story && story.userId === userId && segment.storyId === story._id) {
-      return true;
+    if (!segment) return false;
+    const story = await ctx.db.get(segment.storyId);
+    if (!story) return false;
+    if (story.userId === userId) return true;
+    if (story.teamId) {
+      const teamId = story.teamId;
+      const membership = await ctx.db
+        .query("teamMembers")
+        .withIndex("by_teamId_and_userId", (q) =>
+          q.eq("teamId", teamId).eq("userId", userId),
+        )
+        .unique();
+      return !!membership;
     }
     return false;
   },
@@ -162,7 +215,7 @@ export const insert = mutation({
       throw new ConvexError("Unauthenticated");
     }
     if (
-      !(await ctx.runQuery(internal.stories.isStoryBelongToUser, {
+      !(await ctx.runQuery(internal.stories.isStoryBelongsToUser, {
         storyId: args.storyId,
         userId,
       }))
@@ -170,6 +223,7 @@ export const insert = mutation({
       throw new ConvexError("Forbidden");
     const segmentWithLargerOrders = await ctx.db
       .query("storySegments")
+      .withIndex("storyId", (q) => q.eq("storyId", args.storyId))
       .filter((q) => q.gte(q.field("order"), args.order))
       .collect();
     await Promise.all(
@@ -261,14 +315,12 @@ export const saveSegments = internalMutation({
 export const internalDeleteStorySegment = internalMutation({
   args: { id: v.id("storySegments") },
   handler: async (ctx, args) => {
-    await ctx.db.delete(args.id);
     const segment = await ctx.db.get(args.id);
+    await ctx.db.delete(args.id);
     if (segment)
-      await ctx.scheduler.runAfter(
-        0,
-        internal.stories.concatStoryContentFromSegments,
-        { storyId: segment.storyId },
-      );
+      await ctx.scheduler.runAfter(0, internal.stories.rebuildStoryContent, {
+        storyId: segment.storyId,
+      });
   },
 });
 export const deleteSegment = mutation({
@@ -290,6 +342,7 @@ export const deleteSegment = mutation({
     await ctx.db.delete(id);
     const segmentWithLargerOrders = await ctx.db
       .query("storySegments")
+      .withIndex("storyId", (q) => q.eq("storyId", segment.storyId))
       .filter((q) => q.gt(q.field("order"), segment.order))
       .collect();
     await Promise.all(
@@ -297,11 +350,9 @@ export const deleteSegment = mutation({
         await ctx.db.patch(s._id, { order: s.order - 1 });
       }),
     );
-    await ctx.scheduler.runAfter(
-      0,
-      internal.stories.concatStoryContentFromSegments,
-      { storyId: segment.storyId },
-    );
+    await ctx.scheduler.runAfter(0, internal.stories.rebuildStoryContent, {
+      storyId: segment.storyId,
+    });
   },
 });
 export const autoGenerateImage = mutation({
@@ -312,13 +363,25 @@ export const autoGenerateImage = mutation({
     const userId = await getAuthUserId(ctx);
     if (!userId) throw new ConvexError("Unauthenticated");
 
+    await ctx.runMutation(internal.ratelimit.checkRateLimit, {
+      key: `img-gen:${userId}`,
+      maxRequests: 30,
+      windowMs: 3600000,
+    });
+
     // Get the segment
     const segment = await ctx.db.get(segmentId);
     if (!segment) throw new ConvexError("Segment not found");
 
     // Get the story to check ownership and get context
     const story = await ctx.runQuery(api.stories.get, { id: segment.storyId });
-    if (!story || story.userId !== userId)
+    if (
+      !story ||
+      !(await ctx.runQuery(internal.stories.isStoryBelongsToUser, {
+        storyId: segment.storyId,
+        userId,
+      }))
+    )
       throw new ConvexError("Unauthorized");
 
     // Update segment status to pending

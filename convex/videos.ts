@@ -1,4 +1,5 @@
 import { ConvexError, v } from "convex/values";
+import { paginationOptsValidator } from "convex/server";
 import {
   httpAction,
   internalAction,
@@ -36,7 +37,7 @@ export const internalGet = internalQuery({
   handler: async (ctx, args) => {
     const video = await ctx.db.get(args.id);
     if (!video) throw new ConvexError("Video not found");
-    return await ctx.db.get(args.id);
+    return video;
   },
 });
 
@@ -46,7 +47,19 @@ export const isVideoBelongToUser = internalQuery({
     const video = await ctx.db.get(args.videoId);
     if (!video) throw new ConvexError("Video not found");
     const story = await ctx.db.get(video.storyId);
-    return story?.userId === args.userId;
+    if (!story) return false;
+    if (story.userId === args.userId) return true;
+    if (story.teamId) {
+      const teamId = story.teamId;
+      const membership = await ctx.db
+        .query("teamMembers")
+        .withIndex("by_teamId_and_userId", (q) =>
+          q.eq("teamId", teamId).eq("userId", args.userId),
+        )
+        .unique();
+      return !!membership;
+    }
+    return false;
   },
 });
 
@@ -61,12 +74,18 @@ export const create = mutation({
     const user = await ctx.db.get(userId);
 
     if (!story || !user) throw new ConvexError("Story or user not found");
-    if (story?.userId !== userId) throw new ConvexError("Story not found");
+    if (
+      !(await ctx.runQuery(internal.stories.isStoryBelongsToUser, {
+        storyId: args.storyId,
+        userId,
+      }))
+    )
+      throw new ConvexError("Story not found");
 
     // Calculate required credits
     const segments = await ctx.db
       .query("storySegments")
-      .filter((q) => q.eq(q.field("storyId"), story._id))
+      .withIndex("storyId", (q) => q.eq("storyId", story._id))
       .collect();
 
     const storyText = segments.reduce(
@@ -113,7 +132,7 @@ export const create = mutation({
     // clone all story segment to video segment
     const storySegment = await ctx.db
       .query("storySegments")
-      .filter((q) => q.eq(q.field("storyId"), story._id))
+      .withIndex("storyId", (q) => q.eq("storyId", story._id))
       .collect();
     if (storySegment.some((s) => s.imageStatus.status !== "saved"))
       throw new ConvexError(`Some images of story is not generated.`);
@@ -161,16 +180,17 @@ export const getCurrentUserVideos = query({
   args: {},
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthenticated");
     const stories = await ctx.db
       .query("stories")
-      .filter((q) => q.eq(q.field("userId"), userId))
+      .withIndex("by_userId_and_teamId", (q) => q.eq("userId", userId))
       .order("desc")
       .collect();
     const rs = await Promise.all(
       stories.map((s) =>
         ctx.db
           .query("videos")
-          .filter((q) => q.eq(q.field("storyId"), s._id))
+          .withIndex("storyId", (q) => q.eq("storyId", s._id))
           .order("desc")
           .collect(),
       ),
@@ -181,13 +201,43 @@ export const getCurrentUserVideos = query({
   },
 });
 
+export const getCurrentUserVideosPaginated = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthenticated");
+
+    const paginatedStories = await ctx.db
+      .query("stories")
+      .withIndex("by_userId_and_teamId", (q) => q.eq("userId", userId))
+      .order("desc")
+      .paginate(args.paginationOpts);
+
+    const videosByStory = await Promise.all(
+      paginatedStories.page.map((s) =>
+        ctx.db
+          .query("videos")
+          .withIndex("storyId", (q) => q.eq("storyId", s._id))
+          .order("desc")
+          .collect(),
+      ),
+    );
+
+    const videos = videosByStory.reduce((acc, curr) => {
+      return [...acc, ...curr];
+    }, []);
+
+    return { ...paginatedStories, page: videos };
+  },
+});
+
 export const isCanCreateVideo = internalQuery({
   args: { videoId: v.id("videos") },
   handler: async (ctx, args) => {
     const video = await ctx.db.get(args.videoId);
     const videoSegments = await ctx.db
       .query("videoSegments")
-      .filter((q) => q.eq(q.field("videoId"), video?._id))
+      .withIndex("videoId", (q) => q.eq("videoId", args.videoId))
       .collect();
     return (
       videoSegments.length > 1 &&
@@ -198,23 +248,6 @@ export const isCanCreateVideo = internalQuery({
     );
   },
 });
-// export const checkGeneratedVoiceAndFrames = internalAction({
-//   args: { videoId: v.id("videos") },
-//   handler: async (ctx, args) => {
-//     await ctx.runMutation(internal.logs.create, {
-//       function: "checkGeneratedVoiceAndFrames",
-//       message: "checking can create video on generatedFramesCallback",
-//     });
-//     const isCanCreateVideo = await ctx.runQuery(
-//       internal.videos.isCanCreateVideo,
-//       { videoId: args.videoId },
-//     );
-//     if (isCanCreateVideo) {
-//       //TODO
-//     }
-//   },
-// });
-
 export const editVideoResult = internalMutation({
   args: {
     id: v.id("videos"),
@@ -282,10 +315,13 @@ export const deleteVideo = mutation({
     await ctx.db.delete(args.id);
     const videoSegments = await ctx.db
       .query("videoSegments")
-      .filter((q) => q.eq(q.field("videoId"), args.id))
+      .withIndex("videoId", (q) => q.eq("videoId", args.id))
       .collect();
     const publicIds = videoSegments
-      .filter((v) => v.videoStatus.status === "saved")
+      .filter(
+        (v) =>
+          v.videoStatus.status === "saved" || v.videoStatus.status === "cached",
+      )
       .map((v) => (v.videoStatus as { publicId: string }).publicId);
     await Promise.all(
       videoSegments.map(async (s) => {

@@ -3,9 +3,9 @@ import { Resend as ResendAPI } from "resend";
 import { PasswordResetEmail } from "./PasswordResetEmail";
 
 function generateCode(): string {
-  return Array.from({ length: 8 }, () => Math.floor(Math.random() * 10)).join(
-    "",
-  );
+  const bytes = new Uint8Array(8);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => (b % 10).toString()).join("");
 }
 
 export const ResendOTPPasswordReset = Email({

@@ -1,17 +1,21 @@
 "use client";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { HeroCanvas } from "./hero-canvas";
-gsap.registerPlugin(ScrollTrigger);
+
 export const Hero = ({ children }: { children: React.ReactNode }) => {
   const container = useRef(null);
-  useLayoutEffect(() => {
-    const context = gsap.context(() => {
-      // Animation logic can be added here if needed
-    }, container);
-    return () => context.revert();
+
+  useEffect(() => {
+    let ctx: { revert: () => void } | undefined;
+    void (async () => {
+      const gsap = (await import("gsap")).default;
+      const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+      gsap.registerPlugin(ScrollTrigger);
+      ctx = gsap.context(() => {}, container);
+    })();
+    return () => ctx?.revert();
   }, []);
+
   return (
     <div
       ref={container}

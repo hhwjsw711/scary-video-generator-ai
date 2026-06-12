@@ -2,7 +2,7 @@
 import { Button, ButtonProps } from "@/components/ui/button";
 import { useAction } from "convex/react";
 import { useState } from "react";
-import { toast } from "sonner";
+import { useToast } from "@/components/ui/use-toast";
 import { api } from "~/convex/_generated/api";
 
 interface ConnectYoutubeButtonProps extends Omit<ButtonProps, "children"> {
@@ -13,6 +13,7 @@ export function ConnectYoutubeButton({
   children,
   ...rest
 }: ConnectYoutubeButtonProps) {
+  const { toast } = useToast();
   const [isConnecting, setIsConnecting] = useState(false);
   const getUrl = useAction(api.youtube.getAuthUrlAction);
 
@@ -22,10 +23,13 @@ export function ConnectYoutubeButton({
       window.location.href = await getUrl();
     } catch (error) {
       console.error("Failed to get YouTube auth URL:", error);
-      toast.error(
-        "Failed to connect to YouTube. Please try again." +
+      toast({
+        title: "Error",
+        description:
+          "Failed to connect to YouTube. Please try again." +
           (error as Error)?.message,
-      );
+        variant: "destructive",
+      });
     } finally {
       setIsConnecting(false);
     }

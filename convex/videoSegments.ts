@@ -54,31 +54,6 @@ export const internalGet = internalQuery({
     return ctx.db.get(args.id);
   },
 });
-// export const editImageStatus = internalMutation({
-//   args: {
-//     id: v.id("videoSegments"),
-//     imageStatus: v.union(
-//       v.object({
-//         status: v.literal("pending"),
-//         details: v.string(),
-//       }),
-//       v.object({
-//         status: v.literal("failed"),
-//         reason: v.string(),
-//         elapsedMs: v.number(),
-//       }),
-//       v.object({
-//         status: v.literal("saved"),
-//         imageUrl: v.string(),
-//         elapsedMs: v.number(),
-//       }),
-//     ),
-//   },
-//   handler: async (ctx, args) => {
-//     await ctx.db.patch(args.id, { imageStatus: args.imageStatus });
-//   },
-// });
-
 export const editVoiceStatus = internalMutation({
   args: {
     id: v.id("videoSegments"),
@@ -161,7 +136,7 @@ export const getByVideoId = query({
     ) {
       const rs = await ctx.db
         .query("videoSegments")
-        .filter((q) => q.eq(q.field("videoId"), args.videoId))
+        .withIndex("videoId", (q) => q.eq("videoId", args.videoId))
         .collect();
       return rs.sort((a, b) => a.order - b.order);
     } else return null;
@@ -172,7 +147,7 @@ export const internalGetByVideoId = internalQuery({
   handler: async (ctx, args) => {
     return await ctx.db
       .query("videoSegments")
-      .filter((q) => q.eq(q.field("videoId"), args.videoId))
+      .withIndex("videoId", (q) => q.eq("videoId", args.videoId))
       .collect();
   },
 });

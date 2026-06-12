@@ -1,7 +1,7 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError, v } from "convex/values";
 import { action, query } from "./_generated/server";
-import { api, components } from "./_generated/api";
+import { api, components, internal } from "./_generated/api";
 
 import { StripeSubscriptions } from "@convex-dev/stripe";
 
@@ -31,17 +31,19 @@ function getSiteUrl() {
 
 export const createCreditCheckout = action({
   args: {
-    pack: v.union(
-      v.literal("starter"),
-      v.literal("pro"),
-      v.literal("team"),
-    ),
+    pack: v.union(v.literal("starter"), v.literal("pro"), v.literal("team")),
     targetType: v.union(v.literal("personal"), v.literal("team")),
     teamId: v.optional(v.id("teams")),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) throw new ConvexError("Not authenticated");
+
+    await ctx.runMutation(internal.ratelimit.checkRateLimit, {
+      key: `checkout:${userId}`,
+      maxRequests: 5,
+      windowMs: 600000,
+    });
 
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new ConvexError("No identity found");
@@ -60,7 +62,9 @@ export const createCreditCheckout = action({
         throw new ConvexError("You are not a member of this team");
       }
       if (team.role !== "admin") {
-        throw new ConvexError("Only team admins can purchase credits for the team");
+        throw new ConvexError(
+          "Only team admins can purchase credits for the team",
+        );
       }
     }
 

@@ -1,13 +1,15 @@
 "use client";
 import { AuthLoader } from "@/components/shared/auth-loader";
 import { cn } from "@/lib/utils";
-import { useQuery } from "convex/react";
+import { usePaginatedQuery, useQuery } from "convex/react";
+import Link from "next/link";
 import { PlusIcon } from "lucide-react";
 import { api } from "~/convex/_generated/api";
 import { ChannelItem } from "@/components/videos/channel-item";
 import { ConnectYoutubeButton } from "@/components/videos/connect-youtube-button";
 import { VideoItem } from "@/components/videos/video-item";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 
 function AuthLoadingSkeleton() {
   return (
@@ -22,7 +24,15 @@ function AuthLoadingSkeleton() {
 }
 
 export default function MyVideos() {
-  const videos = useQuery(api.videos.getCurrentUserVideos);
+  const {
+    results: videos,
+    status,
+    loadMore,
+  } = usePaginatedQuery(
+    api.videos.getCurrentUserVideosPaginated,
+    {},
+    { initialNumItems: 8 },
+  );
   const channels = useQuery(api.channels.getUserChannels);
 
   return (
@@ -42,7 +52,7 @@ export default function MyVideos() {
         >
           Here are the videos you have generated.
         </p>
-        {videos?.length !== undefined && videos?.length > 0 && (
+        {videos.length > 0 && (
           <div>
             <div className="float-right hidden max-w-full md:block">
               {channels?.length && channels?.length > 0 ? (
@@ -71,8 +81,27 @@ export default function MyVideos() {
               )}
             </div>
             <div className="grid w-full grid-cols-1 gap-4 py-12 md:grid-cols-2 lg:grid-cols-3">
-              {videos?.map((v) => <VideoItem video={v} key={v._id} />)}
+              {videos.map((v) => (
+                <VideoItem video={v} key={v._id} channels={channels} />
+              ))}
             </div>
+            {status === "CanLoadMore" && (
+              <div className="flex justify-center pb-12">
+                <Button
+                  className="font-amatic text-[24px]"
+                  onClick={() => loadMore(8)}
+                >
+                  Load More
+                </Button>
+              </div>
+            )}
+            {status === "LoadingMore" && (
+              <div className="flex justify-center pb-12">
+                <div className={cn("font-amatic text-2xl font-bold")}>
+                  Loading more videos...
+                </div>
+              </div>
+            )}
             {channels?.length && channels?.length > 0 && (
               <div className="mt-8 border-t border-purple-700 pt-4 md:hidden">
                 <p className="font-special text-sm text-purple-300">
@@ -100,16 +129,21 @@ export default function MyVideos() {
             )}
           </div>
         )}
-        {videos !== undefined && videos.length === 0 && (
-          <p
-            className={cn(
-              "my-12 text-center font-amatic text-2xl font-bold md:text-[40px]",
-            )}
-          >
-            You don&apos;t have any videos.
-          </p>
+        {videos.length === 0 && status !== "LoadingFirstPage" && (
+          <div className="flex flex-col items-center gap-4 py-12">
+            <p
+              className={cn(
+                "text-center font-amatic text-2xl font-bold md:text-[40px]",
+              )}
+            >
+              You don&apos;t have any videos.
+            </p>
+            <Button className="font-amatic text-[24px]" asChild>
+              <Link href="/stories">Go to Stories</Link>
+            </Button>
+          </div>
         )}
-        {videos === undefined && (
+        {status === "LoadingFirstPage" && (
           <div className="flex h-full w-full items-center justify-center">
             <div
               className={cn("font-amatic text-2xl font-bold md:text-[40px]")}

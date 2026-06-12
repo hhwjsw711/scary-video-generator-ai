@@ -22,11 +22,6 @@ http.route({
   method: "OPTIONS",
   handler: sendImageOptions,
 });
-// http.route({
-//   path: "/updateStorageIdToSegment",
-//   method: "POST",
-//   handler: updateStorageIdToSegment,
-// });
 http.route({
   path: "/voiceGeneratedCallback",
   method: "POST",
@@ -48,16 +43,20 @@ http.route({
   handler: httpAction(async (ctx, request) => {
     const url = new URL(request.url);
     const code = url.searchParams.get("code");
-    const state = url.searchParams.get("state");
-    if (!code || !state) {
+    const stateToken = url.searchParams.get("state");
+    if (!code || !stateToken) {
       return new Response(null, {
         status: 403,
       });
     }
-    // Decode the state parameter to get the userId
-    const userId = decodeURIComponent(state) as Id<"users">;
-    console.log("state", state);
-    console.log("code", code);
+
+    const userId = await ctx.runMutation(internal.youtubeAuth.consumeState, {
+      token: stateToken,
+    });
+
+    if (!userId) {
+      return new Response(null, { status: 403 });
+    }
 
     const { accessToken, refreshToken, expireAt } = await ctx.runAction(
       internal.youtube.processCodeAction,
@@ -90,7 +89,10 @@ auth.addHttpRoutes(http);
 registerRoutes(http, components.stripe, {
   webhookPath: "/stripe/webhook",
   events: {
-    "payment_intent.succeeded": async (ctx, event: Stripe.PaymentIntentSucceededEvent) => {
+    "payment_intent.succeeded": async (
+      ctx,
+      event: Stripe.PaymentIntentSucceededEvent,
+    ) => {
       const payment = event.data.object;
       const metadata = payment.metadata;
 
@@ -122,7 +124,10 @@ registerRoutes(http, components.stripe, {
         });
       }
     },
-    "payment_intent.payment_failed": async (ctx, event: Stripe.PaymentIntentPaymentFailedEvent) => {
+    "payment_intent.payment_failed": async (
+      ctx,
+      event: Stripe.PaymentIntentPaymentFailedEvent,
+    ) => {
       const payment = event.data.object;
       const metadata = payment.metadata;
       if (metadata.type === "credit_purchase") {

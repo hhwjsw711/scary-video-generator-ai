@@ -20,7 +20,12 @@ export const Footer = () => {
           </div>
 
           <div className="flex items-center gap-6">
-            <span className="font-special text-sm text-purple-300">Docs</span>
+            <Link
+              href="#"
+              className="font-special text-sm text-purple-300 transition-colors hover:text-white"
+            >
+              Docs
+            </Link>
             <Link
               href="/terms"
               className="font-special text-sm text-purple-300 transition-colors hover:text-white"

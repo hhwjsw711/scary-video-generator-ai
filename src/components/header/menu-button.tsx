@@ -21,7 +21,7 @@ import Link from "next/link";
 export function MenuButton() {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger className="p-2">
         <MenuIcon className="text-purple-300" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="space-y-2 bg-gray-900 text-purple-300">

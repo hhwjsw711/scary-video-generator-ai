@@ -10,96 +10,58 @@ import {
 import { getAuthUserId } from "@convex-dev/auth/server";
 import md5 from "md5";
 
-export const sendImagePost = httpAction(async (ctx, request) => {
-  // Step 1: Store the file
-  const blob = await request.blob();
-  const storageId = await ctx.storage.store(blob);
-  // Step 2: Save the storage ID to the database via a mutation
-  //   const author = new URL(request.url).searchParams.get("author");
-  //   await ctx.runMutation(api.messages.sendImage, { storageId, author });
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
+const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp"];
 
-  // Step 3: Return a response with the correct CORS headers
+export const sendImagePost = httpAction(async (ctx, request) => {
+  const contentType = request.headers.get("content-type") ?? "";
+  if (!ALLOWED_TYPES.some((t) => contentType.includes(t))) {
+    return new Response(JSON.stringify({ error: "Invalid file type" }), {
+      status: 400,
+      headers: new Headers({
+        "Access-Control-Allow-Origin": process.env.SITE_URL ?? "",
+      }),
+    });
+  }
+
+  const blob = await request.blob();
+  if (blob.size > MAX_FILE_SIZE) {
+    return new Response(JSON.stringify({ error: "File too large" }), {
+      status: 400,
+      headers: new Headers({
+        "Access-Control-Allow-Origin": process.env.SITE_URL ?? "",
+      }),
+    });
+  }
+
+  const storageId = await ctx.storage.store(blob);
+
   return new Response(JSON.stringify({ storageId }), {
     status: 200,
-
-    // CORS headers
     headers: new Headers({
-      // e.g. https://mywebsite.com, configured on your Convex dashboard
-      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Origin": process.env.SITE_URL ?? "",
       Vary: "origin",
     }),
   });
 });
+
 export const sendImageOptions = httpAction(async (ctx, request) => {
-  // Step 1: Store the file
   const blob = await request.blob();
+  if (blob.size > MAX_FILE_SIZE) {
+    return new Response(null, { status: 400 });
+  }
+
   const storageId = await ctx.storage.store(blob);
 
-  // Step 2: Save the storage ID to the database via a mutation
-  //   const author = new URL(request.url).searchParams.get("author");
-  //   await ctx.runMutation(api.messages.sendImage, { storageId, author });
-
-  // Step 3: Return a response with the correct CORS headers
   return new Response(storageId.toString(), {
     status: 200,
-    // CORS headers
     headers: new Headers({
-      // e.g. https://mywebsite.com, configured on your Convex dashboard
-      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Origin": process.env.SITE_URL ?? "",
       Vary: "origin",
     }),
   });
 });
 
-// export const updateStorageIdToSegment = httpAction(async (ctx, request) => {
-//   try {
-//     const data = (await request.json()) as {
-//       segmentId: string;
-//       imageUrl: string;
-//     };
-//     await ctx.runMutation(internal.logs.create, {
-//       message: "updating image url: " + data.segmentId,
-//       function: "updateStorageIdToSegment",
-//     });
-//     await ctx.runMutation(internal.storySegments.edit, {
-//       id: data.segmentId as Id<"storySegments">,
-
-//     });
-//     return new Response(null, {
-//       status: 200,
-//       headers: new Headers({
-//         "Access-Control-Allow-Origin": "*",
-//         Vary: "origin",
-//       }),
-//     });
-//   } catch (error) {
-//     if (error instanceof Error) {
-//       await ctx.runMutation(internal.logs.create, {
-//         message: error.message,
-//         function: "images.updateStorageIdToSegment.error",
-//       });
-//       return new Response(error.message, {
-//         status: 500,
-//         headers: new Headers({
-//           "Access-Control-Allow-Origin": "*",
-//           Vary: "origin",
-//         }),
-//       });
-//     } else {
-//       await ctx.runMutation(internal.logs.create, {
-//         message: "Unkown error occur :<<",
-//         function: "images.updateStorageIdToSegment.error",
-//       });
-//       return new Response("Unkown error occur :<<", {
-//         status: 500,
-//         headers: new Headers({
-//           "Access-Control-Allow-Origin": "*",
-//           Vary: "origin",
-//         }),
-//       });
-//     }
-//   }
-// });
 export const regenerateImage = mutation({
   args: { segmentId: v.id("storySegments"), prompt: v.string() },
   handler: async (ctx, args) => {
@@ -132,6 +94,7 @@ export const regenerateImage = mutation({
     return "ok";
   },
 });
+
 export const regenerateImageJob = internalAction({
   args: {
     prompt: v.string(),
@@ -175,6 +138,7 @@ export const regenerateImageJob = internalAction({
     }
   },
 });
+
 export const generateStoryImages = internalAction({
   args: { storyId: v.id("stories") },
   handler: async (ctx, { storyId }) => {

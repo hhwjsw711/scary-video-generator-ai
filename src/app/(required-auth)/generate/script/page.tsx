@@ -44,7 +44,7 @@ const schema = z.object({
 });
 
 const Page = () => {
-  const [videoFormat, setvideoFormat] = useState<"16:9" | "9:16">("16:9");
+  const [videoFormat, setVideoFormat] = useState<"16:9" | "9:16">("16:9");
   const [selectedTeamId, setSelectedTeamId] = useState<string>("none");
 
   const router = useRouter();
@@ -73,7 +73,11 @@ const Page = () => {
       });
       router.push("/stories/" + id);
     } catch (error) {
-      console.log((error as ConvexError<string>).data);
+      toast({
+        title: "Error",
+        description: (error as ConvexError<string>).data,
+        variant: "destructive",
+      });
       toast({
         title: "Uh oh!",
         description: (error as ConvexError<string>).data,
@@ -104,8 +108,10 @@ const Page = () => {
           )}
         >
           <Form {...form}>
-            {/** @ts-ignore */}
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              onSubmit={form.handleSubmit((values) => onSubmit(values))}
+              className="space-y-4"
+            >
               <FormField
                 control={form.control}
                 name="name"
@@ -194,7 +200,7 @@ const Page = () => {
                 <div className="flex gap-2">
                   <Button
                     type="button"
-                    onClick={() => setvideoFormat("9:16")}
+                    onClick={() => setVideoFormat("9:16")}
                     className={cn(
                       "flex w-full items-center justify-center gap-2",
                       videoFormat === "9:16" ? "bg-primary" : "!bg-gray-600",
@@ -204,7 +210,7 @@ const Page = () => {
                   </Button>
                   <Button
                     type="button"
-                    onClick={() => setvideoFormat("16:9")}
+                    onClick={() => setVideoFormat("16:9")}
                     className={cn(
                       "flex w-full items-center justify-center gap-2",
                       videoFormat === "16:9" ? "bg-primary" : "!bg-gray-600",

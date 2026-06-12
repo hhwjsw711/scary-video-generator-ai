@@ -9,6 +9,8 @@ export const updateCredit = internalMutation({
     teamId: v.optional(v.id("teams")),
     storyId: v.optional(v.id("stories")),
   },
+  // Convex serializes mutations on the same document, guaranteeing
+  // that get-then-patch within a single mutation is atomic.
   handler: async (ctx, { reduceCredit, userId, teamId, storyId }) => {
     if (reduceCredit <= 0) {
       throw new ConvexError("reduceCredit must be greater than 0");
@@ -65,12 +67,17 @@ export const addCredit = internalMutation({
     description: v.string(),
     stripePaymentId: v.optional(v.string()),
   },
-  handler: async (ctx, { userId, amount, type, description, stripePaymentId }) => {
+  handler: async (
+    ctx,
+    { userId, amount, type, description, stripePaymentId },
+  ) => {
     // Idempotency: skip if this Stripe payment was already processed
     if (stripePaymentId) {
       const existing = await ctx.db
         .query("creditTransactions")
-        .filter((q) => q.eq(q.field("stripePaymentId"), stripePaymentId))
+        .withIndex("by_stripePaymentId", (q) =>
+          q.eq("stripePaymentId", stripePaymentId),
+        )
         .take(1);
       if (existing.length > 0) return;
     }
@@ -98,12 +105,17 @@ export const addTeamCredit = internalMutation({
     description: v.string(),
     stripePaymentId: v.optional(v.string()),
   },
-  handler: async (ctx, { teamId, userId, amount, description, stripePaymentId }) => {
+  handler: async (
+    ctx,
+    { teamId, userId, amount, description, stripePaymentId },
+  ) => {
     // Idempotency: skip if this Stripe payment was already processed
     if (stripePaymentId) {
       const existing = await ctx.db
         .query("creditTransactions")
-        .filter((q) => q.eq(q.field("stripePaymentId"), stripePaymentId))
+        .withIndex("by_stripePaymentId", (q) =>
+          q.eq("stripePaymentId", stripePaymentId),
+        )
         .take(1);
       if (existing.length > 0) return;
     }
@@ -133,7 +145,7 @@ export const getUserTransactions = query({
       .query("creditTransactions")
       .withIndex("by_userId", (q) => q.eq("userId", userId))
       .order("desc")
-      .collect();
+      .take(50);
   },
 });
 
@@ -146,6 +158,6 @@ export const getTeamTransactions = query({
       .query("creditTransactions")
       .withIndex("by_teamId", (q) => q.eq("teamId", teamId))
       .order("desc")
-      .collect();
+      .take(50);
   },
 });

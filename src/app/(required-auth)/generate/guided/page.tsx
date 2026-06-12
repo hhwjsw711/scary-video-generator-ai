@@ -195,7 +195,11 @@ const GuidedStoryCreation = () => {
       });
       router.push(`/stories/${storyId}/refine`);
     } catch (error) {
-      console.log((error as ConvexError<string>).data);
+      toast({
+        title: "Error",
+        description: (error as ConvexError<string>).data,
+        variant: "destructive",
+      });
       toast({
         title: "Uh oh!",
         description: (error as ConvexError<string>).data,
@@ -226,8 +230,10 @@ const GuidedStoryCreation = () => {
           )}
         >
           <Form {...form}>
-            {/** @ts-ignore */}
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              onSubmit={form.handleSubmit((values) => onSubmit(values))}
+              className="space-y-4"
+            >
               <FormField
                 control={form.control}
                 name="title"

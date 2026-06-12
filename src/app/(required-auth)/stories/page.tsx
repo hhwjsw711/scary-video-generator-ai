@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Popover } from "@radix-ui/react-popover";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation, usePaginatedQuery, useQuery } from "convex/react";
 import {
   EllipsisVertical,
   Lock,
@@ -16,9 +16,10 @@ import {
   UsersIcon,
 } from "lucide-react";
 import Image from "next/image";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, memo } from "react";
 import { api } from "~/convex/_generated/api";
 import type { Doc, Id } from "~/convex/_generated/dataModel";
 import {
@@ -36,7 +37,15 @@ export default function Page({
 }) {
   const [selectedTeamId, setSelectedTeamId] = useState<string>("all");
 
-  const stories = useQuery(api.stories.getStories);
+  const {
+    results: stories,
+    status,
+    loadMore,
+  } = usePaginatedQuery(
+    api.stories.getStoriesPaginated,
+    {},
+    { initialNumItems: 9 },
+  );
   const teams = useQuery(api.teams.list);
 
   const displayedStories = useMemo(() => {
@@ -129,7 +138,24 @@ export default function Page({
           </Link>
         )}
       </div>
-      {stories === undefined && (
+      {status === "CanLoadMore" && (
+        <div className="mt-6 flex justify-center">
+          <Button
+            className="font-amatic text-[24px]"
+            onClick={() => loadMore(9)}
+          >
+            Load More
+          </Button>
+        </div>
+      )}
+      {status === "LoadingMore" && (
+        <div className="flex h-full items-center justify-center">
+          <div className={cn("font-amatic text-[40px] font-bold")}>
+            Loading more stories ...
+          </div>
+        </div>
+      )}
+      {status === "LoadingFirstPage" && (
         <div className="flex h-full items-center justify-center">
           <div className={cn("font-amatic text-[40px] font-bold")}>
             Loading stories ...
@@ -139,10 +165,14 @@ export default function Page({
     </div>
   );
 }
-function StoryItem({ story }: { story: Doc<"stories"> }) {
+const StoryItem = memo(function StoryItem({
+  story,
+}: {
+  story: Doc<"stories">;
+}) {
   const router = useRouter();
   const mutateDelete = useMutation(api.stories.deleteStory);
-  const segments = useQuery(api.storySegments.getByStoryId, {
+  const firstImage = useQuery(api.storySegments.getFirstSegmentImage, {
     storyId: story._id,
   });
   const isDoneRefine = useMemo(
@@ -150,8 +180,17 @@ function StoryItem({ story }: { story: Doc<"stories"> }) {
       story?.AIGenerateInfo ? story?.AIGenerateInfo?.finishedRefine : true,
     [story?.AIGenerateInfo?.finishedRefine],
   );
-  const handleDelete = async (id: Id<"stories">) => {
-    await mutateDelete({ id });
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await mutateDelete({ id: story._id });
+    } catch {
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+    }
   };
   return (
     <div
@@ -192,13 +231,13 @@ function StoryItem({ story }: { story: Doc<"stories"> }) {
             className="w-fit rounded-lg border border-purple-500 !p-0"
             align="end"
           >
-            <div
-              onClick={() => handleDelete(story._id)}
-              className="flex cursor-pointer items-center gap-2 rounded-lg border-b border-purple-500 px-4 py-2 text-sm text-rose-500 dark:bg-gray-900 dark:hover:bg-black"
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              className="flex w-full cursor-pointer items-center gap-2 rounded-lg border-b border-purple-500 px-4 py-2 text-sm text-rose-500 dark:bg-gray-900 dark:hover:bg-black"
             >
               <TrashIcon className="h-4 w-4" />
               Delete
-            </div>
+            </button>
           </PopoverContent>
         </Popover>
       </div>
@@ -206,16 +245,14 @@ function StoryItem({ story }: { story: Doc<"stories"> }) {
         <div className="flex flex-1 flex-col justify-between bg-gray-900">
           <div>
             <div className="relative aspect-video w-full">
-              {segments &&
-                segments[0] &&
-                segments[0].imageStatus.status === "saved" && (
-                  <Image
-                    src={segments[0].imageStatus.imageUrl}
-                    className="object-contain"
-                    fill
-                    alt={story.name}
-                  />
-                )}
+              {firstImage && (
+                <Image
+                  src={firstImage}
+                  className="object-contain"
+                  fill
+                  alt={story.name}
+                />
+              )}
             </div>
             <div className="p-4">
               <div className="line-clamp-4 overflow-hidden font-sans text-sm">
@@ -239,6 +276,15 @@ function StoryItem({ story }: { story: Doc<"stories"> }) {
           </Link>
         </div>
       )}
+      <ConfirmDialog
+        open={showDeleteConfirm}
+        onOpenChange={setShowDeleteConfirm}
+        title="Delete Story"
+        description={`Are you sure you want to delete "${story.name}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={handleDelete}
+        loading={isDeleting}
+      />
     </div>
   );
-}
+});

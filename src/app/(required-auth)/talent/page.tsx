@@ -198,7 +198,7 @@ function TalentCard({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8"
+                className="h-10 w-10"
                 onClick={(e) => e.stopPropagation()}
               >
                 <EllipsisVertical className="h-4 w-4 text-purple-300" />
@@ -209,7 +209,8 @@ function TalentCard({
               align="end"
               sideOffset={4}
             >
-              <div
+              <button
+                aria-label="Delete talent"
                 onClick={(e) => {
                   e.stopPropagation();
                   if (
@@ -222,7 +223,7 @@ function TalentCard({
               >
                 <TrashIcon className="h-4 w-4" />
                 Delete
-              </div>
+              </button>
             </PopoverContent>
           </Popover>
         </div>

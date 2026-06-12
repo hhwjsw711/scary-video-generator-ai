@@ -44,7 +44,10 @@ export function Header() {
     <div className="select-none border-b py-2">
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2 text-xl">
+          <Link
+            href={user ? "/dashboard" : "/"}
+            className="flex items-center gap-2 text-xl"
+          >
             <span className="font-nosifer text-2xl text-purple-300">
               Wordream
             </span>
@@ -203,7 +206,7 @@ function HeaderActions() {
 
   return (
     <>
-      {user?.credits && (
+      {user?.credits != null && (
         <div className={"font-special text-purple-300"}>
           {user.credits + " Credits"}
         </div>

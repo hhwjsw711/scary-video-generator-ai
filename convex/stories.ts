@@ -1,5 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError, v } from "convex/values";
+import { paginationOptsValidator } from "convex/server";
 import { api, internal } from "./_generated/api";
 import {
   internalAction,
@@ -34,7 +35,7 @@ const checkStoryAccess = async (ctx: any, storyId: string, userId: string) => {
   return story;
 };
 
-export const isStoryBelongToUser = internalQuery({
+export const isStoryBelongsToUser = internalQuery({
   args: { storyId: v.string(), userId: v.id("users") },
   handler: async (ctx, { storyId, userId }) => {
     const story = (await ctx.db.get(storyId as any)) as Doc<"stories"> | null;
@@ -95,12 +96,12 @@ export const getStories = query({
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     if (userId === null) {
-      throw new Error("Unauthenticated");
+      throw new ConvexError("Unauthenticated");
     }
 
     const userStories = await ctx.db
       .query("stories")
-      .filter((q) => q.eq(q.field("userId"), userId))
+      .withIndex("by_userId_and_teamId", (q) => q.eq("userId", userId))
       .order("desc")
       .collect();
 
@@ -129,12 +130,28 @@ export const getStories = query({
   },
 });
 
+export const getStoriesPaginated = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) {
+      throw new ConvexError("Unauthenticated");
+    }
+
+    return await ctx.db
+      .query("stories")
+      .withIndex("by_userId_and_teamId", (q) => q.eq("userId", userId))
+      .order("desc")
+      .paginate(args.paginationOpts);
+  },
+});
+
 export const getStoriesByTeam = query({
   args: { teamId: v.id("teams") },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     if (userId === null) {
-      throw new Error("Unauthenticated");
+      throw new ConvexError("Unauthenticated");
     }
 
     // Verify user is a member of the team
@@ -169,7 +186,7 @@ export const edit = mutation({
       throw new ConvexError("Unauthenticated");
     }
     if (
-      !(await ctx.runQuery(internal.stories.isStoryBelongToUser, {
+      !(await ctx.runQuery(internal.stories.isStoryBelongsToUser, {
         storyId: args.id,
         userId,
       }))
@@ -257,6 +274,14 @@ export const createStory = mutation({
       throw new ConvexError("Unauthenticated");
     }
 
+    if (args.createType === "by-ai") {
+      await ctx.runMutation(internal.ratelimit.checkRateLimit, {
+        key: `ai-gen:${userId}`,
+        maxRequests: 10,
+        windowMs: 3600000,
+      });
+    }
+
     // If teamId is provided, verify user is a member of the team
     if (args.teamId) {
       const teamId = args.teamId;
@@ -341,22 +366,25 @@ export const deleteStory = mutation({
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     if (userId === null) {
-      throw new Error("Unauthenticated");
+      throw new ConvexError("Unauthenticated");
     }
     const story = await ctx.runQuery(api.stories.get, { id: args.id });
     if (!story) throw new ConvexError("Story not found");
 
-    const hasAccess = await ctx.runQuery(internal.stories.isStoryBelongToUser, {
-      storyId: args.id as string,
-      userId,
-    });
+    const hasAccess = await ctx.runQuery(
+      internal.stories.isStoryBelongsToUser,
+      {
+        storyId: args.id as string,
+        userId,
+      },
+    );
     if (!hasAccess) {
       throw new ConvexError("You do not have permission on this story");
     }
 
     const segments = await ctx.db
       .query("storySegments")
-      .filter((q) => q.eq(q.field("storyId"), story._id))
+      .withIndex("storyId", (q) => q.eq("storyId", story._id))
       .collect();
     await Promise.all(
       segments.map((segment) =>
@@ -368,16 +396,14 @@ export const deleteStory = mutation({
     await ctx.db.delete(args.id);
   },
 });
-export const concatStoryContentFromSegments = internalMutation({
+export const rebuildStoryContent = internalMutation({
   args: { storyId: v.id("stories") },
   handler: async (ctx, { storyId }) => {
     const segments = await ctx.db
       .query("storySegments")
-      .filter((q) => q.eq(q.field("storyId"), storyId))
+      .withIndex("storyId", (q) => q.eq("storyId", storyId))
       .collect();
-    const storyContent = segments.reduce((acc, curr) => {
-      return (acc += "\n" + curr.text);
-    }, "");
+    const storyContent = segments.map((s) => s.text).join("\n");
     await ctx.db.patch(storyId, {
       content: storyContent,
     });
@@ -394,7 +420,7 @@ export const editAiStory = mutation({
       throw new ConvexError("Unauthenticated");
     }
     if (
-      !(await ctx.runQuery(internal.stories.isStoryBelongToUser, {
+      !(await ctx.runQuery(internal.stories.isStoryBelongsToUser, {
         storyId: args.id,
         userId,
       }))
@@ -432,7 +458,7 @@ export const onDoneRefine = mutation({
       throw new ConvexError("Unauthenticated");
     }
     if (
-      !(await ctx.runQuery(internal.stories.isStoryBelongToUser, {
+      !(await ctx.runQuery(internal.stories.isStoryBelongsToUser, {
         storyId: id,
         userId,
       }))
@@ -746,7 +772,7 @@ export const editContext = mutation({
 
     // Check if story belongs to user
     if (
-      !(await ctx.runQuery(internal.stories.isStoryBelongToUser, {
+      !(await ctx.runQuery(internal.stories.isStoryBelongsToUser, {
         storyId: args.id,
         userId,
       }))

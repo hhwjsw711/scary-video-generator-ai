@@ -24,7 +24,7 @@ import { useAction, useQuery } from "convex/react";
 import { Loader2Icon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { useToast } from "@/components/ui/use-toast";
 import { z } from "zod";
 import { api } from "~/convex/_generated/api";
 import type { Doc, Id } from "~/convex/_generated/dataModel";
@@ -34,6 +34,7 @@ const uploadFormShema = z.object({
   description: z.string().min(20, "Mô tả video ít nhất 20 kí tự"),
 });
 export const UploadToYoutubeForm = ({ video }: { video: Doc<"videos"> }) => {
+  const { toast } = useToast();
   const channels = useQuery(api.channels.getUserChannels);
   const mutateUpload = useAction(api.youtube.uploadToYoutube);
   const [isPostingToYoutube, setIsPostingToYoutube] = useState(false);
@@ -49,23 +50,28 @@ export const UploadToYoutubeForm = ({ video }: { video: Doc<"videos"> }) => {
     if (!isPostingToYoutube)
       try {
         setIsPostingToYoutube(true);
-        const response = await mutateUpload({
+        await mutateUpload({
           videoId: video._id,
           channelId: data.channel as Id<"channels">,
           name: data.name,
           description: data.description,
         });
-        console.log(response);
-        toast.success("Video scheduled for YouTube.");
+        toast({
+          title: "Success",
+          description: "Video scheduled for YouTube.",
+        });
       } catch (error) {
-        toast.error((error as { message: string }).message);
+        toast({
+          title: "Error",
+          description: (error as { message: string }).message,
+          variant: "destructive",
+        });
       } finally {
         setIsPostingToYoutube(false);
       }
   };
   return (
     <Form {...form}>
-      {/** @ts-ignore */}
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4 font-sans"

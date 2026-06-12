@@ -7,117 +7,11 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { splitStory } from "@/lib/utils";
+import { STYLE_PRESETS } from "./styles";
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const chatGptResSplitToSegmentSchema = z.object({
-  segments: z.array(
-    z.object({
-      segment: z.string(),
-      image: z.string(),
-    }),
-  ),
-});
 const chatGptResStoryGenerateSchema = z.object({
   story: z.string(),
 });
-
-// export const splitToSegment = internalAction({
-//   args: {
-//     story: v.string(),
-//     storyId: v.id("stories"),
-//     format: v.optional(v.union(v.literal("16:9"), v.literal("9:16"))),
-//   },
-//   handler: async (ctx, args) => {
-//     await ctx.runMutation(internal.logs.create, {
-//       message: "running split to segment",
-//       function: "splitToSegment",
-//     });
-
-//     const systemPromt: ChatCompletionMessageParam = {
-//       role: "system",
-//       content: `You are an AI that creates horror videos based on the story provided by the user. Your task is to analyze the story, divide it into smaller segments, and create image prompts for each segment to assist an API in generating realistic images.
-//         Requirements:
-//         Analyze the story: Read the story input by the user and split it into smaller segments, each with a length of 4 to 8 sentences.
-//         Create image prompts: Based on the content of each segment, generate a detailed image description (image prompt). This description should reflect the context, emotions, and atmosphere of that segment while being aligned with the horror theme.
-//         Format: For each segment, use the following format:
-//         Segment: [Content of the segment, keep the language of the user input's].
-//         Image prompt: [Detailed description for the image, including elements such as color, lighting, setting, emotions, and key objects in the scene.
-//         If there is people in the story, make sure to decribe to keep people's gender , age and appearance consistent over segment's image prompts.
-//         Ensure that the image prompts can be easily translated into real images, focusing on creating the creepy and tense atmosphere of the story.
-//         Keep image prompt in english.]
-//         Carefully ensure that no part of the story is omitted.
-//         Return the response as a Json array.
-
-//         `,
-//     };
-//     try {
-//       const completion = await openai.beta.chat.completions.parse({
-//         model: "gpt-4o-2024-08-06",
-//         messages: [
-//           systemPromt,
-//           {
-//             role: "user",
-//             content: args.story,
-//           },
-//         ],
-//         response_format: zodResponseFormat(
-//           chatGptResSplitToSegmentSchema,
-//           "segments",
-//         ),
-//       });
-//       const segmentArray = completion.choices[0]?.message.parsed?.segments;
-//       await ctx.runMutation(internal.logs.create, {
-//         message: JSON.stringify(segmentArray),
-//         function: "splitToSegment",
-//       });
-//       if (segmentArray) {
-//         const segmentIds = await ctx.runMutation(
-//           internal.storySegments.saveSegments,
-//           {
-//             segments: segmentArray,
-//             storyId: args.storyId,
-//           },
-//         );
-//         //TODO :generate image for each segment prompt
-//         await Promise.all(
-//           segmentIds.map((s, i) =>
-//             ctx.scheduler.runAfter(
-//               0,
-//               internal.replicate.generateImagesAndSave,
-//               {
-//                 data: [
-//                   {
-//                     prompt: segmentArray[i]?.image ?? "",
-//                     format: args.format ?? "16:9",
-//                     segmentId: s,
-//                   },
-//                 ],
-//               },
-//             ),
-//           ),
-//         );
-
-//         // await ctx.scheduler.runAfter(30, internal.storySegments.timeout, { submissionId });
-//       } else {
-//         await ctx.runMutation(internal.logs.create, {
-//           message: "Fail to get segments array from chatgpt",
-//           function: "splitToSegment.error",
-//         });
-//       }
-//     } catch (error) {
-//       if (error instanceof Error) {
-//         await ctx.runMutation(internal.logs.create, {
-//           message: error.message,
-//           function: "splitToSegment.error",
-//         });
-//       } else {
-//         await ctx.runMutation(internal.logs.create, {
-//           message: "Unkown error occur :<<",
-//           function: "splitToSegment.error",
-//         });
-//       }
-//     }
-//   },
-// });
 
 export const generateStory = internalAction({
   args: {
@@ -132,155 +26,10 @@ export const generateStory = internalAction({
       const targetDuration = args.targetDuration || 30;
       const charCount = Math.round((targetDuration / 30) * 6000);
 
-      const styles: Record<
-        string,
-        {
-          mood: string;
-          artStyle: string;
-          lighting: string;
-          colorPalette: string;
-          cameraWork: string;
-        }
-      > = {
-        "product-ad": {
-          mood: "Fresh, sensory, and effortlessly cool",
-          artStyle:
-            "Modern social-first product photography with tactile, editorial energy. Products shown in real-life context.",
-          lighting:
-            "Bright natural window light with clean directional shadows. Golden hour warmth for lifestyle moments.",
-          colorPalette: "white, cream, pink, black, green",
-          cameraWork:
-            "Dynamic mix of handheld and locked shots. Quick-cut to locked beauty frames. Macro details on textures.",
-        },
-        "real-estate": {
-          mood: "Luxurious, aspirational, and effortlessly glamorous",
-          artStyle:
-            "Prestige property cinematography with editorial lifestyle sensibility. Luxury interiors with depth and grandeur.",
-          lighting:
-            "Late afternoon golden hour streaming through windows. Rim light catching hair and shoulders.",
-          colorPalette: "cream, gold, brown, beige, dark brown",
-          cameraWork:
-            "Slow, cinematic dolly movements through grand interiors. Smooth reveals through doorways.",
-        },
-        animatic: {
-          mood: "Rough, working-draft, evocative but unfinished",
-          artStyle:
-            "Rough storyboard panels rendered as if drawn in pencil and marker on paper. Confident gestural line work.",
-          lighting:
-            "Implied lighting only. Shape and value suggested through marker shading.",
-          colorPalette: "warm off-white, dark brown, gray, red, blue",
-          cameraWork:
-            "Static storyboard panels. Camera moves indicated graphically with arrows.",
-        },
-        corporate: {
-          mood: "Professional, innovative, and trustworthy",
-          artStyle:
-            "Contemporary corporate visual style with clean geometry and professional environments.",
-          lighting:
-            "Bright, even overhead lighting. Soft and clean with no dramatic shadows.",
-          colorPalette: "blue, white, dark blue, green, gray",
-          cameraWork:
-            "Smooth dolly or gimbal movements through workspace environments. Static or slow-push medium shots.",
-        },
-        "award-season": {
-          mood: "Introspective and emotional",
-          artStyle:
-            "Cinematic drama with deep shadows and warm tones. Character-driven narratives.",
-          lighting: "Dramatic chiaroscuro lighting with strong contrast",
-          colorPalette: "brown, orange, tan, dark slate, gray",
-          cameraWork: "Slow, deliberate movements with meaningful close-ups",
-        },
-        documentary: {
-          mood: "Authentic and immediate",
-          artStyle:
-            "Natural documentary style with authentic environments. Real people in real situations.",
-          lighting: "Natural and available light only",
-          colorPalette: "brown, tan, beige, wheat, orange",
-          cameraWork: "Handheld camera with observational framing",
-        },
-        action: {
-          mood: "Exciting and adrenaline-pumping",
-          artStyle:
-            "High-octane action with dynamic compositions. Explosive energy.",
-          lighting: "High contrast with dramatic rim lighting",
-          colorPalette: "orange, yellow, blue, red, orange",
-          cameraWork: "Fast cuts, sweeping crane shots, and dynamic angles",
-        },
-        "rom-com": {
-          mood: "Light, romantic, and optimistic",
-          artStyle:
-            "Warm and inviting with soft, romantic lighting. Cheerful and feel-good.",
-          lighting: "Soft, diffused lighting with warm tones",
-          colorPalette: "pink, peach, lavender, blue, yellow",
-          cameraWork: "Smooth movements with intimate framing",
-        },
-        animated: {
-          mood: "Intense, layered, and emotionally complex",
-          artStyle:
-            "High-fidelity stylized animation with painterly textures. Richly layered environments.",
-          lighting:
-            "Dramatic volumetric lighting with god rays, atmospheric haze, and deep contrast.",
-          colorPalette: "dark blue, gold, burgundy, dark teal, tan",
-          cameraWork:
-            "Cinematic camera language. Slow tracking shots through detailed environments.",
-        },
-        "neo-noir": {
-          mood: "Tense and mysterious",
-          artStyle:
-            "Neo-noir with stark contrasts and neon accents. Urban settings.",
-          lighting:
-            "High contrast with venetian blind shadows and neon highlights",
-          colorPalette: "black, red, cyan, purple, pink",
-          cameraWork: "Dutch angles and voyeuristic framing",
-        },
-        pastel: {
-          mood: "Whimsical melancholy, deadpan charm, nostalgic precision",
-          artStyle:
-            "Obsessively symmetrical, centered, planimetric frontal framing. Candy-colored pastels.",
-          lighting:
-            "Soft, perfectly even diffused lighting with minimal shadows. Warm tones.",
-          colorPalette: "pink, sky blue, yellow, lavender, mint green",
-          cameraWork:
-            "Centered framing, tracking shots, and planimetric composition",
-        },
-        "sci-fi": {
-          mood: "Futuristic and technological",
-          artStyle:
-            "Futuristic sci-fi with clean lines and holographic elements. High-tech aesthetics.",
-          lighting: "Cool LED lighting with lens flares",
-          colorPalette: "cyan, blue, silver, purple, green",
-          cameraWork: "Smooth camera movements with wide establishing shots",
-        },
-        "horror-gothic": {
-          mood: "Ominous and foreboding",
-          artStyle:
-            "Gothic horror with dark shadows and eerie atmosphere. Atmospheric dread.",
-          lighting: "Low-key lighting with harsh shadows",
-          colorPalette: "black, dark red, dark blue, dark gray, gray",
-          cameraWork: "Unsettling angles and slow zooms",
-        },
-        western: {
-          mood: "Epic and frontier-inspired",
-          artStyle:
-            "Classic Western with wide landscapes and golden hour lighting. Dusty and romantic.",
-          lighting: "Magic hour lighting with long shadows",
-          colorPalette: "brown, tan, beige, orange, gold",
-          cameraWork: "Wide shots, slow zooms, and classic Western framing",
-        },
-        "lo-fi-retro": {
-          mood: "Nostalgic, amateur, authentic snapshot quality with no professional polish",
-          artStyle:
-            "Retro smartphone JPEG aesthetic. Visible digital compression artifacts.",
-          lighting:
-            "Low dynamic range. Highlights blown out, shadows crushed and grainy.",
-          colorPalette: "beige, tan, brown, white, dark slate",
-          cameraWork:
-            "Handheld amateur perspective. Slight micro-jitters. Less sophisticated stabilization.",
-        },
-      };
-
       const selectedStyle =
-        args.styleId && styles[args.styleId] ? styles[args.styleId] : null;
+        args.styleId && STYLE_PRESETS[args.styleId]
+          ? STYLE_PRESETS[args.styleId]
+          : null;
       const styleContext = selectedStyle
         ? `\n\nStyle Guide:
 - Art Style: ${selectedStyle.artStyle}
@@ -540,6 +289,11 @@ export const generateImagePrompt = internalAction({
         message: (error as Error).message,
         function: "generateImagePrompt.imagePrompts",
       });
+      throw new ConvexError(
+        error instanceof Error
+          ? error.message
+          : "Failed to generate image prompt",
+      );
     }
   },
 });

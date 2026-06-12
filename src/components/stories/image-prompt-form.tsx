@@ -44,7 +44,6 @@ export const ImagePromtChangeForm = ({
       });
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error);
         if (
           !error.message.includes(
             "Uncaught Error: Field name $metadata starts with a '$', which is reserved.",

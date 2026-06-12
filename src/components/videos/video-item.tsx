@@ -8,16 +8,21 @@ import { useToast } from "@/components/ui/use-toast";
 import { Popover } from "@radix-ui/react-popover";
 import { useMutation, useQuery } from "convex/react";
 import { Eye, EllipsisVertical, Trash2, LoaderIcon } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { api } from "~/convex/_generated/api";
 import { Doc } from "~/convex/_generated/dataModel";
 import { UploadToYoutubeForm } from "./upload-youtube-form";
 import { YoutubeIcon } from "../icons/youtubeIcon";
 
-export function VideoItem({ video }: { video: Doc<"videos"> }) {
+export const VideoItem = memo(function VideoItem({
+  video,
+  channels,
+}: {
+  video: Doc<"videos">;
+  channels: Doc<"channels">[] | undefined;
+}) {
   const { toast } = useToast();
   const [isDeleting, setIsDeleting] = useState(false);
-  const channels = useQuery(api.channels.getUserChannels);
   const mutateDelete = useMutation(api.videos.deleteVideo);
   const videoSegments = useQuery(api.videoSegments.getByVideoId, {
     videoId: video._id,
@@ -91,7 +96,7 @@ export function VideoItem({ video }: { video: Doc<"videos"> }) {
         {video.result.status !== "pending" && (
           <Popover>
             <PopoverTrigger>
-              <EllipsisVertical />
+              <EllipsisVertical aria-label="Video actions" />
             </PopoverTrigger>
             <PopoverContent className="z-10 flex w-fit flex-col overflow-hidden rounded-lg border border-purple-500 bg-background !p-0">
               {process.env.NODE_ENV === "development" && (
@@ -148,7 +153,12 @@ export function VideoItem({ video }: { video: Doc<"videos"> }) {
       <div className="">
         {video.result.status === "saved" ? (
           <div className="aspect-video">
-            <video width="600" controls className="h-full w-full">
+            <video
+              width="600"
+              controls
+              preload="none"
+              className="h-full w-full"
+            >
               <source src={video.result.videoUrl} type="video/mp4" />
               <source src={video.result.videoUrl} type="video/webm" />
               Your browser does not support the video tag.
@@ -198,4 +208,4 @@ export function VideoItem({ video }: { video: Doc<"videos"> }) {
       </div>
     </div>
   );
-}
+});

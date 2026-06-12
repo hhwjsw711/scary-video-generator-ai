@@ -2,14 +2,15 @@
 import { useModal } from "@/components/providers/modal-provider";
 import CustomModal from "@/components/shared/custom-modal";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import { useMutation } from "convex/react";
 import { useState } from "react";
-import { toast } from "sonner";
 import { api } from "~/convex/_generated/api";
 import { Doc } from "~/convex/_generated/dataModel";
 
 export function ChannelItem({ channel }: { channel: Doc<"channels"> }) {
   const { setOpen, setClose } = useModal();
+  const { toast } = useToast();
   const [isDeleting, setisDeleting] = useState(false);
   const mutateDelete = useMutation(api.channels.deleteChannel);
 
@@ -17,10 +18,14 @@ export function ChannelItem({ channel }: { channel: Doc<"channels"> }) {
     setisDeleting(true);
     try {
       await mutateDelete({ id: channel._id });
-      toast.success("Delete channel successfully");
+      toast({ title: "Success", description: "Delete channel successfully" });
       setClose();
-    } catch (error) {
-      console.log(error);
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to delete channel",
+        variant: "destructive",
+      });
     }
     setisDeleting(false);
   };

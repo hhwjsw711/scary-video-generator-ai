@@ -2,7 +2,12 @@
 import { ConvexError, v } from "convex/values";
 import { OAuth2Client } from "google-auth-library";
 import { google } from "googleapis";
-import { action, internalAction, mutation } from "./_generated/server";
+import {
+  action,
+  internalAction,
+  internalMutation,
+  mutation,
+} from "./_generated/server";
 import { auth } from "./auth";
 import { internal } from "./_generated/api";
 import axios from "axios";
@@ -21,7 +26,11 @@ export const getAuthUrlAction = action({
     if (!userId) {
       throw new Error("User not found");
     }
-    const state = encodeURIComponent(userId);
+    const stateToken = crypto.randomUUID();
+    await ctx.runMutation(internal.youtubeAuth.saveState, {
+      token: stateToken,
+      userId,
+    });
     const oauth2Client = new OAuth2Client(
       process.env.AUTH_GOOGLE_ID,
       process.env.AUTH_GOOGLE_SECRET,
@@ -33,7 +42,7 @@ export const getAuthUrlAction = action({
         "https://www.googleapis.com/auth/youtube.upload",
         "https://www.googleapis.com/auth/youtube.readonly",
       ],
-      state: state,
+      state: stateToken,
       prompt: "consent",
     });
   },
@@ -184,7 +193,7 @@ export const uploadToYoutube = action({
           snippet: {
             title: name,
             description: description,
-            categoryId: "22", // '22' là People & Blogs
+            categoryId: "22",
           },
           status: {
             privacyStatus: "private",
@@ -195,6 +204,19 @@ export const uploadToYoutube = action({
         },
       });
     } catch (error) {
+      await ctx.runMutation(internal.logs.create, {
+        message: `YouTube upload failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+        function: "youtube.uploadToYoutube",
+        additionals: JSON.stringify({ videoId, channelId }),
+      });
+      await ctx.runMutation(internal.videos.editVideoResult, {
+        id: videoId,
+        result: {
+          status: "failed",
+          reason: "YouTube upload failed",
+          elapsedMs: 0,
+        },
+      });
     } finally {
       ctx.storage.delete(storageId);
     }

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Popover } from "@radix-ui/react-popover";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { useMutation } from "convex/react";
 import {
   DownloadIcon,
@@ -62,9 +63,14 @@ export function SegmentItem({
   };
 
   const [isDeletingSegment, setIsDeletingSegment] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const mutateDeleteSegment = useMutation(api.storySegments.deleteSegment);
   const mutateRegenerateImage = useMutation(api.images.regenerateImage);
   const mutateAutoGenerate = useMutation(api.storySegments.autoGenerateImage);
+  const savedImageUrl =
+    segment.imageStatus.status === "saved"
+      ? segment.imageStatus.imageUrl
+      : null;
 
   return (
     <div className="relative flex flex-col rounded-xl border border-purple-500">
@@ -80,20 +86,19 @@ export function SegmentItem({
       <div className="flex justify-between rounded-t-xl border-b border-purple-500 bg-gray-800 px-4 py-2">
         <span>Segment {index}</span>
         <Popover>
-          <PopoverTrigger>
-            <EllipsisVertical />
+          <PopoverTrigger className="p-1.5">
+            <EllipsisVertical aria-label="Segment actions" />
           </PopoverTrigger>
           <PopoverContent
             className="w-fit rounded-lg border border-purple-500 !p-0"
             align="end"
           >
             <div className="">
-              {segment.imageStatus.status === "saved" ? (
+              {savedImageUrl && (
                 <div
                   onClick={() =>
                     handleDownload(
-                      //@ts-ignore
-                      segment.imageStatus.imageUrl,
+                      savedImageUrl,
                       `Segment_${index + 1}.png}`,
                     )
                   }
@@ -102,7 +107,7 @@ export function SegmentItem({
                   <DownloadIcon className="h-4 w-4" />
                   Download image
                 </div>
-              ) : null}
+              )}
               <div
                 onClick={() =>
                   setOpen(
@@ -125,12 +130,7 @@ export function SegmentItem({
               </div>
               <Button
                 disabled={!canDelete}
-                onClick={async () => {
-                  if (!isDeletingSegment) {
-                    setIsDeletingSegment(true);
-                    await mutateDeleteSegment({ id: segment._id });
-                  }
-                }}
+                onClick={() => setShowDeleteConfirm(true)}
                 className="flex cursor-pointer items-center gap-2 rounded-b-lg border-b border-purple-500 px-4 py-2 text-sm text-rose-500 dark:bg-gray-900"
               >
                 <TrashIcon className="h-4 w-4" />
@@ -231,6 +231,23 @@ export function SegmentItem({
       >
         {segment.text}
       </div>
+      <ConfirmDialog
+        open={showDeleteConfirm}
+        onOpenChange={setShowDeleteConfirm}
+        title="Delete Segment"
+        description={`Are you sure you want to delete Segment ${index}? This action cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={async () => {
+          setIsDeletingSegment(true);
+          try {
+            await mutateDeleteSegment({ id: segment._id });
+          } catch {
+            setIsDeletingSegment(false);
+            setShowDeleteConfirm(false);
+          }
+        }}
+        loading={isDeletingSegment}
+      />
     </div>
   );
 }

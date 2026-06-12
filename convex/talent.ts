@@ -13,7 +13,7 @@ export const getTalents = query({
 
     let talents = await ctx.db
       .query("talents")
-      .filter((q) => q.eq(q.field("userId"), userId))
+      .withIndex("userId", (q) => q.eq("userId", userId))
       .order("desc")
       .collect();
 
@@ -21,19 +21,52 @@ export const getTalents = query({
       talents = talents.filter((t) => t.isFavorite);
     }
 
-    return Promise.all(
-      talents.map(async (talent) => {
-        const sheets = await ctx.db
-          .query("talentSheets")
-          .filter((q) => q.eq(q.field("talentId"), talent._id))
-          .collect();
-        const media = await ctx.db
-          .query("talentMedia")
-          .filter((q) => q.eq(q.field("talentId"), talent._id))
-          .collect();
-        return { ...talent, sheets, media };
-      }),
-    );
+    if (talents.length === 0) return [];
+
+    const talentIds = talents.map((t) => t._id);
+
+    const [allSheets, allMedia] = await Promise.all([
+      Promise.all(
+        talentIds.map((id) =>
+          ctx.db
+            .query("talentSheets")
+            .withIndex("talentId", (q) => q.eq("talentId", id))
+            .collect(),
+        ),
+      ),
+      Promise.all(
+        talentIds.map((id) =>
+          ctx.db
+            .query("talentMedia")
+            .withIndex("talentId", (q) => q.eq("talentId", id))
+            .collect(),
+        ),
+      ),
+    ]);
+
+    const sheetsByTalent = new Map<string, Doc<"talentSheets">[]>();
+    for (const sheets of allSheets) {
+      for (const sheet of sheets) {
+        const list = sheetsByTalent.get(sheet.talentId) ?? [];
+        list.push(sheet);
+        sheetsByTalent.set(sheet.talentId, list);
+      }
+    }
+
+    const mediaByTalent = new Map<string, Doc<"talentMedia">[]>();
+    for (const mediaBatch of allMedia) {
+      for (const media of mediaBatch) {
+        const list = mediaByTalent.get(media.talentId) ?? [];
+        list.push(media);
+        mediaByTalent.set(media.talentId, list);
+      }
+    }
+
+    return talents.map((talent) => ({
+      ...talent,
+      sheets: sheetsByTalent.get(talent._id) ?? [],
+      media: mediaByTalent.get(talent._id) ?? [],
+    }));
   },
 });
 
@@ -47,14 +80,16 @@ export const getTalentById = query({
     if (!talent) throw new ConvexError("Talent not found");
     if (talent.userId !== userId) throw new ConvexError("Forbidden");
 
-    const sheets = await ctx.db
-      .query("talentSheets")
-      .filter((q) => q.eq(q.field("talentId"), talent._id))
-      .collect();
-    const media = await ctx.db
-      .query("talentMedia")
-      .filter((q) => q.eq(q.field("talentId"), talent._id))
-      .collect();
+    const [sheets, media] = await Promise.all([
+      ctx.db
+        .query("talentSheets")
+        .withIndex("talentId", (q) => q.eq("talentId", talent._id))
+        .collect(),
+      ctx.db
+        .query("talentMedia")
+        .withIndex("talentId", (q) => q.eq("talentId", talent._id))
+        .collect(),
+    ]);
 
     return { ...talent, sheets, media };
   },
@@ -128,7 +163,7 @@ export const deleteTalent = mutation({
 
     const sheets = await ctx.db
       .query("talentSheets")
-      .filter((q) => q.eq(q.field("talentId"), args.id))
+      .withIndex("talentId", (q) => q.eq("talentId", args.id))
       .collect();
     for (const sheet of sheets) {
       await ctx.db.delete(sheet._id);
@@ -136,7 +171,7 @@ export const deleteTalent = mutation({
 
     const media = await ctx.db
       .query("talentMedia")
-      .filter((q) => q.eq(q.field("talentId"), args.id))
+      .withIndex("talentId", (q) => q.eq("talentId", args.id))
       .collect();
     for (const m of media) {
       await ctx.db.delete(m._id);
@@ -233,7 +268,7 @@ export const addTalentSheet = mutation({
     if (args.isDefault) {
       const existingSheets = await ctx.db
         .query("talentSheets")
-        .filter((q) => q.eq(q.field("talentId"), args.talentId))
+        .withIndex("talentId", (q) => q.eq("talentId", args.talentId))
         .collect();
       for (const sheet of existingSheets) {
         await ctx.db.patch(sheet._id, { isDefault: false });
@@ -268,7 +303,7 @@ export const setDefaultSheet = mutation({
 
     const allSheets = await ctx.db
       .query("talentSheets")
-      .filter((q) => q.eq(q.field("talentId"), args.talentId))
+      .withIndex("talentId", (q) => q.eq("talentId", args.talentId))
       .collect();
 
     for (const sheet of allSheets) {

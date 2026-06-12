@@ -15,8 +15,8 @@ import {
   Youtube,
   Zap,
 } from "lucide-react";
-import { Hero } from "./_components/hero";
-import { StartCraptingButton } from "./_components/start-crapt-button";
+import { Hero } from "../_components/hero";
+import { StartCraptingButton } from "../_components/start-crapt-button";
 export default async function HomePage() {
   return (
     <>

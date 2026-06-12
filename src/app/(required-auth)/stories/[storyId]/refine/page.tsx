@@ -20,8 +20,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { api } from "~/convex/_generated/api";
-import { RefineContentForm } from "@/components/stories/refine/refine-form";
-import { VideoFormatPopup } from "@/components/stories/refine/video-format-popup";
+import { RefineContentForm } from "@/components/stories/story-refine-form";
+import { VideoFormatPopup } from "@/components/stories/video-format-popover";
 import { Id } from "~/convex/_generated/dataModel";
 
 const schema = z.object({

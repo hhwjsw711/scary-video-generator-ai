@@ -105,9 +105,9 @@ const schema = defineSchema({
     ),
   }).index("storyId", ["storyId"]),
   logs: defineTable({
-    messsage: v.string(),
+    message: v.string(),
     function: v.string(),
-    additionals: v.optional(v.any()),
+    additionals: v.optional(v.string()),
   }),
   videos: defineTable({
     storyId: v.id("stories"),
@@ -241,7 +241,18 @@ const schema = defineSchema({
     stripePaymentId: v.optional(v.string()),
   })
     .index("by_userId", ["userId"])
-    .index("by_teamId", ["teamId"]),
+    .index("by_teamId", ["teamId"])
+    .index("by_stripePaymentId", ["stripePaymentId"]),
+  rateLimits: defineTable({
+    key: v.string(),
+    count: v.number(),
+    resetAt: v.number(),
+  }).index("by_key", ["key"]),
+  youtubeAuthStates: defineTable({
+    token: v.string(),
+    userId: v.id("users"),
+    expiresAt: v.number(),
+  }).index("by_token", ["token"]),
 });
 
 export default schema;

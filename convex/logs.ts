@@ -5,11 +5,11 @@ export const create = internalMutation({
   args: {
     message: v.string(),
     function: v.string(),
-    additionals: v.optional(v.any()),
+    additionals: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     await ctx.db.insert("logs", {
-      messsage: args.message,
+      message: args.message,
       function: args.function,
       additionals: args.additionals,
     });

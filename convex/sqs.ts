@@ -68,59 +68,6 @@ export const sendSqsMessageGenerateVoice = internalAction({
     }
   },
 });
-// export const sendSqsMessageGenerateFrames = internalAction({
-//   args: {
-//     attributes: v.object({
-//       segmentId: v.object({
-//         DataType: v.literal("String"),
-//         StringValue: v.string(),
-//       }),
-//       folderName: v.object({
-//         DataType: v.literal("String"),
-//         StringValue: v.string(),
-//       }),
-//       numberOfFrames: v.object({
-//         DataType: v.literal("Number"),
-//         StringValue: v.string(),
-//       }),
-//       videoId: v.object({
-//         DataType: v.literal("String"),
-//         StringValue: v.string(),
-//       }),
-//     }),
-//     message: v.string(),
-//   },
-//   handler: async (ctx, args) => {
-//     try {
-//       await ctx.runMutation(internal.logs.create, {
-//         message: "sending to sqs generate frames",
-//         function: "sendSqsMessageGenerateFrames",
-//       });
-
-//       const command = new SendMessageCommand({
-//         QueueUrl: AWS_QUEUE_GENERATE_FRAMES,
-//         DelaySeconds: 0,
-//         MessageAttributes: args.attributes,
-//         MessageBody: args.message,
-//       });
-
-//       const response = await client.send(command);
-//       return response;
-//     } catch (error) {
-//       if (error instanceof Error) {
-//         await ctx.runMutation(internal.logs.create, {
-//           message: error.message,
-//           function: "sendSqsMessageGenerateVoice.error",
-//         });
-//       } else {
-//         await ctx.runMutation(internal.logs.create, {
-//           message: "Unkown error occur :<<",
-//           function: "sendSqsMessageGenerateVoice.error",
-//         });
-//       }
-//     }
-//   },
-// });
 export const sendSqsMessageGenerateSegmentVideo = internalAction({
   args: {
     message: v.object({
