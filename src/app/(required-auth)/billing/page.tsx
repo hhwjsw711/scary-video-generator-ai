@@ -168,10 +168,10 @@ function BillingContent() {
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-nosifer text-2xl text-purple-300 md:text-[40px]">
+          <h1 className="font-kecal text-2xl text-purple-300 md:text-[40px]">
             Billing
           </h1>
-          <p className="mt-1 font-special text-sm text-purple-400">
+          <p className="mt-1 font-kecal text-sm text-purple-400">
             Purchase credits and manage your billing
           </p>
         </div>
@@ -186,7 +186,7 @@ function BillingContent() {
           ) : (
             <Settings className="mr-2 h-4 w-4" />
           )}
-          <span className="font-special text-sm">Manage Billing</span>
+          <span className="font-kecal text-sm">Manage Billing</span>
         </Button>
       </div>
 
@@ -194,12 +194,12 @@ function BillingContent() {
       <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
         <Card className="border-purple-700 bg-gray-900/50">
           <CardHeader className="pb-3">
-            <CardTitle className="font-special text-lg text-purple-300">
+            <CardTitle className="font-kecal text-lg text-purple-300">
               Personal Credits
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="font-nosifer text-4xl text-white">
+            <div className="font-kecal text-4xl text-white">
               {user?.credits ?? 0}
             </div>
           </CardContent>
@@ -207,17 +207,17 @@ function BillingContent() {
         {teams && teams.length > 0 && (
           <Card className="border-purple-700 bg-gray-900/50">
             <CardHeader className="pb-3">
-              <CardTitle className="font-special text-lg text-purple-300">
+              <CardTitle className="font-kecal text-lg text-purple-300">
                 Team Credits
               </CardTitle>
             </CardHeader>
             <CardContent>
               {selectedTeam ? (
-                <div className="font-nosifer text-4xl text-white">
+                <div className="font-kecal text-4xl text-white">
                   {teams.find((t) => t._id === selectedTeam)?.credits ?? 0}
                 </div>
               ) : (
-                <p className="font-special text-sm text-purple-500">
+                <p className="font-kecal text-sm text-purple-500">
                   Select a team below to view credits
                 </p>
               )}
@@ -238,14 +238,14 @@ function BillingContent() {
           <TabsList className="bg-gray-800">
             <TabsTrigger
               value="personal"
-              className="font-special text-purple-300 data-[state=active]:bg-purple-700 data-[state=active]:text-white"
+              className="font-kecal text-purple-300 data-[state=active]:bg-purple-700 data-[state=active]:text-white"
             >
               Personal
             </TabsTrigger>
             {teams && teams.length > 0 && (
               <TabsTrigger
                 value="team"
-                className="font-special text-purple-300 data-[state=active]:bg-purple-700 data-[state=active]:text-white"
+                className="font-kecal text-purple-300 data-[state=active]:bg-purple-700 data-[state=active]:text-white"
               >
                 Team
               </TabsTrigger>
@@ -258,7 +258,7 @@ function BillingContent() {
             value={selectedTeam ?? ""}
             onValueChange={(v) => setSelectedTeam(v as Id<"teams">)}
           >
-            <SelectTrigger className="w-[200px] border-purple-700 bg-gray-800 font-special text-purple-300">
+            <SelectTrigger className="w-[200px] border-purple-700 bg-gray-800 font-kecal text-purple-300">
               <SelectValue placeholder="Select team" />
             </SelectTrigger>
             <SelectContent className="bg-gray-900">
@@ -266,7 +266,7 @@ function BillingContent() {
                 <SelectItem
                   key={team._id}
                   value={team._id}
-                  className="font-special text-purple-300 focus:bg-purple-700 focus:text-white"
+                  className="font-kecal text-purple-300 focus:bg-purple-700 focus:text-white"
                   disabled={team.role !== "admin"}
                 >
                   {team.name}
@@ -280,14 +280,14 @@ function BillingContent() {
 
       {/* Credit Packs */}
       <div className="mt-8">
-        <h2 className="font-special text-xl font-bold text-purple-300">
+        <h2 className="font-kecal text-xl font-bold text-purple-300">
           {targetType === "personal"
             ? "Purchase Credits"
             : selectedTeam
               ? `Purchase Credits for ${teams?.find((t) => t._id === selectedTeam)?.name}`
               : "Purchase Credits"}
         </h2>
-        <p className="mt-1 font-special text-sm text-purple-400">
+        <p className="mt-1 font-kecal text-sm text-purple-400">
           {targetType === "team" && !selectedTeam
             ? "Select a team to purchase credits"
             : targetType === "team" && !isAdmin
@@ -311,41 +311,41 @@ function BillingContent() {
               >
                 {pack.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-purple-500 px-3 py-1">
-                    <span className="font-special text-xs font-bold text-white">
+                    <span className="font-kecal text-xs font-bold text-white">
                       Popular
                     </span>
                   </div>
                 )}
                 <CardHeader className="pb-3">
-                  <CardTitle className="font-special text-xl text-purple-300">
+                  <CardTitle className="font-kecal text-xl text-purple-300">
                     {pack.label}
                   </CardTitle>
-                  <CardDescription className="font-special text-sm text-purple-400">
+                  <CardDescription className="font-kecal text-sm text-purple-400">
                     {pack.description}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-baseline gap-1">
-                    <span className="font-nosifer text-3xl text-white">
+                    <span className="font-kecal text-3xl text-white">
                       {pack.credits.toLocaleString()}
                     </span>
-                    <span className="font-special text-sm text-purple-400">
+                    <span className="font-kecal text-sm text-purple-400">
                       credits
                     </span>
                   </div>
 
                   <ul className="space-y-2">
-                    <li className="flex items-center gap-2 font-special text-sm text-purple-300">
+                    <li className="flex items-center gap-2 font-kecal text-sm text-purple-300">
                       <Check className="h-4 w-4 text-purple-500" />
                       {targetType === "personal"
                         ? "For personal stories"
                         : "Shared team pool"}
                     </li>
-                    <li className="flex items-center gap-2 font-special text-sm text-purple-300">
+                    <li className="flex items-center gap-2 font-kecal text-sm text-purple-300">
                       <Check className="h-4 w-4 text-purple-500" />
                       Instant delivery
                     </li>
-                    <li className="flex items-center gap-2 font-special text-sm text-purple-300">
+                    <li className="flex items-center gap-2 font-kecal text-sm text-purple-300">
                       <Check className="h-4 w-4 text-purple-500" />
                       No expiration
                     </li>
@@ -354,7 +354,7 @@ function BillingContent() {
                   <Button
                     onClick={() => handlePurchase(pack.key)}
                     disabled={isLoading || isDisabled}
-                    className="w-full bg-purple-500 font-special text-white hover:bg-purple-700 disabled:opacity-50"
+                    className="w-full bg-purple-500 font-kecal text-white hover:bg-purple-700 disabled:opacity-50"
                   >
                     {isLoading ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -372,7 +372,7 @@ function BillingContent() {
 
       {/* Transaction History */}
       <div className="mt-12">
-        <h2 className="flex items-center gap-2 font-special text-xl font-bold text-purple-300">
+        <h2 className="flex items-center gap-2 font-kecal text-xl font-bold text-purple-300">
           <Receipt className="h-5 w-5" />
           Transaction History
         </h2>
@@ -399,7 +399,7 @@ function BillingContent() {
             return (
               <Card className="mt-4 border-purple-700 bg-gray-900/50">
                 <CardContent className="py-8 text-center">
-                  <p className="font-special text-sm text-purple-400">
+                  <p className="font-kecal text-sm text-purple-400">
                     No {label.toLowerCase()} transactions yet
                   </p>
                 </CardContent>
@@ -417,10 +417,10 @@ function BillingContent() {
                       className="flex items-center justify-between px-6 py-4"
                     >
                       <div className="flex-1">
-                        <p className="font-special text-sm text-purple-300">
+                        <p className="font-kecal text-sm text-purple-300">
                           {tx.description}
                         </p>
-                        <p className="font-special text-xs text-purple-500">
+                        <p className="font-kecal text-xs text-purple-500">
                           {tx.teamId
                             ? `Team • ${new Date(tx._creationTime).toLocaleDateString()}`
                             : `Personal • ${new Date(tx._creationTime).toLocaleDateString()}`}
@@ -428,7 +428,7 @@ function BillingContent() {
                       </div>
                       <div className="text-right">
                         <span
-                          className={`font-special text-lg font-bold ${
+                          className={`font-kecal text-lg font-bold ${
                             tx.amount > 0
                               ? "text-green-400"
                               : "text-red-400"

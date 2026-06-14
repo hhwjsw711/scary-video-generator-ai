@@ -39,7 +39,7 @@ export function StoryTitle({
     <>
       {!isEditingName ? (
         <h1
-          className={"min-w-6 p-4 font-special text-[40px]"}
+          className={"min-w-6 p-4 font-kecal text-[40px]"}
           onClick={() => setIsEdittingName(true)}
         >
           {name} {"  "}

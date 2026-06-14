@@ -10,7 +10,7 @@ const SITE_URL = "https://wordream.com";
 
 function JurisdictionTag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="mr-1 inline-block rounded border border-purple-500/30 bg-purple-500/10 px-1 py-0.5 font-special text-[10px] font-bold uppercase tracking-wider text-purple-400">
+    <span className="mr-1 inline-block rounded border border-purple-500/30 bg-purple-500/10 px-1 py-0.5 font-kecal text-[10px] font-bold uppercase tracking-wider text-purple-400">
       {children}
     </span>
   );
@@ -19,33 +19,33 @@ function JurisdictionTag({ children }: { children: React.ReactNode }) {
 export default function PrivacyPage() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-24 md:py-32">
-      <p className="font-special text-xs uppercase tracking-widest text-purple-400">
+      <p className="font-kecal text-xs uppercase tracking-widest text-purple-400">
         Legal
       </p>
-      <h1 className="mt-2 font-nosifer text-2xl text-purple-300 md:text-[50px] md:leading-[50px]">
+      <h1 className="mt-2 font-kecal text-2xl text-purple-300 md:text-[50px] md:leading-[50px]">
         Privacy Policy
       </h1>
-      <p className="mt-1 font-special text-sm text-purple-400">
+      <p className="mt-1 font-kecal text-sm text-purple-400">
         Effective 16 March 2026 &middot; Last updated 16 March 2026
       </p>
 
       {/* 1. Introduction */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           1. Introduction
         </h2>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Wordream (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) is an
           AI-powered video generation platform that transforms film scripts into
           complete video productions. We are committed to protecting the privacy
           of individuals who use our platform, visit our website, or otherwise
           interact with us.
         </p>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           This Privacy Policy explains how we collect, use, disclose, store, and
           protect personal information in accordance with:
         </p>
-        <ul className="mt-4 list-disc space-y-2 pl-6 font-special leading-relaxed text-gray-300">
+        <ul className="mt-4 list-disc space-y-2 pl-6 font-kecal leading-relaxed text-gray-300">
           <li>
             The <strong>Privacy Act 1988 (Cth)</strong>, the{" "}
             <strong>Australian Privacy Principles</strong> (&ldquo;APPs&rdquo;),
@@ -65,11 +65,11 @@ export default function PrivacyPage() {
             (&ldquo;CCPA&rdquo;), to the extent their thresholds are met
           </li>
         </ul>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Where provisions apply only to users in a particular jurisdiction, we
           indicate this with a label.
         </p>
-        <div className="mt-4 rounded-lg border border-purple-700 bg-muted/50 p-4 font-special text-sm leading-relaxed text-gray-300">
+        <div className="mt-4 rounded-lg border border-purple-700 bg-muted/50 p-4 font-kecal text-sm leading-relaxed text-gray-300">
           <p>
             <strong>Entity:</strong> Wordream is a registered trading name
             operated by a sole trader in New South Wales, Australia.
@@ -97,13 +97,13 @@ export default function PrivacyPage() {
 
       {/* 2. Scope */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           2. Scope
         </h2>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           This Privacy Policy applies to personal information collected through:
         </p>
-        <ul className="mt-4 list-disc space-y-2 pl-6 font-special leading-relaxed text-gray-300">
+        <ul className="mt-4 list-disc space-y-2 pl-6 font-kecal leading-relaxed text-gray-300">
           <li>
             The Wordream platform and web application (
             <a
@@ -122,10 +122,10 @@ export default function PrivacyPage() {
 
       {/* 3. What Is Personal Information */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           3. What Is Personal Information
         </h2>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Under the Australian Privacy Act,{" "}
           <strong>personal information</strong> means information or an opinion
           about an identified individual, or an individual who is reasonably
@@ -135,7 +135,7 @@ export default function PrivacyPage() {
           IP addresses where they can be used to reasonably identify an
           individual.
         </p>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           <JurisdictionTag>GDPR</JurisdictionTag> Under the GDPR,{" "}
           <strong>personal data</strong> means any information relating to an
           identified or identifiable natural person. An identifiable person is
@@ -147,14 +147,14 @@ export default function PrivacyPage() {
 
       {/* 4. Information We Collect */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           4. Information We Collect
         </h2>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           4.1 Information You Provide Directly
         </h3>
-        <ul className="mt-4 list-disc space-y-2 pl-6 font-special leading-relaxed text-gray-300">
+        <ul className="mt-4 list-disc space-y-2 pl-6 font-kecal leading-relaxed text-gray-300">
           <li>
             <strong>Account information:</strong> name, email address, password
             (stored in hashed form), and account preferences.
@@ -175,10 +175,10 @@ export default function PrivacyPage() {
           </li>
         </ul>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           4.2 Information Collected Automatically
         </h3>
-        <ul className="mt-4 list-disc space-y-2 pl-6 font-special leading-relaxed text-gray-300">
+        <ul className="mt-4 list-disc space-y-2 pl-6 font-kecal leading-relaxed text-gray-300">
           <li>
             <strong>Usage data:</strong> features used, actions taken,
             generation history, timestamps, and session duration.
@@ -199,10 +199,10 @@ export default function PrivacyPage() {
           </li>
         </ul>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           4.3 Information from Third Parties
         </h3>
-        <ul className="mt-4 list-disc space-y-2 pl-6 font-special leading-relaxed text-gray-300">
+        <ul className="mt-4 list-disc space-y-2 pl-6 font-kecal leading-relaxed text-gray-300">
           <li>
             <strong>Authentication providers:</strong> if you sign in using a
             third-party service (e.g., Google), we receive your name, email, and
@@ -217,15 +217,15 @@ export default function PrivacyPage() {
 
       {/* 5. How We Use Your Information */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           5. How We Use Your Information
         </h2>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           We collect and use personal information only for purposes that are
           reasonably necessary for, or directly related to, our functions and
           activities (APP 6). These purposes include:
         </p>
-        <ul className="mt-4 list-disc space-y-2 pl-6 font-special leading-relaxed text-gray-300">
+        <ul className="mt-4 list-disc space-y-2 pl-6 font-kecal leading-relaxed text-gray-300">
           <li>
             <strong>Providing and operating the platform:</strong> processing
             your scripts, generating video content, managing your account, and
@@ -262,28 +262,28 @@ export default function PrivacyPage() {
 
       {/* 6. Lawful Basis for Processing (GDPR) */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           6. Lawful Basis for Processing (GDPR)
         </h2>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           <JurisdictionTag>GDPR</JurisdictionTag> Under the GDPR, we must have a
           lawful basis for each processing activity involving personal data of
           individuals in the EEA or UK.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           6.1 Performance of a Contract (Article 6(1)(b))
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Processing necessary to perform our contract with you: creating and
           managing your account, processing scripts and generating video
           content, processing payments, and providing customer support.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           6.2 Legitimate Interests (Article 6(1)(f))
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Processing necessary for our legitimate interests where not overridden
           by your rights: improving and optimising the platform, ensuring
           security and preventing fraud, enforcing our terms of service, and
@@ -291,28 +291,28 @@ export default function PrivacyPage() {
           processing (see Section 13).
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           6.3 Consent (Article 6(1)(a))
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Where we rely on your consent: sending marketing communications and
           placing non-essential cookies. You may withdraw consent at any time
           without affecting the lawfulness of prior processing.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           6.4 Legal Obligation (Article 6(1)(c))
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Processing necessary to comply with legal obligations: tax reporting,
           responding to lawful government requests, and data breach notification
           requirements.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           6.5 Data Protection Impact Assessment
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           We have conducted a Data Protection Impact Assessment (DPIA) for our
           use of AI models to process user-submitted content, as required under
           GDPR Article 35 for processing that uses innovative technologies and
@@ -323,18 +323,18 @@ export default function PrivacyPage() {
 
       {/* 7. AI Processing & Transparency */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           7. AI Processing &amp; Transparency
         </h2>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Wordream uses artificial intelligence and machine learning systems to
           analyse scripts, generate visual content, and produce video outputs.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           7.1 How We Use AI
         </h3>
-        <ul className="mt-4 list-disc space-y-2 pl-6 font-special leading-relaxed text-gray-300">
+        <ul className="mt-4 list-disc space-y-2 pl-6 font-kecal leading-relaxed text-gray-300">
           <li>
             Large language models (LLMs) analyse your script content, identify
             scenes, generate character descriptions, and create visual prompts.
@@ -357,15 +357,15 @@ export default function PrivacyPage() {
           </li>
         </ul>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           7.2 Third-Party AI Providers
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Your content is processed by the following categories of third-party
           AI service providers. We maintain Data Processing Agreements (DPAs)
           with each provider.
         </p>
-        <div className="mt-4 rounded-lg border border-purple-700 bg-muted/50 p-4 font-special text-sm leading-relaxed text-gray-300">
+        <div className="mt-4 rounded-lg border border-purple-700 bg-muted/50 p-4 font-kecal text-sm leading-relaxed text-gray-300">
           <p>
             <strong>Large Language Models:</strong> Anthropic (Claude) — script
             analysis, scene breakdown, and prompt generation. Processed via API
@@ -382,17 +382,17 @@ export default function PrivacyPage() {
             training.
           </p>
         </div>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Each DPA includes purpose limitation, data retention limits,
           sub-processor notification, breach notification, audit rights, and
           deletion on termination. We will update this section as provider
           relationships change.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           7.3 Training Data
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           <strong>
             We do not use your scripts, content, or personal information to
             train AI models.
@@ -402,10 +402,10 @@ export default function PrivacyPage() {
           exclude customer data from model training.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           7.4 AI-Generated Content Labeling
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           We are implementing measures to ensure AI-generated video content is
           marked in a machine-readable format as AI-generated (using C2PA
           metadata standards where technically feasible), identifiable as
@@ -414,10 +414,10 @@ export default function PrivacyPage() {
           AI Act Article 50 transparency deadline of 2 August 2026.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           7.5 Australian ADM Transparency
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           In compliance with the automated decision-making transparency
           requirements under the Privacy and Other Legislation Amendment Act
           2024 (effective 10 December 2026), our AI systems process account
@@ -432,13 +432,13 @@ export default function PrivacyPage() {
 
       {/* 8. Disclosure of Personal Information */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           8. Disclosure of Personal Information
         </h2>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           We may disclose personal information to:
         </p>
-        <ul className="mt-4 list-disc space-y-2 pl-6 font-special leading-relaxed text-gray-300">
+        <ul className="mt-4 list-disc space-y-2 pl-6 font-kecal leading-relaxed text-gray-300">
           <li>
             <strong>Service providers:</strong> cloud hosting, payment
             processors, email delivery, and analytics providers who process data
@@ -461,7 +461,7 @@ export default function PrivacyPage() {
             transfer of the business.
           </li>
         </ul>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           <strong>We do not sell your personal information.</strong> We do not
           share personal information for cross-context behavioural advertising.
         </p>
@@ -469,15 +469,15 @@ export default function PrivacyPage() {
 
       {/* 9. International Data Transfers */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           9. International Data Transfers
         </h2>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Wordream is based in Australia and operates cloud infrastructure and
           third-party services in multiple countries. Your personal information
           may be transferred to and processed in:
         </p>
-        <div className="mt-4 rounded-lg border border-purple-700 bg-muted/50 p-4 font-special text-sm leading-relaxed text-gray-300">
+        <div className="mt-4 rounded-lg border border-purple-700 bg-muted/50 p-4 font-kecal text-sm leading-relaxed text-gray-300">
           <p>
             <strong>Australia:</strong> Primary business operations.
           </p>
@@ -491,25 +491,25 @@ export default function PrivacyPage() {
           </p>
         </div>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           9.1 Safeguards for Australian Users (APP 8)
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Before disclosing personal information to an overseas recipient, we
           take reasonable steps to ensure the recipient handles the information
           in accordance with the APPs, through contractual arrangements and data
           processing agreements.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           9.2 Safeguards for EEA/UK Users
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           <JurisdictionTag>GDPR</JurisdictionTag> Australia does not have an EU
           adequacy decision. For transfers of personal data from the EEA or UK,
           we rely on:
         </p>
-        <ul className="mt-4 list-disc space-y-2 pl-6 font-special leading-relaxed text-gray-300">
+        <ul className="mt-4 list-disc space-y-2 pl-6 font-kecal leading-relaxed text-gray-300">
           <li>
             <strong>Standard Contractual Clauses (SCCs):</strong> European
             Commission SCCs (module 2: controller-to-processor) with service
@@ -526,7 +526,7 @@ export default function PrivacyPage() {
             implement supplementary measures where risks are identified.
           </li>
         </ul>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           You may request a copy of the relevant transfer safeguards by
           contacting{" "}
           <a
@@ -541,10 +541,10 @@ export default function PrivacyPage() {
 
       {/* 10. Data Retention */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           10. Data Retention
         </h2>
-        <ul className="mt-4 list-disc space-y-2 pl-6 font-special leading-relaxed text-gray-300">
+        <ul className="mt-4 list-disc space-y-2 pl-6 font-kecal leading-relaxed text-gray-300">
           <li>
             <strong>Account information:</strong> retained for the duration of
             your account and 12 months after deletion, unless a longer period is
@@ -571,7 +571,7 @@ export default function PrivacyPage() {
             input or output data beyond the API request (zero-data-retention).
           </li>
         </ul>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           When personal information is no longer needed, we take reasonable
           steps to destroy or de-identify it (APP 11.2).
         </p>
@@ -579,21 +579,21 @@ export default function PrivacyPage() {
 
       {/* 11. Data Security */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           11. Data Security
         </h2>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           We take reasonable technical and organisational measures to protect
           personal information (APP 11.1; GDPR Article 32), including:
         </p>
-        <ul className="mt-4 list-disc space-y-2 pl-6 font-special leading-relaxed text-gray-300">
+        <ul className="mt-4 list-disc space-y-2 pl-6 font-kecal leading-relaxed text-gray-300">
           <li>Encryption of data in transit (TLS 1.2+) and at rest</li>
           <li>Access controls and authentication mechanisms</li>
           <li>Regular security assessments and monitoring</li>
           <li>Contractor and staff confidentiality obligations</li>
           <li>Incident response and data breach notification procedures</li>
         </ul>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           No method of electronic storage or transmission is completely secure.
           While we strive to protect your personal information, we cannot
           guarantee its absolute security.
@@ -602,39 +602,39 @@ export default function PrivacyPage() {
 
       {/* 12. Your Rights — Australia */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           12. Your Rights — Australia
         </h2>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           12.1 Access (APP 12)
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           You may request access to personal information we hold about you. We
           will respond within 30 days.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           12.2 Correction (APP 13)
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           You may request correction of inaccurate, incomplete, out-of-date,
           irrelevant, or misleading personal information. We will respond within
           30 days.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           12.3 Anonymity and Pseudonymity (APP 2)
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Where practicable, you may use a pseudonym or choose not to identify
           yourself. However, this may limit access to some platform features.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           12.4 Direct Marketing (APP 7)
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           You may opt out of marketing communications at any time via the
           unsubscribe link or by contacting{" "}
           <a
@@ -646,10 +646,10 @@ export default function PrivacyPage() {
           .
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           12.5 Direct Right of Action
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Under the Privacy and Other Legislation Amendment Act 2024,
           individuals may seek damages directly from APP entities through the
           Federal Court for serious or repeated interferences with privacy,
@@ -659,10 +659,10 @@ export default function PrivacyPage() {
 
       {/* 13. Your Rights — EU/EEA (GDPR) */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           13. Your Rights — EU/EEA (GDPR)
         </h2>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           <JurisdictionTag>GDPR</JurisdictionTag> If you are located in the EEA
           or UK, you have the following rights. Contact{" "}
           <a
@@ -673,7 +673,7 @@ export default function PrivacyPage() {
           </a>{" "}
           to exercise them. We will respond within 30 days.
         </p>
-        <ul className="mt-4 list-disc space-y-2 pl-6 font-special leading-relaxed text-gray-300">
+        <ul className="mt-4 list-disc space-y-2 pl-6 font-kecal leading-relaxed text-gray-300">
           <li>
             <strong>Access (Article 15):</strong> Obtain confirmation of
             processing and a copy of your personal data.
@@ -709,7 +709,7 @@ export default function PrivacyPage() {
             produce such effects.
           </li>
         </ul>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           You may lodge a complaint with your local supervisory authority. A
           full list is at{" "}
           <a
@@ -723,10 +723,10 @@ export default function PrivacyPage() {
           .
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           EU Representative
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Under GDPR Article 27, non-EU controllers must appoint a
           representative in the EU. We will appoint an EU representative and
           update this section with their contact details as we scale our
@@ -744,10 +744,10 @@ export default function PrivacyPage() {
 
       {/* 14. Your Rights — United States */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           14. Your Rights — United States
         </h2>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           <JurisdictionTag>US</JurisdictionTag> Several US states have enacted
           comprehensive privacy laws, including California (CCPA/CPRA), Texas
           (TDPSA), Colorado, Connecticut, Virginia, and others. The
@@ -758,10 +758,10 @@ export default function PrivacyPage() {
           for US users.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           14.1 Your Rights
         </h3>
-        <ul className="mt-4 list-disc space-y-2 pl-6 font-special leading-relaxed text-gray-300">
+        <ul className="mt-4 list-disc space-y-2 pl-6 font-kecal leading-relaxed text-gray-300">
           <li>
             <strong>Right to Know / Access:</strong> Know what personal
             information we collect, use, and disclose, and request a copy.
@@ -785,10 +785,10 @@ export default function PrivacyPage() {
           </li>
         </ul>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           14.2 How to Exercise Your Rights
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Email{" "}
           <a
             href={`mailto:${PRIVACY_EMAIL}`}
@@ -800,19 +800,19 @@ export default function PrivacyPage() {
           days.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           14.3 Global Privacy Control
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           We honour the Global Privacy Control (GPC) signal. When we detect a
           GPC signal from your browser, we treat it as a valid opt-out request
           for the sale or sharing of personal information.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           14.4 California Disclosures
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           If and when CCPA thresholds are met, we will maintain a full set of
           California-specific disclosures including categories of personal
           information collected and disclosed, a &ldquo;Do Not Sell or
@@ -823,10 +823,10 @@ export default function PrivacyPage() {
 
       {/* 15. Statutory Tort for Serious Invasions of Privacy */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           15. Statutory Tort for Serious Invasions of Privacy
         </h2>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           From 10 June 2025, Australia&rsquo;s statutory tort for serious
           invasions of privacy (Schedule 2 of the Privacy and Other Legislation
           Amendment Act 2024) provides individuals with a personal right of
@@ -840,14 +840,14 @@ export default function PrivacyPage() {
 
       {/* 16. Children's Privacy */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           16. Children&rsquo;s Privacy
         </h2>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           Wordream is not directed at children. We do not knowingly collect
           personal information from children without appropriate consent.
         </p>
-        <ul className="mt-4 list-disc space-y-2 pl-6 font-special leading-relaxed text-gray-300">
+        <ul className="mt-4 list-disc space-y-2 pl-6 font-kecal leading-relaxed text-gray-300">
           <li>
             <strong>Australia:</strong> Users must be at least 18 years of age,
             or have parental consent, to create an account. We are monitoring
@@ -866,7 +866,7 @@ export default function PrivacyPage() {
             definition of personal information and strengthens protections.
           </li>
         </ul>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           If we become aware that we have collected personal information from a
           child without appropriate consent, we will delete that information
           promptly.
@@ -875,10 +875,10 @@ export default function PrivacyPage() {
 
       {/* 17. Cookies & Tracking Technologies */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           17. Cookies &amp; Tracking Technologies
         </h2>
-        <ul className="mt-4 list-disc space-y-2 pl-6 font-special leading-relaxed text-gray-300">
+        <ul className="mt-4 list-disc space-y-2 pl-6 font-kecal leading-relaxed text-gray-300">
           <li>
             <strong>Strictly necessary:</strong> essential for authentication
             and security.
@@ -892,12 +892,12 @@ export default function PrivacyPage() {
             the platform.
           </li>
         </ul>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           <JurisdictionTag>GDPR</JurisdictionTag> For EEA/UK users,
           non-essential cookies are only placed with your prior consent. You can
           manage preferences through the cookie banner or your account settings.
         </p>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           You can manage cookies through your browser settings. We honour the
           Global Privacy Control signal as a cookie opt-out where required by
           law.
@@ -906,33 +906,33 @@ export default function PrivacyPage() {
 
       {/* 18. Notifiable Data Breaches */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           18. Notifiable Data Breaches
         </h2>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           Australia (Part IIIC, Privacy Act)
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           We will assess suspected breaches within 30 days and notify the OAIC
           and affected individuals as soon as practicable if the breach is
           likely to result in serious harm.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           EU/EEA (GDPR Articles 33&ndash;34)
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           <JurisdictionTag>GDPR</JurisdictionTag> We will notify the relevant
           supervisory authority within 72 hours. Where a breach poses high risk
           to individuals, we will also notify affected data subjects without
           undue delay.
         </p>
 
-        <h3 className="mt-6 font-special text-lg font-semibold text-purple-300">
+        <h3 className="mt-6 font-kecal text-lg font-semibold text-purple-300">
           United States
         </h3>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           <JurisdictionTag>US</JurisdictionTag> We will comply with applicable
           state data breach notification laws.
         </p>
@@ -940,10 +940,10 @@ export default function PrivacyPage() {
 
       {/* 19. Complaints */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           19. Complaints
         </h2>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           If you believe we have breached applicable privacy laws, contact{" "}
           <a
             href={`mailto:${PRIVACY_EMAIL}`}
@@ -954,10 +954,10 @@ export default function PrivacyPage() {
           . We will acknowledge within 5 business days, investigate and respond
           within 30 days.
         </p>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           If unsatisfied, you may escalate to:
         </p>
-        <div className="mt-4 rounded-lg border border-purple-700 bg-muted/50 p-4 font-special text-sm leading-relaxed text-gray-300">
+        <div className="mt-4 rounded-lg border border-purple-700 bg-muted/50 p-4 font-kecal text-sm leading-relaxed text-gray-300">
           <p>
             <strong>Australia:</strong> Office of the Australian Information
             Commissioner (OAIC) —{" "}
@@ -1000,10 +1000,10 @@ export default function PrivacyPage() {
 
       {/* 20. Changes to This Policy */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           20. Changes to This Policy
         </h2>
-        <p className="mt-4 font-special leading-relaxed text-gray-300">
+        <p className="mt-4 font-kecal leading-relaxed text-gray-300">
           We may update this Policy to reflect changes in our practices,
           technology, or legal requirements. Material changes will be posted on
           our website with an updated &ldquo;Last Updated&rdquo; date. Where
@@ -1014,10 +1014,10 @@ export default function PrivacyPage() {
 
       {/* 21. Contact Us */}
       <section className="mt-12">
-        <h2 className="font-special text-2xl font-bold text-purple-300">
+        <h2 className="font-kecal text-2xl font-bold text-purple-300">
           21. Contact Us
         </h2>
-        <div className="mt-4 rounded-lg border border-purple-700 bg-muted/50 p-4 font-special text-sm leading-relaxed text-gray-300">
+        <div className="mt-4 rounded-lg border border-purple-700 bg-muted/50 p-4 font-kecal text-sm leading-relaxed text-gray-300">
           <p className="font-semibold">Wordream — Data Controller</p>
           <p className="mt-1">
             Email:{" "}

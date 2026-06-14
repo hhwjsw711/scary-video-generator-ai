@@ -79,7 +79,7 @@ export const ImagePromtChangeForm = ({
         <Button
           type="submit"
           disabled={form.formState.isLoading || form.formState.isSubmitting}
-          className={"font-special"}
+          className={"font-kecal"}
         >
           {form.formState.isLoading || form.formState.isSubmitting ? (
             <Loader className="h-4 w-4 animate-spin" />

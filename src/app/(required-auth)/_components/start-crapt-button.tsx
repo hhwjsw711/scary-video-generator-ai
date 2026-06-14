@@ -17,7 +17,7 @@ export const StartCraptingButton = (props: Props) => {
   return (
     <Button
       variant="default"
-      className={cn("px-8 py-6 font-jolly text-[24px]")}
+      className={cn("px-8 py-6 font-kecal text-[24px]")}
       onClick={async () => {
         if (user) router.push("/generate");
         else await signIn("google");

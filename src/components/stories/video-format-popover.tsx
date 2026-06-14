@@ -41,7 +41,7 @@ export const VideoFormatPopup = ({
       title="Choose Video Orientation"
       subheading="Choose between vertical (TikTok/YouTube Shorts) or horizontal (standard 1080p) format."
     >
-      <div className="font-special text-sm text-purple-100">
+      <div className="font-kecal text-sm text-purple-100">
         <p>
           Vertical videos are ideal for platforms like TikTok and Instagram
           Reels.
@@ -59,7 +59,7 @@ export const VideoFormatPopup = ({
             type="button"
             onClick={() => setVideoFormat("9:16")}
             className={cn(
-              "flex w-full items-center justify-center gap-2 font-special",
+              "flex w-full items-center justify-center gap-2 font-kecal",
               videoFormat === "9:16" ? "bg-primary" : "!bg-gray-600",
             )}
           >
@@ -69,7 +69,7 @@ export const VideoFormatPopup = ({
             type="button"
             onClick={() => setVideoFormat("16:9")}
             className={cn(
-              "flex w-full items-center justify-center gap-2 font-special",
+              "flex w-full items-center justify-center gap-2 font-kecal",
               videoFormat === "16:9" ? "bg-primary" : "!bg-gray-600",
             )}
           >
@@ -81,14 +81,14 @@ export const VideoFormatPopup = ({
             type="button"
             onClick={() => setClose()}
             variant="outline"
-            className="font-special"
+            className="font-kecal"
           >
             Cancel
           </Button>
           <Button
             type="button"
             onClick={handleGenerate}
-            className="font-special"
+            className="font-kecal"
             disabled={isSubmitting}
           >
             {isSubmitting ? (

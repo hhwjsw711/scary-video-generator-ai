@@ -60,7 +60,7 @@ export default function RefinePage() {
     <div className="flex flex-col items-center justify-center py-12 text-white">
       <h1
         className={cn(
-          "w-full text-center font-nosifer text-2xl font-bold text-purple-300 md:text-[40px]",
+          "w-full text-center font-kecal text-2xl font-bold text-purple-300 md:text-[40px]",
         )}
       >
         Refine story
@@ -69,7 +69,7 @@ export default function RefinePage() {
       <div className="mt-8 w-full max-w-[1000px] rounded-lg border-2 border-purple-500 bg-gray-800 p-4 md:p-8">
         <h2
           className={cn(
-            "mb-4 w-full text-center font-amatic text-2xl font-bold text-purple-500 md:text-4xl",
+            "mb-4 w-full text-center font-kecal text-2xl font-bold text-purple-500 md:text-4xl",
           )}
         >
           {story?.name}
@@ -109,7 +109,7 @@ export default function RefinePage() {
                     )
                   }
                   type="button"
-                  className="w-full rounded-none bg-purple-700 font-special text-white hover:bg-purple-800"
+                  className="w-full rounded-none bg-purple-700 font-kecal text-white hover:bg-purple-800"
                   disabled={form.formState.isSubmitting}
                 >
                   <WandSparkles className="mr-4 h-4 w-4" /> Refine with AI
@@ -124,7 +124,7 @@ export default function RefinePage() {
                       />,
                     );
                   }}
-                  className="w-full rounded-none bg-purple-700 font-special text-white hover:bg-purple-800"
+                  className="w-full rounded-none bg-purple-700 font-kecal text-white hover:bg-purple-800"
                   disabled={form.formState.isSubmitting}
                 >
                   Generate segments and images

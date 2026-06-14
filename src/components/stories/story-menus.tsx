@@ -27,7 +27,7 @@ export function StoryMenus({
   return (
     <div
       className={
-        "flex flex-col items-center justify-center gap-4 rounded-2xl border border-gray-600 bg-gray-900 p-8 font-special md:flex-row"
+        "flex flex-col items-center justify-center gap-4 rounded-2xl border border-gray-600 bg-gray-900 p-8 font-kecal md:flex-row"
       }
     >
       <Button

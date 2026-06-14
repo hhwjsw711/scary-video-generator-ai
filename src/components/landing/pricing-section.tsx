@@ -57,10 +57,10 @@ export function PricingSection() {
   return (
     <section className="container py-16 md:py-24">
       <div className="mx-auto max-w-3xl text-center">
-        <h2 className="font-nosifer text-2xl text-purple-300 md:text-[50px] md:leading-[50px]">
+        <h2 className="font-kecal text-2xl text-purple-300 md:text-[50px] md:leading-[50px]">
           Simple Credit Pricing
         </h2>
-        <p className="mt-4 font-special text-base text-gray-400 md:text-lg">
+        <p className="mt-4 font-kecal text-base text-gray-400 md:text-lg">
           Pay only for what you need. Every new account starts with{" "}
           <span className="text-purple-300">1,000 free credits</span> to create
           your first video.
@@ -80,17 +80,17 @@ export function PricingSection() {
           >
             {tier.highlighted && (
               <div className="absolute -top-3 left-1/2 flex -translate-x-1/2 rounded-full bg-purple-500 px-4 py-1">
-                <span className="font-special text-xs font-bold text-white">
+                <span className="font-kecal text-xs font-bold text-white">
                   Most Popular
                 </span>
               </div>
             )}
 
             <div className="mb-4">
-              <h3 className="font-special text-xl font-bold text-white">
+              <h3 className="font-kecal text-xl font-bold text-white">
                 {tier.name}
               </h3>
-              <p className="mt-1 font-special text-sm text-gray-400">
+              <p className="mt-1 font-kecal text-sm text-gray-400">
                 {tier.description}
               </p>
             </div>
@@ -98,11 +98,11 @@ export function PricingSection() {
             <div className="mb-6">
               <div className="flex items-baseline gap-1">
                 <Zap className="h-5 w-5 text-purple-400" />
-                <span className="font-nosifer text-3xl text-purple-300">
+                <span className="font-kecal text-3xl text-purple-300">
                   {tier.credits.toLocaleString()}
                 </span>
               </div>
-              <span className="font-special text-sm text-gray-500">
+              <span className="font-kecal text-sm text-gray-500">
                 credits
               </span>
             </div>
@@ -111,7 +111,7 @@ export function PricingSection() {
               {tier.features.map((feature) => (
                 <li
                   key={feature}
-                  className="flex items-start gap-2 font-special text-sm text-gray-300"
+                  className="flex items-start gap-2 font-kecal text-sm text-gray-300"
                 >
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-purple-400" />
                   {feature}
@@ -123,7 +123,7 @@ export function PricingSection() {
               <Button
                 variant={tier.highlighted ? "default" : "outline"}
                 className={cn(
-                  "w-full font-special",
+                  "w-full font-kecal",
                   !tier.highlighted &&
                     "border-purple-700 text-purple-300 hover:bg-purple-900/20 hover:text-white",
                 )}

@@ -50,13 +50,13 @@ export default function Page() {
     <div className="container h-full py-12">
       <h1
         className={cn(
-          "mb-4 w-full text-center font-nosifer text-2xl font-bold text-purple-300 md:text-[40px]",
+          "mb-4 w-full text-center font-kecal text-2xl font-bold text-purple-300 md:text-[40px]",
         )}
       >
         Talent Library
       </h1>
 
-      <p className={cn("py-4 text-center font-special text-lg")}>
+      <p className={cn("py-4 text-center font-kecal text-lg")}>
         Manage your team&apos;s talent for consistent AI-generated content.
       </p>
 
@@ -86,13 +86,13 @@ export default function Page() {
 
       {talents === undefined ? (
         <div className="flex h-full items-center justify-center">
-          <div className={cn("font-amatic text-[40px] font-bold")}>
+          <div className={cn("font-kecal text-[40px] font-bold")}>
             Loading talents ...
           </div>
         </div>
       ) : talents.length === 0 ? (
         <div className="flex h-full flex-col items-center justify-center gap-4 py-12">
-          <p className={cn("font-amatic text-[40px] font-bold")}>
+          <p className={cn("font-kecal text-[40px] font-bold")}>
             {filter === "favorites"
               ? "No favorites yet."
               : "You don&apos;t have any talent yet."}
@@ -155,7 +155,7 @@ function TalentCard({
     <div
       onClick={onClick}
       className={cn(
-        "flex cursor-pointer flex-col overflow-hidden rounded-xl border-2 border-purple-500 font-special hover:border-purple-300",
+        "flex cursor-pointer flex-col overflow-hidden rounded-xl border-2 border-purple-500 font-kecal hover:border-purple-300",
       )}
     >
       <div className="flex items-center justify-between bg-gray-800 px-4 py-2">
@@ -337,7 +337,7 @@ function AddTalentDialog() {
       <DialogContent className="border-purple-500 bg-gray-900 text-purple-300 sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle className="font-amatic text-2xl">
+            <DialogTitle className="font-kecal text-2xl">
               Add New Talent
             </DialogTitle>
             <DialogDescription className="text-purple-400">

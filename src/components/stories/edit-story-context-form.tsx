@@ -97,7 +97,7 @@ export function EditStoryContextForm({
           </Button>
           <Button
             type="submit"
-            className="bg-purple-700 font-special text-white hover:bg-purple-800"
+            className="bg-purple-700 font-kecal text-white hover:bg-purple-800"
             disabled={form.formState.isSubmitting}
           >
             {form.formState.isSubmitting ? (

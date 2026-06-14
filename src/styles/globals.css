@@ -1,6 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import "./fonts.css";
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -66,41 +69,7 @@
     @apply bg-background text-foreground;
   }
 }
-.amatic-sc-regular {
-  font-family: "Amatic SC", system-ui;
-  font-weight: 400;
-  font-style: normal;
-}
 
-.amatic-sc-bold {
-  font-family: "Amatic SC", system-ui;
-  font-weight: 700;
-  font-style: normal;
-}
-.parallax-background {
-  background-image: url("/header-bg.jpg"); /* Replace with your image path */
-  object-fit: cover;
-
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  height: 100vh; /* Adjust as needed */
-  position: relative;
-  overflow: hidden;
-}
-
-.parallax-background::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: inherit; /* Use the same background image */
-  background-attachment: scroll; /* Allow scrolling */
-  transform: translateZ(0); /* Enable hardware acceleration */
-  z-index: -1; /* Place behind content */
-}
 @keyframes float1 {
   0%,
   100% {
@@ -144,4 +113,19 @@
 }
 .animate-float3 {
   animation: float3 8s ease-in infinite;
+}
+
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+main {
+  animation: page-fade-in 0.3s ease-out;
 }

@@ -35,12 +35,12 @@ export function HeroSection() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-purple-400 opacity-75" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-purple-500" />
           </span>
-          <span className="font-special text-xs text-purple-300 md:text-sm">
+          <span className="font-kecal text-xs text-purple-300 md:text-sm">
             Now in Public Beta
           </span>
         </div>
 
-        <h1 className="mb-4 font-nosifer text-3xl leading-tight text-purple-300 md:text-5xl lg:text-7xl">
+        <h1 className="mb-4 font-kecal text-3xl leading-tight text-purple-300 md:text-5xl lg:text-7xl">
           Turn Ideas Into
         </h1>
 
@@ -48,7 +48,7 @@ export function HeroSection() {
           {ROTATING_WORDS.map((word, i) => (
             <span
               key={word}
-              className="absolute inset-0 whitespace-nowrap font-nosifer text-3xl text-white opacity-0 md:text-5xl lg:text-7xl"
+              className="absolute inset-0 whitespace-nowrap font-kecal text-3xl text-white opacity-0 md:text-5xl lg:text-7xl"
               style={{
                 animation: `wordCycle 18s ease-in-out infinite`,
                 animationDelay: `${i * 3}s`,
@@ -59,7 +59,7 @@ export function HeroSection() {
           ))}
         </div>
 
-        <p className="mx-auto mb-10 max-w-2xl font-special text-base leading-relaxed text-gray-300 md:text-xl">
+        <p className="mx-auto mb-10 max-w-2xl font-kecal text-base leading-relaxed text-gray-300 md:text-xl">
           Describe an idea or paste a script, and our AI builds scenes, casts
           characters, generates shots, and scores music — all from one
           interface. Multi-scene, fully exportable.
@@ -70,7 +70,7 @@ export function HeroSection() {
             <Button
               variant="default"
               size="lg"
-              className="group px-8 py-6 font-jolly text-[24px]"
+              className="group px-8 py-6 font-kecal text-[24px]"
             >
               Start Creating Free
               <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -79,7 +79,7 @@ export function HeroSection() {
           <Button
             variant="ghost"
             size="lg"
-            className="gap-2 font-special text-purple-300 hover:bg-purple-900/20 hover:text-white"
+            className="gap-2 font-kecal text-purple-300 hover:bg-purple-900/20 hover:text-white"
             onClick={handleScrollToVideo}
           >
             <Play className="h-5 w-5" />
@@ -87,7 +87,7 @@ export function HeroSection() {
           </Button>
         </div>
 
-        <p className="mt-6 font-special text-sm text-purple-400/60">
+        <p className="mt-6 font-kecal text-sm text-purple-400/60">
           No credit card required · Start with 1,000 free credits
         </p>
       </div>

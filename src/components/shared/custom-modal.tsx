@@ -35,10 +35,10 @@ const CustomModal = ({
         )}
       >
         <DialogHeader className="text-left">
-          <DialogTitle className={cn("font-amatic text-4xl font-bold")}>
+          <DialogTitle className={cn("font-kecal text-4xl font-bold")}>
             {title}
           </DialogTitle>
-          <DialogDescription className={cn("font-special text-md")}>
+          <DialogDescription className={cn("font-kecal text-md")}>
             {subheading}
           </DialogDescription>
         </DialogHeader>

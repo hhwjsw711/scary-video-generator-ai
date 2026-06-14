@@ -150,6 +150,7 @@ const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
                       src={previewUrls.get(file.name)}
                       alt={file.name}
                       className="size-full object-cover"
+                      loading="lazy"
                     />
                   )
                 ) : null}

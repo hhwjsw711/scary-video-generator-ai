@@ -40,14 +40,14 @@ export default function MyVideos() {
       <div className="container h-full py-12">
         <h1
           className={cn(
-            "w-full text-center font-nosifer text-2xl font-bold text-purple-300 md:text-[40px]",
+            "w-full text-center font-kecal text-2xl font-bold text-purple-300 md:text-[40px]",
           )}
         >
           Your Videos
         </h1>
         <p
           className={cn(
-            "w-full py-4 text-center font-special text-base md:text-lg",
+            "w-full py-4 text-center font-kecal text-base md:text-lg",
           )}
         >
           Here are the videos you have generated.
@@ -88,7 +88,7 @@ export default function MyVideos() {
             {status === "CanLoadMore" && (
               <div className="flex justify-center pb-12">
                 <Button
-                  className="font-amatic text-[24px]"
+                  className="font-kecal text-[24px]"
                   onClick={() => loadMore(8)}
                 >
                   Load More
@@ -97,14 +97,14 @@ export default function MyVideos() {
             )}
             {status === "LoadingMore" && (
               <div className="flex justify-center pb-12">
-                <div className={cn("font-amatic text-2xl font-bold")}>
+                <div className={cn("font-kecal text-2xl font-bold")}>
                   Loading more videos...
                 </div>
               </div>
             )}
             {channels?.length && channels?.length > 0 && (
               <div className="mt-8 border-t border-purple-700 pt-4 md:hidden">
-                <p className="font-special text-sm text-purple-300">
+                <p className="font-kecal text-sm text-purple-300">
                   Connected channels:
                 </p>
                 <div className="mt-2 flex flex-col gap-2">
@@ -118,7 +118,7 @@ export default function MyVideos() {
               <div className="mt-8 text-center md:hidden">
                 <ConnectYoutubeButton variant={"link"}>
                   {({ isConnecting }) => (
-                    <span className="font-special text-sm">
+                    <span className="font-kecal text-sm">
                       {isConnecting
                         ? "Getting connection link"
                         : "Connect youtube"}
@@ -133,12 +133,12 @@ export default function MyVideos() {
           <div className="flex flex-col items-center gap-4 py-12">
             <p
               className={cn(
-                "text-center font-amatic text-2xl font-bold md:text-[40px]",
+                "text-center font-kecal text-2xl font-bold md:text-[40px]",
               )}
             >
               You don&apos;t have any videos.
             </p>
-            <Button className="font-amatic text-[24px]" asChild>
+            <Button className="font-kecal text-[24px]" asChild>
               <Link href="/stories">Go to Stories</Link>
             </Button>
           </div>
@@ -146,7 +146,7 @@ export default function MyVideos() {
         {status === "LoadingFirstPage" && (
           <div className="flex h-full w-full items-center justify-center">
             <div
-              className={cn("font-amatic text-2xl font-bold md:text-[40px]")}
+              className={cn("font-kecal text-2xl font-bold md:text-[40px]")}
             >
               Loading videos...
             </div>

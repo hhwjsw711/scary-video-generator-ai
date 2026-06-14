@@ -90,13 +90,13 @@ const Page = () => {
       <div className="container flex min-h-screen flex-col items-center justify-center py-12">
         <h1
           className={cn(
-            "mb-4 text-center font-nosifer text-4xl font-[700] text-purple-300",
+            "mb-4 text-center font-kecal text-4xl font-[700] text-purple-300",
           )}
         >
           Create from Script
         </h1>
         <p
-          className={cn("mb-8 text-center font-special text-lg text-gray-300")}
+          className={cn("mb-8 text-center font-kecal text-lg text-gray-300")}
         >
           Paste your script or describe your idea — AI generates scenes,
           visuals, and music.
@@ -104,7 +104,7 @@ const Page = () => {
 
         <div
           className={cn(
-            "w-full max-w-[800px] rounded-lg border-2 border-purple-500 bg-gray-100 p-4 font-special dark:bg-gray-800 md:p-8",
+            "w-full max-w-[800px] rounded-lg border-2 border-purple-500 bg-gray-100 p-4 font-kecal dark:bg-gray-800 md:p-8",
           )}
         >
           <Form {...form}>

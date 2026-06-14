@@ -120,7 +120,7 @@ export const VideoItem = memo(function VideoItem({
               <Button
                 variant={"destructive"}
                 size={"sm"}
-                className="!py-0 font-special"
+                className="!py-0 font-kecal"
                 onClick={() => {
                   setOpen(
                     <CustomModal title="Delete video" subheading="">

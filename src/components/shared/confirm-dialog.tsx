@@ -38,10 +38,10 @@ export function ConfirmDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="border-purple-700 bg-gray-900 sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-nosifer text-2xl text-purple-300">
+          <DialogTitle className="font-kecal text-2xl text-purple-300">
             {title}
           </DialogTitle>
-          <DialogDescription className="font-special text-gray-400">
+          <DialogDescription className="font-kecal text-gray-400">
             {description}
           </DialogDescription>
         </DialogHeader>
@@ -50,7 +50,7 @@ export function ConfirmDialog({
             variant="ghost"
             onClick={() => onOpenChange(false)}
             disabled={loading}
-            className="font-special text-purple-300 hover:bg-gray-800 hover:text-white"
+            className="font-kecal text-purple-300 hover:bg-gray-800 hover:text-white"
           >
             {cancelLabel}
           </Button>
@@ -59,7 +59,7 @@ export function ConfirmDialog({
             onClick={onConfirm}
             disabled={loading}
             className={cn(
-              "font-special",
+              "font-kecal",
               variant === "destructive" && "bg-red-600 hover:bg-red-700",
             )}
           >

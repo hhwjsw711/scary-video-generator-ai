@@ -14,7 +14,7 @@ export const Footer = () => {
       <div className="mx-auto max-w-7xl px-6 pb-0 pt-16">
         <div className="flex flex-col items-center justify-between gap-4 py-6 sm:flex-row">
           <div className="flex items-center gap-2">
-            <span className="font-nosifer text-xl text-purple-300">
+            <span className="font-kecal text-xl text-purple-300">
               Wordream
             </span>
           </div>
@@ -22,19 +22,19 @@ export const Footer = () => {
           <div className="flex items-center gap-6">
             <Link
               href="#"
-              className="font-special text-sm text-purple-300 transition-colors hover:text-white"
+              className="font-kecal text-sm text-purple-300 transition-colors hover:text-white"
             >
               Docs
             </Link>
             <Link
               href="/terms"
-              className="font-special text-sm text-purple-300 transition-colors hover:text-white"
+              className="font-kecal text-sm text-purple-300 transition-colors hover:text-white"
             >
               Terms
             </Link>
             <Link
               href="/privacy"
-              className="font-special text-sm text-purple-300 transition-colors hover:text-white"
+              className="font-kecal text-sm text-purple-300 transition-colors hover:text-white"
             >
               Privacy
             </Link>
@@ -51,7 +51,7 @@ export const Footer = () => {
         </div>
 
         <div className="border-t border-purple-700/50 py-4 text-center">
-          <p className="font-special text-sm text-purple-400">
+          <p className="font-kecal text-sm text-purple-400">
             &copy; {new Date().getFullYear()} Wordream. All rights reserved.
           </p>
         </div>

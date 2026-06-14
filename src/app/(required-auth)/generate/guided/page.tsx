@@ -213,20 +213,20 @@ const GuidedStoryCreation = () => {
       <div className="container flex min-h-screen flex-col items-center justify-center py-12">
         <h1
           className={cn(
-            "mb-4 text-center font-nosifer text-4xl font-[700] text-purple-300",
+            "mb-4 text-center font-kecal text-4xl font-[700] text-purple-300",
           )}
         >
           Guided Video Creation
         </h1>
         <p
-          className={cn("mb-8 text-center font-special text-lg text-gray-300")}
+          className={cn("mb-8 text-center font-kecal text-lg text-gray-300")}
         >
           Let AI guide you through creating your video step by step.
         </p>
 
         <div
           className={cn(
-            "w-full max-w-[800px] rounded-lg border-2 border-purple-500 bg-gray-100 p-4 font-special dark:bg-gray-800 md:p-8",
+            "w-full max-w-[800px] rounded-lg border-2 border-purple-500 bg-gray-100 p-4 font-kecal dark:bg-gray-800 md:p-8",
           )}
         >
           <Form {...form}>
@@ -381,7 +381,7 @@ const GuidedStoryCreation = () => {
                           />
                           <span
                             className={cn(
-                              "font-special text-sm font-medium",
+                              "font-kecal text-sm font-medium",
                               selectedStyleId === style.id
                                 ? "text-purple-300"
                                 : "text-gray-300",

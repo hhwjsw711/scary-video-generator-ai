@@ -61,10 +61,10 @@ export default function LandingPage() {
       {/* How It Works */}
       <section className="container py-16 md:py-24">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="font-nosifer text-2xl text-purple-300 md:text-[50px] md:leading-[50px]">
+          <h2 className="font-kecal text-2xl text-purple-300 md:text-[50px] md:leading-[50px]">
             How It Works
           </h2>
-          <p className="mt-4 font-special text-base text-gray-400 md:text-lg">
+          <p className="mt-4 font-kecal text-base text-gray-400 md:text-lg">
             From idea to finished video in three simple steps — no editing
             skills required.
           </p>
@@ -76,16 +76,16 @@ export default function LandingPage() {
               key={step.number}
               className="group relative rounded-xl border border-purple-700/20 bg-purple-900/5 p-8 transition-all duration-300 hover:border-purple-500/40 hover:bg-purple-900/10"
             >
-              <div className="absolute -left-3 -top-3 flex h-10 w-10 items-center justify-center rounded-full bg-purple-700 font-nosifer text-lg text-white md:h-12 md:w-12 md:text-xl">
+              <div className="absolute -left-3 -top-3 flex h-10 w-10 items-center justify-center rounded-full bg-purple-700 font-kecal text-lg text-white md:h-12 md:w-12 md:text-xl">
                 {step.number}
               </div>
               <div className="mb-5 mt-2 flex h-14 w-14 items-center justify-center rounded-xl bg-purple-900/40 text-purple-300 group-hover:bg-purple-700 group-hover:text-white">
                 <step.icon className="h-7 w-7" />
               </div>
-              <h3 className="mb-3 font-special text-xl font-bold text-white">
+              <h3 className="mb-3 font-kecal text-xl font-bold text-white">
                 {step.title}
               </h3>
-              <p className="font-special text-sm leading-relaxed text-gray-400">
+              <p className="font-kecal text-sm leading-relaxed text-gray-400">
                 {step.description}
               </p>
             </div>
@@ -96,10 +96,10 @@ export default function LandingPage() {
       {/* Video Showcase */}
       <section id="video-showcase" className="container py-16 md:py-24">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="font-nosifer text-2xl text-purple-300 md:text-[50px] md:leading-[50px]">
+          <h2 className="font-kecal text-2xl text-purple-300 md:text-[50px] md:leading-[50px]">
             See It In Action
           </h2>
-          <p className="mt-4 font-special text-base text-gray-400 md:text-lg">
+          <p className="mt-4 font-kecal text-base text-gray-400 md:text-lg">
             From script to screen — watch how AI builds scenes, characters,
             shots, and music all in one platform.
           </p>
@@ -130,10 +130,10 @@ export default function LandingPage() {
       {/* Features Grid */}
       <section className="container py-16 md:py-24">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="font-nosifer text-2xl text-purple-300 md:text-[50px] md:leading-[50px]">
+          <h2 className="font-kecal text-2xl text-purple-300 md:text-[50px] md:leading-[50px]">
             Everything You Need
           </h2>
-          <p className="mt-4 font-special text-base text-gray-400 md:text-lg">
+          <p className="mt-4 font-kecal text-base text-gray-400 md:text-lg">
             A complete AI video production suite in one platform.
           </p>
         </div>
@@ -147,7 +147,7 @@ export default function LandingPage() {
               <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-purple-900/40 text-purple-300 transition-colors group-hover:bg-purple-700 group-hover:text-white">
                 <feature.icon className="h-6 w-6" />
               </div>
-              <span className="font-special text-sm font-bold text-purple-300 group-hover:text-white">
+              <span className="font-kecal text-sm font-bold text-purple-300 group-hover:text-white">
                 {feature.title}
               </span>
             </div>
@@ -163,10 +163,10 @@ export default function LandingPage() {
         <div className="relative overflow-hidden rounded-2xl border border-purple-700/30 bg-purple-900/10 p-8 text-center md:p-16">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(139,92,246,0.15),transparent_70%)]" />
           <div className="relative z-10">
-            <h2 className="font-nosifer text-2xl text-purple-300 md:text-[50px] md:leading-[50px]">
+            <h2 className="font-kecal text-2xl text-purple-300 md:text-[50px] md:leading-[50px]">
               Ready to Create?
             </h2>
-            <p className="mx-auto mt-4 max-w-xl font-special text-base text-gray-300 md:text-lg">
+            <p className="mx-auto mt-4 max-w-xl font-kecal text-base text-gray-300 md:text-lg">
               Join creators who are turning ideas into films with AI. Start with
               1,000 free credits — no credit card required.
             </p>
@@ -175,14 +175,14 @@ export default function LandingPage() {
                 <Button
                   variant="default"
                   size="lg"
-                  className="group px-10 py-6 font-jolly text-[24px]"
+                  className="group px-10 py-6 font-kecal text-[24px]"
                 >
                   Start Creating Free
                   <ArrowRight className="ml-2 h-6 w-6 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
             </div>
-            <p className="mt-4 font-special text-sm text-purple-400/60">
+            <p className="mt-4 font-kecal text-sm text-purple-400/60">
               Free to start · No credit card · Cancel anytime
             </p>
           </div>

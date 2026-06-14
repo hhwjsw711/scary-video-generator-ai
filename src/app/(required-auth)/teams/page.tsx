@@ -34,7 +34,7 @@ export default function Page() {
     <div className="container h-full py-12">
       <h1
         className={cn(
-          "w-full text-center font-nosifer text-2xl font-bold text-purple-300 md:text-[40px]",
+          "w-full text-center font-kecal text-2xl font-bold text-purple-300 md:text-[40px]",
         )}
       >
         Your Teams
@@ -43,7 +43,7 @@ export default function Page() {
       <div className="flex justify-end py-4">
         <Button
           onClick={() => setShowCreateForm(true)}
-          className={cn("font-amatic text-[24px]")}
+          className={cn("font-kecal text-[24px]")}
         >
           <PlusIcon className="mr-2 h-5 w-5" /> New Team
         </Button>
@@ -51,7 +51,7 @@ export default function Page() {
 
       {showCreateForm && (
         <div className="mx-auto mb-8 max-w-lg rounded-lg border border-purple-700 bg-gray-900 p-6">
-          <h2 className="mb-4 font-amatic text-[24px] font-bold text-purple-300">
+          <h2 className="mb-4 font-kecal text-[24px] font-bold text-purple-300">
             Create New Team
           </h2>
           <form onSubmit={handleCreate} className="space-y-4">
@@ -96,7 +96,7 @@ export default function Page() {
 
       {teams === undefined ? (
         <div className="flex h-full items-center justify-center">
-          <div className={cn("font-amatic text-[40px] font-bold")}>
+          <div className={cn("font-kecal text-[40px] font-bold")}>
             Loading teams...
           </div>
         </div>
@@ -104,11 +104,11 @@ export default function Page() {
         <div className="flex h-full flex-col items-center justify-center gap-4 py-12">
           <UsersIcon className="h-16 w-16 text-purple-500" />
           <p
-            className={cn("font-amatic text-[40px] font-bold text-purple-300")}
+            className={cn("font-kecal text-[40px] font-bold text-purple-300")}
           >
             No teams yet
           </p>
-          <p className={cn("font-special text-lg text-purple-400")}>
+          <p className={cn("font-kecal text-lg text-purple-400")}>
             Create a team to start collaborating
           </p>
         </div>
@@ -141,10 +141,10 @@ function TeamCard({
       className="flex min-h-[200px] flex-col items-start justify-between rounded-xl border-2 border-purple-500 bg-gray-900 p-6 text-left transition-all hover:scale-105 hover:border-purple-300 md:min-h-[250px]"
     >
       <div>
-        <h3 className="mb-2 font-amatic text-[28px] font-bold text-purple-300">
+        <h3 className="mb-2 font-kecal text-[28px] font-bold text-purple-300">
           {team.name}
         </h3>
-        <p className="line-clamp-3 font-special text-sm text-purple-400">
+        <p className="line-clamp-3 font-kecal text-sm text-purple-400">
           {team.description}
         </p>
       </div>

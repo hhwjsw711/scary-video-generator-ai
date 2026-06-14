@@ -117,10 +117,10 @@ export function StylesShowcase() {
   return (
     <section className="container py-16 md:py-24">
       <div className="mx-auto max-w-3xl text-center">
-        <h2 className="font-nosifer text-2xl text-purple-300 md:text-[50px] md:leading-[50px]">
+        <h2 className="font-kecal text-2xl text-purple-300 md:text-[50px] md:leading-[50px]">
           15 Visual Styles
         </h2>
-        <p className="mt-4 font-special text-base text-gray-400 md:text-lg">
+        <p className="mt-4 font-kecal text-base text-gray-400 md:text-lg">
           Choose from 15 distinct visual styles to match your creative vision.
           Each style tailors the AI&apos;s output to a specific cinematic
           aesthetic.
@@ -141,10 +141,10 @@ export function StylesShowcase() {
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-900/40 text-purple-300 transition-colors group-hover:bg-purple-700 group-hover:text-white">
               <style.icon className="h-5 w-5" />
             </div>
-            <span className="mt-3 text-center font-special text-sm font-bold text-purple-300 group-hover:text-white">
+            <span className="mt-3 text-center font-kecal text-sm font-bold text-purple-300 group-hover:text-white">
               {style.name}
             </span>
-            <span className="mt-1 text-center font-special text-xs text-gray-500 group-hover:text-gray-400">
+            <span className="mt-1 text-center font-kecal text-xs text-gray-500 group-hover:text-gray-400">
               {style.description}
             </span>
           </div>

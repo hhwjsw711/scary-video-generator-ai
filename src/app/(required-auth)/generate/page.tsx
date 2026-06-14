@@ -8,19 +8,19 @@ const CreateYourStory = () => {
     <div className="py-32">
       <h1
         className={cn(
-          "mb-4 text-center font-nosifer text-4xl font-[700] text-purple-300",
+          "mb-4 text-center font-kecal text-4xl font-[700] text-purple-300",
         )}
       >
         Create Your Video
       </h1>
-      <p className={cn("mb-8 text-center font-special text-lg text-gray-300")}>
+      <p className={cn("mb-8 text-center font-kecal text-lg text-gray-300")}>
         Describe an idea or paste a script — we build scenes, characters, shots,
         and music.
       </p>
 
       <div
         className={cn(
-          "mx-auto flex flex-col items-center justify-center gap-4 font-special text-white md:flex-row md:gap-8",
+          "mx-auto flex flex-col items-center justify-center gap-4 font-kecal text-white md:flex-row md:gap-8",
         )}
       >
         <Link

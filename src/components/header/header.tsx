@@ -48,7 +48,7 @@ export function Header() {
             href={user ? "/dashboard" : "/"}
             className="flex items-center gap-2 text-xl"
           >
-            <span className="font-nosifer text-2xl text-purple-300">
+            <span className="font-kecal text-2xl text-purple-300">
               Wordream
             </span>
           </Link>
@@ -59,7 +59,7 @@ export function Header() {
                 <Link
                   href={"/generate"}
                   className={cn(
-                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
+                    "hidden items-center gap-2 font-kecal !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
                   )}
                 >
                   <VideoIcon className="h-6 w-6" /> Generate
@@ -67,7 +67,7 @@ export function Header() {
 
                 <Link
                   className={cn(
-                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
+                    "hidden items-center gap-2 font-kecal !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
                   )}
                   href={"/stories"}
                 >
@@ -76,7 +76,7 @@ export function Header() {
 
                 <Link
                   className={cn(
-                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
+                    "hidden items-center gap-2 font-kecal !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
                   )}
                   href="/videos"
                 >
@@ -85,7 +85,7 @@ export function Header() {
 
                 <Link
                   className={cn(
-                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
+                    "hidden items-center gap-2 font-kecal !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
                   )}
                   href="/talent"
                 >
@@ -94,7 +94,7 @@ export function Header() {
 
                 <Link
                   className={cn(
-                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
+                    "hidden items-center gap-2 font-kecal !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
                   )}
                   href="/teams"
                 >
@@ -103,7 +103,7 @@ export function Header() {
 
                 <Link
                   className={cn(
-                    "hidden items-center gap-2 font-amatic !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
+                    "hidden items-center gap-2 font-kecal !text-[24px] !font-bold text-purple-300 transition-colors hover:text-white md:flex",
                   )}
                   href="/billing"
                 >
@@ -139,7 +139,7 @@ export function Header() {
                 >
                   <DialogContent className="border-purple-700 bg-gray-900 sm:max-w-md">
                     <DialogHeader>
-                      <DialogTitle className="text-center font-nosifer text-2xl text-purple-300">
+                      <DialogTitle className="text-center font-kecal text-2xl text-purple-300">
                         {authView === "reset" ? "Reset Password" : "Wordream"}
                       </DialogTitle>
                     </DialogHeader>
@@ -158,13 +158,13 @@ export function Header() {
                           onClick={() => signIn("google")}
                         >
                           <GoogleIcon className="h-5 w-5" />
-                          <span className="font-special">
+                          <span className="font-kecal">
                             Continue with Google
                           </span>
                         </button>
                         <div className="flex items-center gap-2">
                           <div className="h-px flex-1 bg-purple-700" />
-                          <span className="font-special text-xs text-gray-500">
+                          <span className="font-kecal text-xs text-gray-500">
                             or
                           </span>
                           <div className="h-px flex-1 bg-purple-700" />
@@ -207,7 +207,7 @@ function HeaderActions() {
   return (
     <>
       {user?.credits != null && (
-        <div className={"font-special text-purple-300"}>
+        <div className={"font-kecal text-purple-300"}>
           {user.credits + " Credits"}
         </div>
       )}

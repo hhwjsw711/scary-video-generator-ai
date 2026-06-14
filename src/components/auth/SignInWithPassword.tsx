@@ -43,7 +43,7 @@ export function SignInWithPassword({
       }}
     >
       <div className="space-y-2">
-        <label htmlFor="email" className="font-special text-sm text-purple-300">
+        <label htmlFor="email" className="font-kecal text-sm text-purple-300">
           Email
         </label>
         <Input
@@ -60,7 +60,7 @@ export function SignInWithPassword({
         <div className="flex items-center justify-between">
           <label
             htmlFor="password"
-            className="font-special text-sm text-purple-300"
+            className="font-kecal text-sm text-purple-300"
           >
             Password
           </label>
@@ -68,7 +68,7 @@ export function SignInWithPassword({
             <button
               type="button"
               onClick={onForgotPassword}
-              className="font-special text-xs text-purple-400 hover:text-purple-300"
+              className="font-kecal text-xs text-purple-400 hover:text-purple-300"
             >
               Forgot password?
             </button>
@@ -86,7 +86,7 @@ export function SignInWithPassword({
       </div>
 
       {flow === "signUp" && (
-        <p className="font-special text-xs text-gray-400">
+        <p className="font-kecal text-xs text-gray-400">
           Password must be at least 6 characters.
         </p>
       )}
@@ -96,7 +96,7 @@ export function SignInWithPassword({
       <Button
         type="submit"
         disabled={submitting}
-        className="w-full bg-primary py-2 font-special text-white hover:bg-primary/90"
+        className="w-full bg-primary py-2 font-kecal text-white hover:bg-primary/90"
       >
         {submitting ? (
           <Loader2 className="h-4 w-4 animate-spin" />
@@ -111,7 +111,7 @@ export function SignInWithPassword({
         variant="link"
         type="button"
         className={cn(
-          "font-special text-sm text-purple-400",
+          "font-kecal text-sm text-purple-400",
           submitting && "pointer-events-none opacity-50",
         )}
         onClick={() => setFlow(flow === "signIn" ? "signUp" : "signIn")}

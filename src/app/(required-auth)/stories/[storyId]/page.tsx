@@ -55,7 +55,7 @@ export default function Page({
     return (
       <div className="container flex h-full items-center justify-center py-12">
         <div
-          className={cn("font-amatic text-[40px] font-bold text-purple-300")}
+          className={cn("font-kecal text-[40px] font-bold text-purple-300")}
         >
           Loading...
         </div>
@@ -128,7 +128,7 @@ export default function Page({
                 </Select>
               )}
               <Button
-                className={"font-special"}
+                className={"font-kecal"}
                 onClick={() =>
                   setOpen(
                     <CustomModal
@@ -168,7 +168,7 @@ export default function Page({
                 className="block text-center md:col-span-2"
               >
                 <div className="flex h-full items-center justify-center">
-                  <div className={cn("font-amatic text-[40px] font-bold")}>
+                  <div className={cn("font-kecal text-[40px] font-bold")}>
                     Continue Refine
                   </div>
                 </div>
@@ -191,7 +191,7 @@ export default function Page({
       {segments === undefined ||
         (segments.length === 0 && (
           <div className="flex h-full items-center justify-center">
-            <div className={cn("font-amatic text-[40px] font-bold")}>
+            <div className={cn("font-kecal text-[40px] font-bold")}>
               Loading segments ...
             </div>
           </div>

@@ -186,7 +186,7 @@ export function SegmentItem({
         ) : (
           <div
             className={
-              "flex h-full w-full items-center justify-center gap-4 font-special"
+              "flex h-full w-full items-center justify-center gap-4 font-kecal"
             }
           >
             <Button

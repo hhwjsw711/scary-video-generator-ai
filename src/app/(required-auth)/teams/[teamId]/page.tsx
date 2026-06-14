@@ -104,7 +104,7 @@ export default function TeamDetailPage({
     return (
       <div className="container flex h-full items-center justify-center py-12">
         <div
-          className={cn("font-amatic text-[40px] font-bold text-purple-300")}
+          className={cn("font-kecal text-[40px] font-bold text-purple-300")}
         >
           Loading...
         </div>
@@ -115,7 +115,7 @@ export default function TeamDetailPage({
   if (team === null) {
     return (
       <div className="container flex h-full flex-col items-center justify-center gap-4 py-12">
-        <p className={cn("font-amatic text-[40px] font-bold text-purple-300")}>
+        <p className={cn("font-kecal text-[40px] font-bold text-purple-300")}>
           Team not found
         </p>
         <Button asChild className="bg-primary text-white hover:bg-primary/90">
@@ -139,12 +139,12 @@ export default function TeamDetailPage({
         <div>
           <h1
             className={cn(
-              "font-nosifer text-2xl font-bold text-purple-300 md:text-[40px]",
+              "font-kecal text-2xl font-bold text-purple-300 md:text-[40px]",
             )}
           >
             {team.name}
           </h1>
-          <p className={cn("font-special text-lg text-purple-400")}>
+          <p className={cn("font-kecal text-lg text-purple-400")}>
             {team.description}
           </p>
         </div>
@@ -180,7 +180,7 @@ export default function TeamDetailPage({
 
       {showAddForm && (
         <div className="mb-8 rounded-lg border border-purple-700 bg-gray-900 p-6">
-          <h2 className="mb-4 font-amatic text-[24px] font-bold text-purple-300">
+          <h2 className="mb-4 font-kecal text-[24px] font-bold text-purple-300">
             Add Team Member
           </h2>
           <form onSubmit={handleAddMember} className="space-y-4">
@@ -232,7 +232,7 @@ export default function TeamDetailPage({
 
       {showEditForm && (
         <div className="mb-8 rounded-lg border border-purple-700 bg-gray-900 p-6">
-          <h2 className="mb-4 font-amatic text-[24px] font-bold text-purple-300">
+          <h2 className="mb-4 font-kecal text-[24px] font-bold text-purple-300">
             Edit Team
           </h2>
           <form onSubmit={handleEditTeam} className="space-y-4">
@@ -276,7 +276,7 @@ export default function TeamDetailPage({
       )}
 
       <div className="rounded-lg border border-purple-700 bg-gray-900 p-6">
-        <h2 className="mb-4 font-amatic text-[24px] font-bold text-purple-300">
+        <h2 className="mb-4 font-kecal text-[24px] font-bold text-purple-300">
           Team Members ({members.length})
         </h2>
         <div className="space-y-3">
@@ -286,10 +286,10 @@ export default function TeamDetailPage({
               className="flex items-center justify-between rounded-lg border border-purple-800 bg-gray-800 p-4"
             >
               <div>
-                <p className="font-special text-purple-200">
+                <p className="font-kecal text-purple-200">
                   {member.userName}
                 </p>
-                <p className="font-special text-sm text-purple-400">
+                <p className="font-kecal text-sm text-purple-400">
                   {member.userEmail}
                 </p>
               </div>
@@ -338,7 +338,7 @@ export default function TeamDetailPage({
             </div>
           ))}
           {members.length === 0 && (
-            <p className="text-center font-special text-purple-400">
+            <p className="text-center font-kecal text-purple-400">
               No members yet
             </p>
           )}
@@ -348,10 +348,10 @@ export default function TeamDetailPage({
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="rounded-lg border border-purple-700 bg-gray-900 p-6">
-            <h2 className="mb-4 font-amatic text-[24px] font-bold text-purple-300">
+            <h2 className="mb-4 font-kecal text-[24px] font-bold text-purple-300">
               Delete Team?
             </h2>
-            <p className="mb-4 font-special text-purple-400">
+            <p className="mb-4 font-kecal text-purple-400">
               This action cannot be undone. All team data will be permanently
               deleted.
             </p>

@@ -98,7 +98,7 @@ export default function Page({
         <div>
           <h1
             className={cn(
-              "font-nosifer text-2xl font-bold text-purple-300 md:text-[40px]",
+              "font-kecal text-2xl font-bold text-purple-300 md:text-[40px]",
             )}
           >
             {talent.name}
@@ -119,7 +119,7 @@ export default function Page({
             )}
           </div>
           {talent.description && (
-            <p className="mt-2 font-special text-purple-400">
+            <p className="mt-2 font-kecal text-purple-400">
               {talent.description}
             </p>
           )}
@@ -146,7 +146,7 @@ export default function Page({
 
       <section className="mb-8">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-amatic text-lg text-xl font-semibold text-purple-200">
+          <h2 className="font-kecal text-lg text-xl font-semibold text-purple-200">
             Reference Media ({talent.media?.length || 0})
           </h2>
           <AddTalentMediaDialog
@@ -205,7 +205,7 @@ export default function Page({
 
       <section className="mb-8">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="flex items-center gap-2 font-amatic text-lg text-xl font-semibold text-purple-200">
+          <h2 className="flex items-center gap-2 font-kecal text-lg text-xl font-semibold text-purple-200">
             <ImageIcon className="h-5 w-5" />
             Talent Sheets ({talent.sheets?.length || 0})
           </h2>
@@ -394,7 +394,7 @@ function EditTalentDialog({
       <DialogContent className="border-purple-500 bg-gray-900 text-purple-300 sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle className="font-amatic text-2xl">
+            <DialogTitle className="font-kecal text-2xl">
               Edit Talent
             </DialogTitle>
             <DialogDescription className="text-purple-400">

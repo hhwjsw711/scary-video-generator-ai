@@ -25,7 +25,7 @@ export function ResetPasswordWithEmailCode({
   if (step === "email") {
     return (
       <div className="flex flex-col gap-4">
-        <p className="font-special text-sm text-gray-400">
+        <p className="font-kecal text-sm text-gray-400">
           Enter your email address and we'll send you a code to reset your
           password.
         </p>
@@ -54,7 +54,7 @@ export function ResetPasswordWithEmailCode({
           <div className="space-y-2">
             <label
               htmlFor="reset-email"
-              className="font-special text-sm text-purple-300"
+              className="font-kecal text-sm text-purple-300"
             >
               Email
             </label>
@@ -72,7 +72,7 @@ export function ResetPasswordWithEmailCode({
           <Button
             type="submit"
             disabled={submitting}
-            className="w-full bg-primary py-2 font-special text-white hover:bg-primary/90"
+            className="w-full bg-primary py-2 font-kecal text-white hover:bg-primary/90"
           >
             {submitting ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -84,7 +84,7 @@ export function ResetPasswordWithEmailCode({
           <Button
             variant="link"
             type="button"
-            className="font-special text-sm text-purple-400"
+            className="font-kecal text-sm text-purple-400"
             onClick={onBack}
           >
             Back to sign in
@@ -96,7 +96,7 @@ export function ResetPasswordWithEmailCode({
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="font-special text-sm text-gray-400">
+      <p className="font-kecal text-sm text-gray-400">
         Enter the 8-digit code sent to {step.email} and choose a new password.
       </p>
       <form
@@ -122,7 +122,7 @@ export function ResetPasswordWithEmailCode({
         <div className="space-y-2">
           <label
             htmlFor="code"
-            className="font-special text-sm text-purple-300"
+            className="font-kecal text-sm text-purple-300"
           >
             Verification Code
           </label>
@@ -132,7 +132,7 @@ export function ResetPasswordWithEmailCode({
         <div className="space-y-2">
           <label
             htmlFor="new-password"
-            className="font-special text-sm text-purple-300"
+            className="font-kecal text-sm text-purple-300"
           >
             New Password
           </label>
@@ -150,7 +150,7 @@ export function ResetPasswordWithEmailCode({
         <Button
           type="submit"
           disabled={submitting}
-          className="w-full bg-primary py-2 font-special text-white hover:bg-primary/90"
+          className="w-full bg-primary py-2 font-kecal text-white hover:bg-primary/90"
         >
           {submitting ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -162,7 +162,7 @@ export function ResetPasswordWithEmailCode({
         <Button
           variant="link"
           type="button"
-          className="font-special text-sm text-purple-400"
+          className="font-kecal text-sm text-purple-400"
           onClick={() => setStep("email")}
         >
           <ArrowLeft className="mr-1 h-3 w-3" />

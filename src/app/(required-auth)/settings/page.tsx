@@ -107,18 +107,18 @@ export default function SettingsPage() {
 
   return (
     <div className="container mx-auto max-w-2xl px-4 py-8">
-      <h1 className="font-nosifer text-2xl text-purple-300">Settings</h1>
-      <p className="mt-1 font-special text-sm text-purple-400">
+      <h1 className="font-kecal text-2xl text-purple-300">Settings</h1>
+      <p className="mt-1 font-kecal text-sm text-purple-400">
         Manage your profile and display preferences
       </p>
 
       <div className="mt-8 space-y-6">
         <Card className="border-purple-700 bg-gray-900/50">
           <CardHeader>
-            <CardTitle className="font-special text-lg text-purple-300">
+            <CardTitle className="font-kecal text-lg text-purple-300">
               Profile Picture
             </CardTitle>
-            <CardDescription className="font-special text-sm text-purple-400">
+            <CardDescription className="font-kecal text-sm text-purple-400">
               Upload a photo to personalize your account
             </CardDescription>
           </CardHeader>
@@ -150,7 +150,7 @@ export default function SettingsPage() {
                 onChange={handleImageSelect}
               />
             </div>
-            <p className="font-special text-sm text-purple-400">
+            <p className="font-kecal text-sm text-purple-400">
               JPG, PNG or GIF. 1MB max.
             </p>
           </CardContent>
@@ -158,10 +158,10 @@ export default function SettingsPage() {
 
         <Card className="border-purple-700 bg-gray-900/50">
           <CardHeader>
-            <CardTitle className="font-special text-lg text-purple-300">
+            <CardTitle className="font-kecal text-lg text-purple-300">
               Display Name
             </CardTitle>
-            <CardDescription className="font-special text-sm text-purple-400">
+            <CardDescription className="font-kecal text-sm text-purple-400">
               This is how your name will appear across the platform
             </CardDescription>
           </CardHeader>
@@ -169,7 +169,7 @@ export default function SettingsPage() {
             <div className="space-y-2">
               <Label
                 htmlFor="name"
-                className="font-special text-sm text-purple-300"
+                className="font-kecal text-sm text-purple-300"
               >
                 Name
               </Label>
@@ -178,14 +178,14 @@ export default function SettingsPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={user?.name || "Your display name"}
-                className="border-purple-700 bg-gray-800 font-special text-purple-300 placeholder:text-purple-500"
+                className="border-purple-700 bg-gray-800 font-kecal text-purple-300 placeholder:text-purple-500"
               />
             </div>
 
             <div className="space-y-2">
               <Label
                 htmlFor="email"
-                className="font-special text-sm text-purple-300"
+                className="font-kecal text-sm text-purple-300"
               >
                 Email
               </Label>
@@ -193,9 +193,9 @@ export default function SettingsPage() {
                 id="email"
                 value={user?.email ?? ""}
                 disabled
-                className="border-purple-700 bg-gray-800 font-special text-purple-400 opacity-60"
+                className="border-purple-700 bg-gray-800 font-kecal text-purple-400 opacity-60"
               />
-              <p className="font-special text-xs text-purple-500">
+              <p className="font-kecal text-xs text-purple-500">
                 Email cannot be changed
               </p>
             </div>
@@ -203,7 +203,7 @@ export default function SettingsPage() {
             <Button
               onClick={handleSave}
               disabled={isSaving || !hasNameChanged}
-              className="bg-purple-500 font-special text-white hover:bg-purple-700"
+              className="bg-purple-500 font-kecal text-white hover:bg-purple-700"
             >
               {isSaving ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

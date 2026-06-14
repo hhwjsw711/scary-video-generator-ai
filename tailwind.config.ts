@@ -18,10 +18,7 @@ const config = {
     },
     extend: {
       fontFamily: {
-        amatic: "var(--font-amatic)",
-        special: "var(--font-special)",
-        jolly: "var(--font-jolly)",
-        nosifer: "var(--font-nosifer)",
+        kecal: ["Kecal", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

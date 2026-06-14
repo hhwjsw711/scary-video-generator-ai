@@ -62,13 +62,13 @@ export default function Page({
     <div className="container h-full py-12">
       <h1
         className={cn(
-          "mb-4 w-full text-center font-nosifer text-2xl font-bold text-purple-300 md:text-[40px]",
+          "mb-4 w-full text-center font-kecal text-2xl font-bold text-purple-300 md:text-[40px]",
         )}
       >
         Your Stories
       </h1>
 
-      <p className={cn("py-4 text-center font-special text-lg")}>
+      <p className={cn("py-4 text-center font-kecal text-lg")}>
         Here are the stories you&apos;ve generated.
       </p>
 
@@ -104,7 +104,7 @@ export default function Page({
 
       {displayedStories.length === 0 ? (
         <div className="flex h-full flex-col items-center justify-center gap-4 py-12">
-          <p className={cn("font-amatic text-[40px] font-bold")}>
+          <p className={cn("font-kecal text-[40px] font-bold")}>
             {selectedTeamId === "all"
               ? "You don't have any story yet."
               : selectedTeamId === "private"
@@ -112,7 +112,7 @@ export default function Page({
                 : "No stories in this team."}
           </p>
           {(selectedTeamId === "all" || selectedTeamId === "private") && (
-            <Button className={cn("font-amatic text-[24px]")} asChild>
+            <Button className={cn("font-kecal text-[24px]")} asChild>
               <Link href="/generate" className="!font-bold">
                 Generate
               </Link>
@@ -141,7 +141,7 @@ export default function Page({
       {status === "CanLoadMore" && (
         <div className="mt-6 flex justify-center">
           <Button
-            className="font-amatic text-[24px]"
+            className="font-kecal text-[24px]"
             onClick={() => loadMore(9)}
           >
             Load More
@@ -150,14 +150,14 @@ export default function Page({
       )}
       {status === "LoadingMore" && (
         <div className="flex h-full items-center justify-center">
-          <div className={cn("font-amatic text-[40px] font-bold")}>
+          <div className={cn("font-kecal text-[40px] font-bold")}>
             Loading more stories ...
           </div>
         </div>
       )}
       {status === "LoadingFirstPage" && (
         <div className="flex h-full items-center justify-center">
-          <div className={cn("font-amatic text-[40px] font-bold")}>
+          <div className={cn("font-kecal text-[40px] font-bold")}>
             Loading stories ...
           </div>
         </div>
@@ -196,7 +196,7 @@ const StoryItem = memo(function StoryItem({
     <div
       key={story._id}
       className={cn(
-        "flex flex-col overflow-hidden rounded-xl border-2 border-purple-500 font-special hover:border-purple-300",
+        "flex flex-col overflow-hidden rounded-xl border-2 border-purple-500 font-kecal hover:border-purple-300",
       )}
     >
       <div className="flex justify-between bg-gray-800 px-4 py-2">

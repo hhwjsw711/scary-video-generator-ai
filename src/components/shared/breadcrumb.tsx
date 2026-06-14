@@ -34,7 +34,7 @@ export function Breadcrumb() {
 
   return (
     <nav aria-label="Breadcrumb" className="container py-3">
-      <ol className="flex items-center gap-1 font-special text-sm text-purple-300">
+      <ol className="flex items-center gap-1 font-kecal text-sm text-purple-300">
         <li>
           <Link href="/" className="flex items-center hover:text-white">
             <Home className="h-3.5 w-3.5" />

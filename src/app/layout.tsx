@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import { type Metadata } from "next";
 
 import type { ReactNode } from "react";
+import { Suspense } from "react";
 
 import { Providers } from "../components/providers/global-providers";
 import NextTopLoader from "nextjs-toploader";
@@ -11,40 +12,6 @@ import { Header } from "../components/header/header";
 import { Footer } from "@/components/shared/footer";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import {
-  Amatic_SC,
-  Special_Elite,
-  Jolly_Lodger,
-  Nosifer,
-} from "next/font/google";
-export const amatic = Amatic_SC({
-  weight: ["400", "700"],
-  display: "swap",
-  preload: true,
-  subsets: ["vietnamese"],
-  variable: "--font-amatic",
-});
-export const special = Special_Elite({
-  weight: ["400"],
-  display: "swap",
-  preload: true,
-  subsets: ["latin"],
-  variable: "--font-special",
-});
-export const jolly = Jolly_Lodger({
-  weight: ["400"],
-  display: "swap",
-  preload: true,
-  subsets: ["latin"],
-  variable: "--font-jolly",
-});
-export const nosifer = Nosifer({
-  weight: ["400"],
-  display: "swap",
-  preload: true,
-  subsets: ["latin"],
-  variable: "--font-nosifer",
-});
 
 export const metadata: Metadata = {
   title: "Wordream - AI Video Platform",
@@ -69,20 +36,33 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={cn(
-          "min-h-screen bg-background antialiased",
-          amatic.variable,
-          jolly.variable,
-          nosifer.variable,
-          special.variable,
-        )}
-      >
+      <head>
+        <link
+          rel="preconnect"
+          href="https://canny-hippopotamus-570.convex.site"
+        />
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+      </head>
+      <body className={cn("min-h-screen bg-background font-kecal antialiased")}>
         <Providers>
           <NextTopLoader />
           <TooltipProvider>
             <div className="flex h-screen w-screen flex-col overflow-hidden">
-              <Header />
+              <Suspense
+                fallback={
+                  <div className="animate-pulse border-b border-purple-700 py-2">
+                    <div className="container mx-auto flex items-center justify-between">
+                      <div className="h-8 w-28 rounded bg-purple-700/30" />
+                      <div className="flex gap-4">
+                        <div className="h-10 w-10 rounded-full bg-purple-700/30" />
+                        <div className="h-10 w-10 rounded bg-purple-700/30 md:hidden" />
+                      </div>
+                    </div>
+                  </div>
+                }
+              >
+                <Header />
+              </Suspense>
               <div className="h-full w-full flex-1 overflow-auto">
                 <main className="min-h-[calc(100vh-100px)]">{children}</main>
                 <Footer />
